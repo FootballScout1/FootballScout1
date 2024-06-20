@@ -1,0 +1,7 @@
+__pycache__/
+models/rating.py
+models/skill.py
+models/user.py
+../.gitignore
+models/player.py
+models/scout.py
