@@ -4,6 +4,7 @@ Contains the class DBStorage
 """
 
 import models
+from models.base_model import BaseModel
 from models.club import Club
 from models.location import Location
 from models.player import Player
@@ -12,6 +13,7 @@ from models.skill import Skill
 from models.rating import Rating
 from models.comment import Comment
 from models.like import Like
+from models.post import Post
 from models.user import User
 from os import getenv
 import sqlalchemy
@@ -20,7 +22,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 classes = {"Club": Club, "Location": Location,
            "Player": Player, "Scout": Scout, "Skill": Skill,
-           "Rating": Rating, "Comment": Comment, "Like": Like, "User": User}
+           "Rating": Rating, "Comment": Comment, "Like": Like,
+           "Post": Post, "User": User}
 
 class DBStorage:
     """interacts with the MySQL database"""

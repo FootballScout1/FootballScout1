@@ -1,4 +1,8 @@
 __pycache__/
+flask/__pycache__/
+models/__pycache__/
+models/engine/__pycache__/
+static_files/__pycache__/
 models/rating.py
 models/skill.py
 models/user.py
