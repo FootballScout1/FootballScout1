@@ -42,6 +42,8 @@ class DBStorage:
                                              FBS_MYSQL_PWD,
                                              FBS_MYSQL_HOST,
                                              FBS_MYSQL_DB))
+
+        # self.__engine = create_engine(sqlite3:///test.db)
         if FBS_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
