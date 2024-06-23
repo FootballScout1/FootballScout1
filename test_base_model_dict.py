@@ -6,6 +6,7 @@ second_model.name = "Football_Scout_Two"
 second_model.my_number = 300
 print(second_model.id)
 print(second_model)
+second_model.save()
 print(type(second_model.created_at))
 print("--")
 second_model_json = second_model.to_dict()
