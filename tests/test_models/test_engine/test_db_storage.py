@@ -23,8 +23,9 @@ import pep8
 import unittest
 from models import storage
 DBStorage = db_storage.DBStorage
-classes = {"Club": Club, "Location": Location, "Player": Player, "Scout": Scout, 
-           "Skill": Skill, "Rating": Rating, "Comment": Comment, "Like": Like, 
+classes = {"Club": Club, "Location": Location,
+           "Player": Player, "Scout": Scout,
+           "Skill": Skill, "Rating": Rating, "Comment": Comment, "Like": Like,
            "Post": Post, "User": User}
 
 
@@ -43,9 +44,11 @@ class TestDBStorageDocs(unittest.TestCase):
                          "Found code style errors (and warnings).")
 
     def test_pep8_conformance_test_db_storage(self):
-        """Test tests/test_models/test_engine/test_db_storage.py conforms to PEP8."""
+        """Test tests/test_models/test_engine/test_db_storage.py \
+                conforms to PEP8."""
         pep8s = pep8.StyleGuide(quiet=True)
-        result = pep8s.check_files(['tests/test_models/test_engine/test_db_storage.py'])
+        result = pep8s.check_files(
+            ['tests/test_models/test_engine/test_db_storage.py'])
         self.assertEqual(result.total_errors, 0,
                          "Found code style errors (and warnings).")
 
@@ -130,4 +133,3 @@ class TestDBStorage(unittest.TestCase):
         storage.delete(new_club)
         storage.save()
         self.assertEqual(storage.count(Club), initial_count)
-

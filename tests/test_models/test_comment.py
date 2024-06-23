@@ -58,9 +58,13 @@ class TestCommentDocs(unittest.TestCase):
 
 class TestComment(unittest.TestCase):
     """Test the Comment class"""
+
     def setUp(self):
         """Set up test methods"""
-        self.comment = Comment(post_id="1234", user_id="5678", text="Nice post!")
+        self.comment = Comment(
+            post_id="1234",
+            user_id="5678",
+            text="Nice post!")
 
     def tearDown(self):
         """Tear down test methods"""
@@ -94,7 +98,8 @@ class TestComment(unittest.TestCase):
 
     def test_str_method(self):
         """Test the __str__ method"""
-        string = "[Comment] ({}) {}".format(self.comment.id, self.comment.__dict__)
+        string = "[Comment] ({}) {}".format(
+            self.comment.id, self.comment.__dict__)
         self.assertEqual(str(self.comment), string)
 
     def test_save(self):
@@ -106,4 +111,3 @@ class TestComment(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

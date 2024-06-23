@@ -59,6 +59,7 @@ class TestBaseModelDocs(unittest.TestCase):
 
 class TestBaseModel(unittest.TestCase):
     """Test the BaseModel class"""
+
     def setUp(self):
         """Set up test methods"""
         self.base = BaseModel()
@@ -111,4 +112,3 @@ class TestBaseModel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

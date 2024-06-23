@@ -6,6 +6,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, ForeignKey
 
+
 class Like(BaseModel, Base):
     """Representation of Like"""
     if models.storage_t == 'db':
@@ -19,4 +20,3 @@ class Like(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes Like"""
         super().__init__(*args, **kwargs)
-

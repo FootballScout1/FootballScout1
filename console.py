@@ -139,7 +139,8 @@ class FootballScoutCommand(cmd.Cmd):
             elif method_arg == "all()":
                 self.do_all(class_name)
                 return
-            elif method_arg.startswith('destroy(') and method_arg.endswith(')'):
+            elif method_arg.startswith('destroy(') and \
+                    method_arg.endswith(')'):
                 instance_id = method_arg[8:-1]
                 self.do_destroy(f"{class_name} {instance_id}")
                 return
@@ -176,13 +177,15 @@ class FootballScoutCommand(cmd.Cmd):
                         except (ValueError, IndexError):
                             pass
             else:
-                print("** invalid syntax **")
+                # print("** invalid syntax **")
+                print("** class name missing **")
                 return
             self.onecmd(line.strip())
             return
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not on the class name"""
+        """Prints all string representation of all
+        instances based or not on the class name"""
         args = shlex.split(arg)
         objects = models.storage.all()
         if args:
@@ -197,7 +200,8 @@ class FootballScoutCommand(cmd.Cmd):
             print(str([str(obj) for obj in objects.values()]))
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file)"""
+        """Updates an instance based on the class name and id by adding or
+        updating attribute (save the change into the JSON file)"""
         if arg == "":
             print("** class name missing **")
             return
@@ -232,7 +236,8 @@ class FootballScoutCommand(cmd.Cmd):
                         setattr(obj, attr_name, attr_value)
         else:
             patt = r'(\w+)\("([\da-f-]+)"(?:, "(\w+)")?(?:, "(\w+)")?\)'
-            patt2 = r"(\w+)?\s?([\da-f-]+)?\s?(\w+)?\s?((\d+\.?\d*)|(\d*\.?\d+)|\"([^\"]*)\"|'([^']*)')?"
+            patt2 = (r"(\w+)?\s?([\da-f-]+)?\s?(\w+)?\s?"
+                     r"((\d+\.?\d*)|(\d*\.?\d+)|\"([^\"]*)\"|'([^']*)')?")
             mach = re.match(patt, arg)
             mach2 = re.match(patt2, arg)
             if mach:
@@ -255,7 +260,8 @@ class FootballScoutCommand(cmd.Cmd):
                     if attribute_name is None and attribute_value is None:
                         print("** attribute name missing **")
                         return
-                    elif attribute_name is not None and attribute_value is None:
+                    elif attribute_name is not None and \
+                            attribute_value is None:
                         print("** value missing **")
                         return
                 attr_name = attribute_name
@@ -290,7 +296,8 @@ class FootballScoutCommand(cmd.Cmd):
                         if attribute_name is None and attribute_value is None:
                             print("** attribute name missing **")
                             return
-                        elif attribute_name is not None and attribute_value is None:
+                        elif attribute_name is not None and \
+                                attribute_value is None:
                             print("** value missing **")
                             return
                     attr_name = attribute_name
@@ -306,4 +313,3 @@ class FootballScoutCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     FootballScoutCommand().cmdloop()
-

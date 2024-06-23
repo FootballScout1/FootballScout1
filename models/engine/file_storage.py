@@ -22,6 +22,7 @@ classes = {"Club": Club, "BaseModel": BaseModel, "Location": Location,
            "Rating": Rating, "Comment": Comment, "Like": Like,
            "Post": Post, "User": User}
 
+
 class FileStorage:
     """serializes instances to a JSON file & deserializes back to instances"""
 
@@ -104,4 +105,3 @@ class FileStorage:
             count = len(models.storage.all(cls).values())
 
         return count
-

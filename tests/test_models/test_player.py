@@ -58,9 +58,15 @@ class TestPlayerDocs(unittest.TestCase):
 
 class TestPlayer(unittest.TestCase):
     """Test the Player class"""
+
     def setUp(self):
         """Set up test methods"""
-        self.player = Player(club_id="1234", name="John Doe", position="Forward", age=25, skill_level=85)
+        self.player = Player(
+            club_id="1234",
+            name="John Doe",
+            position="Forward",
+            age=25,
+            skill_level=85)
 
     def tearDown(self):
         """Tear down test methods"""
@@ -104,7 +110,8 @@ class TestPlayer(unittest.TestCase):
 
     def test_str_method(self):
         """Test the __str__ method"""
-        string = "[Player] ({}) {}".format(self.player.id, self.player.__dict__)
+        string = "[Player] ({}) {}".format(
+            self.player.id, self.player.__dict__)
         self.assertEqual(str(self.player), string)
 
     def test_save(self):
@@ -116,4 +123,3 @@ class TestPlayer(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -58,6 +58,7 @@ class TestLocationDocs(unittest.TestCase):
 
 class TestLocation(unittest.TestCase):
     """Test the Location class"""
+
     def setUp(self):
         """Set up test methods"""
         self.location = Location(name="Jakarta")
@@ -84,7 +85,8 @@ class TestLocation(unittest.TestCase):
 
     def test_str_method(self):
         """Test the __str__ method"""
-        string = "[Location] ({}) {}".format(self.location.id, self.location.__dict__)
+        string = "[Location] ({}) {}".format(
+            self.location.id, self.location.__dict__)
         self.assertEqual(str(self.location), string)
 
     def test_save(self):
@@ -96,4 +98,3 @@ class TestLocation(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

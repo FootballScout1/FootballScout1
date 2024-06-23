@@ -58,9 +58,13 @@ class TestPostDocs(unittest.TestCase):
 
 class TestPost(unittest.TestCase):
     """Test the Post class"""
+
     def setUp(self):
         """Set up test methods"""
-        self.post = Post(user_id="1234", title="Test Title", content="Test Content")
+        self.post = Post(
+            user_id="1234",
+            title="Test Title",
+            content="Test Content")
 
     def tearDown(self):
         """Tear down test methods"""
@@ -106,4 +110,3 @@ class TestPost(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

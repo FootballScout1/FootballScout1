@@ -7,6 +7,7 @@ import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
+
 class Skill(BaseModel, Base):
     """Representation of Skill"""
     if models.storage_t == 'db':
@@ -21,4 +22,3 @@ class Skill(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes Skill"""
         super().__init__(*args, **kwargs)
-

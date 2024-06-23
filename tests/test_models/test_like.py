@@ -58,6 +58,7 @@ class TestLikeDocs(unittest.TestCase):
 
 class TestLike(unittest.TestCase):
     """Test the Like class"""
+
     def setUp(self):
         """Set up test methods"""
         self.like = Like(post_id="1234", user_id="5678")
@@ -101,4 +102,3 @@ class TestLike(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

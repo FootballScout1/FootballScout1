@@ -14,10 +14,13 @@ class Club(BaseModel, Base):
     if models.storage_t == "db":
         __tablename__ = 'clubs'
         name = Column(String(128), nullable=False)
-        location_id = Column(String(60), ForeignKey('locations.id'), nullable=False)
+        location_id = Column(
+            String(60),
+            ForeignKey('locations.id'),
+            nullable=False)
         players = relationship("Player",
-                              backref="club",
-                              cascade="all, delete, delete-orphan")
+                               backref="club",
+                               cascade="all, delete, delete-orphan")
     else:
         name = ""
         location_id = ""

@@ -6,6 +6,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, ForeignKey
 
+
 class Comment(BaseModel, Base):
     """Representation of Comment"""
     if models.storage_t == 'db':
@@ -21,4 +22,3 @@ class Comment(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes Comment"""
         super().__init__(*args, **kwargs)
-

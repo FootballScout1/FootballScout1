@@ -45,9 +45,11 @@ class TestFileStorageDocs(unittest.TestCase):
                          "Found code style errors (and warnings).")
 
     def test_pep8_conformance_test_file_storage(self):
-        """Test tests/test_models/test_engine/test_file_storage.py conforms to PEP8."""
+        """Test tests/test_models/test_engine/test_file_storage.py \
+                conforms to PEP8."""
         pep8s = pep8.StyleGuide(quiet=True)
-        result = pep8s.check_files(['tests/test_models/test_engine/test_file_storage.py'])
+        result = pep8s.check_files(
+            ['tests/test_models/test_engine/test_file_storage.py'])
         self.assertEqual(result.total_errors, 0,
                          "Found code style errors (and warnings).")
 
@@ -76,6 +78,7 @@ class TestFileStorageDocs(unittest.TestCase):
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
+
     def setUp(self):
         """Set up test methods"""
         self.storage = FileStorage()
@@ -151,4 +154,3 @@ class TestFileStorage(unittest.TestCase):
         self.storage.delete(new_user)
         self.storage.save()
         self.assertEqual(self.storage.count(User), initial_count)
-

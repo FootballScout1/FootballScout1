@@ -58,9 +58,14 @@ class TestRatingDocs(unittest.TestCase):
 
 class TestRating(unittest.TestCase):
     """Test the Rating class"""
+
     def setUp(self):
         """Set up test methods"""
-        self.rating = Rating(player_id="1234", scout_id="5678", score=8, comment="Good player")
+        self.rating = Rating(
+            player_id="1234",
+            scout_id="5678",
+            score=8,
+            comment="Good player")
 
     def tearDown(self):
         """Tear down test methods"""
@@ -99,7 +104,8 @@ class TestRating(unittest.TestCase):
 
     def test_str_method(self):
         """Test the __str__ method"""
-        string = "[Rating] ({}) {}".format(self.rating.id, self.rating.__dict__)
+        string = "[Rating] ({}) {}".format(
+            self.rating.id, self.rating.__dict__)
         self.assertEqual(str(self.rating), string)
 
     def test_save(self):
@@ -111,4 +117,3 @@ class TestRating(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

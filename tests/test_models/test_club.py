@@ -59,6 +59,7 @@ class TestClubDocs(unittest.TestCase):
 
 class TestClub(unittest.TestCase):
     """Test the Club class"""
+
     def setUp(self):
         """Set up test methods"""
         self.club = Club(name="Test Club", location_id="1234")
@@ -102,4 +103,3 @@ class TestClub(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

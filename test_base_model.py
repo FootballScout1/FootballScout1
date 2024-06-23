@@ -11,4 +11,6 @@ first_model_json = first_model.to_dict()
 print(first_model_json)
 print("JSON of first_model:")
 for key in first_model_json.keys():
-    print("\t{}: ({}) - {}".format(key, type(first_model_json[key]), first_model_json[key]))
+    print("\t{}: ({}) - {}".format(key,
+                                   type(first_model_json[key]),
+                                   first_model_json[key]))

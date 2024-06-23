@@ -58,9 +58,14 @@ class TestUserDocs(unittest.TestCase):
 
 class TestUser(unittest.TestCase):
     """Test the User class"""
+
     def setUp(self):
         """Set up test methods"""
-        self.user = User(email="test@example.com", password="password123", first_name="John", last_name="Doe")
+        self.user = User(
+            email="test@example.com",
+            password="password123",
+            first_name="John",
+            last_name="Doe")
 
     def tearDown(self):
         """Tear down test methods"""
@@ -116,4 +121,3 @@ class TestUser(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -13,7 +13,9 @@ second_model_json = second_model.to_dict()
 print(second_model_json)
 print("JSON of my_model:")
 for key in second_model_json.keys():
-    print("\t{}: ({}) - {}".format(key, type(second_model_json[key]), second_model_json[key]))
+    print("\t{}: ({}) - {}".format(key,
+                                   type(second_model_json[key]),
+                                   second_model_json[key]))
 
 print("--")
 second_new_model = BaseModel(**second_model_json)

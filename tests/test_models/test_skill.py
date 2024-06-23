@@ -57,6 +57,7 @@ class TestSkillDocs(unittest.TestCase):
 
 class TestSkill(unittest.TestCase):
     """Test the Skill class"""
+
     def setUp(self):
         """Set up test methods"""
         self.skill = Skill(name="Dribbling")
@@ -95,4 +96,3 @@ class TestSkill(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

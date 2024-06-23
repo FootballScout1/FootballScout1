@@ -4,7 +4,7 @@ import models
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
-from sqlalchemy import Column, String # ForeignKey
+from sqlalchemy import Column, String  # ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -15,8 +15,8 @@ class Location(BaseModel, Base):
         # club_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         name = Column(String(128), nullable=False)
         clubs = relationship("Club",
-                              backref="location",
-                              cascade="all, delete, delete-orphan")
+                             backref="location",
+                             cascade="all, delete, delete-orphan")
     else:
         # club_id = ""
         name = ""

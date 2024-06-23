@@ -58,9 +58,14 @@ class TestScoutDocs(unittest.TestCase):
 
 class TestScout(unittest.TestCase):
     """Test the Scout class"""
+
     def setUp(self):
         """Set up test methods"""
-        self.scout = Scout(email="test@example.com", password="password123", first_name="John", last_name="Doe")
+        self.scout = Scout(
+            email="test@example.com",
+            password="password123",
+            first_name="John",
+            last_name="Doe")
 
     def tearDown(self):
         """Tear down test methods"""
@@ -116,4 +121,3 @@ class TestScout(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

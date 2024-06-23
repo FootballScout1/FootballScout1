@@ -25,6 +25,7 @@ classes = {"Club": Club, "Location": Location,
            "Rating": Rating, "Comment": Comment, "Like": Like,
            "Post": Post, "User": User}
 
+
 class DBStorage:
     """interacts with the MySQL database"""
     __engine = None
@@ -111,4 +112,3 @@ class DBStorage:
             count = len(models.storage.all(cls).values())
 
         return count
-
