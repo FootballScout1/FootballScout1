@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #3d348b;
+    color: white;
+    height: 100vh;
+}
+
+header {
+    width: 100%;
+    background-color: #745fb5;
+    padding: 1rem;
+    text-align: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    color: white;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.content {
+    display: flex;
+    background-color: #333;
+    width: 80%;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.video-section {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #b22222;
+    border-radius: 8px;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.video-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.video-details .btn {
+    margin: 0 0.5rem;
+    background-color: #5c5c5c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.likes, .dislikes {
+    margin: 0 0.5rem;
+    font-size: 1.2rem;
+}
+
+.info {
+    background-color: #333;
+    width: 80%;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.info-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.info-actions .btn {
+    margin: 0 0.5rem;
+    background-color: #5c5c5c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+
