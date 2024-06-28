@@ -3,7 +3,7 @@
 
 import models
 from models.base_model import BaseModel, Base
-from os import getenv
+# from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
@@ -14,10 +14,12 @@ class User(BaseModel, Base):
     """Representation of a User"""
     if models.storage_t == 'db':
         __tablename__ = 'users'
-        email = Column(String(128), nullable=False)
-        password = Column(String(128), nullable=False)
-        first_name = Column(String(128), nullable=True)
-        last_name = Column(String(128), nullable=True)
+        email = Column(String(255), nullable=False)
+        password = Column(String(255), nullable=False)
+        first_name = Column(String(255), nullable=True)
+        last_name = Column(String(255), nullable=True)
+        comments = relationship("Comment", backref="user", cascade="all, delete, delete-orphan")
+        likes = relationship("Like", backref="user", cascade="all, delete, delete-orphan")
     else:
         email = ""
         password = ""

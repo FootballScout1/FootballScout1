@@ -2,10 +2,10 @@
 """ holds class Club"""
 import models
 from models.base_model import BaseModel, Base
-from models.location import Location
-from os import getenv
+# from models.location import Location
+# from os import getenv
 import sqlalchemy
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String #, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -14,16 +14,22 @@ class Club(BaseModel, Base):
     if models.storage_t == "db":
         __tablename__ = 'clubs'
         name = Column(String(128), nullable=False)
-        location_id = Column(
-            String(60),
-            ForeignKey('locations.id'),
-            nullable=False)
-        players = relationship("Player",
-                               backref="club",
-                               cascade="all, delete, delete-orphan")
+        # location_id = Column(
+        #    String(60),
+        #    ForeignKey('locations.id'),
+        #    nullable=False)
+        # players = relationship("Player",
+        #                       backref="club",
+        #                       cascade="all, delete, delete-orphan")
+        country = Column(String(128), nullable=False)
+        league = Column(String(128), nullable=False)
+        players = relationship("Player", backref="club", cascade="all, delete, delete-orphan")
+        scouts = relationship("Scout", backref="club", cascade="all, delete, delete-orphan")
     else:
-        name = ""
-        location_id = ""
+        # name = ""
+        # location_id = ""
+        country = ""
+        league = ""
 
     def __init__(self, *args, **kwargs):
         """initializes club"""

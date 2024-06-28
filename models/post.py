@@ -2,9 +2,9 @@
 """ holds class Post """
 import models
 from models.base_model import BaseModel, Base
-from os import getenv
+# from os import getenv
 import sqlalchemy
-from sqlalchemy import Column, String, Text, ForeignKey
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -12,21 +12,10 @@ class Post(BaseModel, Base):
     """Representation of Post"""
     if models.storage_t == 'db':
         __tablename__ = 'posts'
-        user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
-        title = Column(String(128), nullable=False)
-        content = Column(Text, nullable=False)
-        comments = relationship(
-            "Comment",
-            backref="post",
-            cascade="all, delete, delete-orphan")
-        likes = relationship(
-            "Like",
-            backref="post",
-            cascade="all, delete, delete-orphan")
+        video_link = Column(String(255), nullable=True)
+        comments = relationship("Comment", backref="post", cascade="all, delete, delete-orphan")
     else:
-        user_id = ""
-        title = ""
-        content = ""
+        video_link = ""
 
     def __init__(self, *args, **kwargs):
         """initializes Post"""
