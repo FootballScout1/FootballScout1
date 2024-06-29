@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """ holds class User """
 
-import models
+# import models
+from models import storage_t
 from models.base_model import BaseModel, Base
 # from os import getenv
 import sqlalchemy
@@ -12,7 +13,7 @@ from hashlib import md5
 
 class User(BaseModel, Base):
     """Representation of a User"""
-    if models.storage_t == 'db':
+    if storage_t == 'db':
         __tablename__ = 'users'
         email = Column(String(255), nullable=False)
         password = Column(String(255), nullable=False)

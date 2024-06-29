@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 """ holds class Rating """
-import models
+# import models
+from models import storage_t
 from models.base_model import BaseModel, Base
-from os import getenv
+# from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class Rating(BaseModel, Base):
     """Representation of Rating"""
-    if models.storage_t == 'db':
+    if storage_t == 'db':
         __tablename__ = 'ratings'
         player_id = Column(
             String(60),

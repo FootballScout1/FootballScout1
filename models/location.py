@@ -1,6 +1,7 @@
 #!/usr/bin/python
 """ holds class Location"""
-import models
+# import models
+from models import storage_t
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
@@ -10,7 +11,7 @@ from sqlalchemy.orm import relationship
 
 class Location(BaseModel, Base):
     """Representation of Location """
-    if models.storage_t == "db":
+    if storage_t == "db":
         __tablename__ = 'locations'
         # club_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         name = Column(String(128), nullable=False)

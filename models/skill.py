@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ holds class Skill """
-import models
+# import models
+from models import storage_t
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
@@ -10,7 +11,7 @@ from sqlalchemy.orm import relationship
 
 class Skill(BaseModel, Base):
     """Representation of Skill"""
-    if models.storage_t == 'db':
+    if storage_t == 'db':
         __tablename__ = 'skills'
         name = Column(String(128), nullable=False)
         players = relationship("Player",

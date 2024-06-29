@@ -1,0 +1,96 @@
+#!/usr/bin/python3
+
+"""This module defines the DBStorage for the Football Scout project"""
+
+from os import getenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.engine.url import URL
+from models.base_model import Base
+from models.club import Club
+from models.location import Location
+from models.player import Player
+from models.scout import Scout
+from models.skill import Skill
+from models.rating import Rating
+from models.comment import Comment
+from models.like import Like
+from models.post import Post
+from models.user import User
+
+
+class DBStorage:
+    """This class defines the database storage engine for Football Scout"""
+
+    __engine = None
+    __session = None
+    __models = [Club, Location, Player, Scout, Skill, Rating, Comment, Like, Post, User]
+
+    def __init__(self):
+        """Instantiates a new DBStorage object."""
+        db_url = {
+            "database": f"{getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')}",
+            "drivername": "mysql+mysqldb",
+            "username": f"{getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')}",
+            "password": f"{getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')}",
+            "host": f"{getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')}",
+            "port": 3306,
+            "query": {"charset": "utf8"}
+        }
+        self.__engine = create_engine(
+            URL(**db_url),
+            pool_pre_ping=True
+        )
+
+        if getenv("FOOTBALL_SCOUT_ENV") == "test":
+            Base.metadata.drop_all(self.__engine)
+
+    def all(self, cls=None):
+        """Returns a dictionary of all objects in the current database session."""
+        objects = {}
+
+        if cls:
+            for obj in self.__session.query(cls):
+                objects[obj.__class__.__name__ + "." + obj.id] = obj
+        else:
+            for model in self.__models:
+                for obj in self.__session.query(model):
+                    objects[obj.__class__.__name__ + "." + obj.id] = obj
+
+        return objects
+
+    def new(self, obj):
+        """Adds the object to the current database session."""
+        self.__session.add(obj)
+
+    def save(self):
+        """Commits all changes to the current database session."""
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """Deletes obj from the current database session."""
+        if obj:
+            self.__session.delete(obj)
+
+    def reload(self):
+        """Creates all tables in the database and the current database session."""
+        Base.metadata.create_all(self.__engine)
+
+        session_factory = sessionmaker(
+            bind=self.__engine, expire_on_commit=False
+        )
+
+        self.__session = scoped_session(session_factory)
+
+    def rollback(self):
+        """Rolls back the current database session."""
+        self.__session.rollback()
+
+    def close(self):
+        """Closes the current session."""
+        self.__session.remove()
+
+    def drop_all(self):
+        """Drops all tables in the database."""
+        Base.metadata.drop_all(self.__engine)
+

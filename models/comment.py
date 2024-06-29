@@ -1,20 +1,21 @@
 #!/usr/bin/python3
 """ holds class Comment """
-import models
+# import models
+from models import storage_t
 from models.base_model import BaseModel, Base
 # from os import getenv
-import sqlalchemy
-from sqlalchemy import Column, String, ForeignKey
+# import sqlalchemy
+from sqlalchemy import Column, String, ForeignKey, Integer
 
 
 class Comment(BaseModel, Base):
     """Representation of Comment"""
-    if models.storage_t == 'db':
+    if storage_t == 'db':
         __tablename__ = 'comments'
         text = Column(String(1024), nullable=False)
         post_id = Column(String(60), ForeignKey('posts.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
-        player_id = Column(String(60), ForeignKey('players.id'), nullable=True)
+        player_id = Column(Integer, ForeignKey('players.sofifa_id'), nullable=True)
         scout_id = Column(String(60), ForeignKey('scouts.id'), nullable=True)
     else:
         text = ""
