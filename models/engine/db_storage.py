@@ -95,8 +95,18 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
 
+    def drop_table(self, table):
+        """Drops a specific table"""
+        Base.metadata.drop_all(self.__engine, tables=[table.__table__])
+
+    def create_tables(self):
+        """Creates all tables defined in Base.metadata"""
+        Base.metadata.create_all(self.__engine)
+
     def reload(self):
         """reloads data from the database"""
+        self.drop_table(Player)
+        # self.create_tables()
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)

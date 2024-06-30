@@ -11,7 +11,7 @@ def hello_football_scout():
 
 
 @app.route('/hbnb', strict_slashes=False)
-def hbnb():
+def home():
     """ Prints a Message when /hbnb is called """
     return 'Football Scout Home'
 
