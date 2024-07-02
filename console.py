@@ -1,5 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ console """
+
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 import cmd
 from datetime import datetime
@@ -62,18 +68,49 @@ class FootballScoutCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """Creates a new instance of a class"""
-        args = arg.split()
+        # args = arg.split()
+        args = shlex.split(arg)
         if len(args) == 0:
             print("** class name missing **")
             return False
-        if args[0] in classes:
-            new_dict = self._key_value_parser(args[1:])
-            instance = classes[args[0]](**new_dict)
-            instance.save()
-            print(instance.id)
-        else:
+        class_name = args[0]
+        if class_name not in classes:
             print("** class doesn't exist **")
             return False
+        # if args[0] in classes:
+        #    new_dict = self._key_value_parser(args[1:])
+
+        # Check if attributes are provided
+        if len(args) < 2:
+            print("** missing attributes **")
+            return False
+
+        # Extract attributes from arguments
+        attributes = {}
+        for arg in args[1:]:
+            if '=' in arg:
+                key, value = arg.split('=', 1)
+                attributes[key] = value.replace('_', ' ')
+
+        try:
+            instance = classes[class_name](**attributes)
+            instance.save()
+            print(instance.id)
+        except Exception as e:
+            print(f"Error creating instance: {str(e)}")
+
+
+            # if 'name' not in new_dict:
+            #    print("** missing name attribute **")
+            #    return False
+
+            # instance = classes[args[0]](**new_dict)
+
+            # instance.save()
+            # print(instance.id)
+        # else:
+        #   print("** class doesn't exist **")
+        #   return False
         # print(instance.id)
         # instance.save()
 

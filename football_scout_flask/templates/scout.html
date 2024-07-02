@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scout: {{ scout.name }}</title>
+</head>
+<body>
+    <h1>Scout: {{ scout.name }}</h1>
+    <h3>Clubs:</h3>
+    <ul>
+        {% for club in clubs %}
+            <li>{{ club.id }}: <b>{{ club.name }}</b></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+

@@ -68,7 +68,7 @@ class DBStorage:
                                              FOOTBALL_SCOUT_MYSQL_HOST,
                                              FOOTBALL_SCOUT_MYSQL_DB))
 
-        if FOOTBALL_SCOUT_ENV == "dev":
+        if FOOTBALL_SCOUT_ENV == "test":  #dev
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):

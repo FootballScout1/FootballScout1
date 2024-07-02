@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Football Scouts</title>
+</head>
+<body>
+    <h1>Scouts</h1>
+    <ul>
+        {% for scout in scouts %}
+            <li>{{ scout.id }}: <b>{{ scout.name }}</b></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+

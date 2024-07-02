@@ -8,6 +8,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String #, ForeignKey
 from sqlalchemy.orm import relationship
+from models.scout_club import scout_club
 
 storage_t = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 
@@ -27,11 +28,13 @@ class Club(BaseModel, Base):
         league = Column(String(128), nullable=False)
         players = relationship("Player", backref="club", cascade="all, delete, delete-orphan")
         scouts = relationship("Scout", backref="club", cascade="all, delete, delete-orphan")
+        # scouts = relationship("Scout", secondary=scout_club, back_populates="clubs")
     else:
-        # name = ""
+        name = ""
         # location_id = ""
         country = ""
         league = ""
+        # scouts = []
 
     def __init__(self, *args, **kwargs):
         """initializes club"""
