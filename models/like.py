@@ -14,8 +14,8 @@ class Like(BaseModel, Base):
         __tablename__ = 'likes'
         video_id = Column(String(60), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=True)
-        # player_id = Column(String(60), ForeignKey('players.id'), nullable=True)
-        player_id = Column(Integer, ForeignKey('players.sofifa_id'), nullable=True)
+        player_id = Column(String(60), ForeignKey('players.id'), nullable=True)
+        # player_id = Column(Integer, ForeignKey('players.sofifa_id', ondelete='CASCADE'), nullable=True)
         scout_id = Column(String(60), ForeignKey('scouts.id'), nullable=True)
     else:
         video_id = ""

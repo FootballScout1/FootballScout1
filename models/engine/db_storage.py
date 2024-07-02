@@ -97,6 +97,7 @@ class DBStorage:
 
     def drop_table(self, table):
         """Drops a specific table"""
+        # self.delete_dependent_records(table)
         Base.metadata.drop_all(self.__engine, tables=[table.__table__])
 
     def create_tables(self):
@@ -105,12 +106,26 @@ class DBStorage:
 
     def reload(self):
         """reloads data from the database"""
-        self.drop_table(Player)
         # self.create_tables()
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
+        # self.drop_table(Player)
+
+    # def delete_dependent_records(self, table):
+    #    """Delete records from dependent tables before dropping the table."""
+    #    if table == Player:
+            # Delete comments related to players
+    #        self.__session.query(Comment).filter(Comment.player_id.in_(
+    #            self.__session.query(Player.sofifa_id)
+    #        )).delete(synchronize_session=False)
+            # Delete likes related to players
+    #        self.__session.query(Like).filter(Like.player_id.in_(
+    #            self.__session.query(Player.sofifaid)
+    #        )).delete(synchronize_session=False)
+            # Commit the changes
+    #        self.__session.commit()
 
     def close(self):
         """call remove() method on the private session attribute"""

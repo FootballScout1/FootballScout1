@@ -15,7 +15,8 @@ class Comment(BaseModel, Base):
         text = Column(String(1024), nullable=False)
         post_id = Column(String(60), ForeignKey('posts.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
-        player_id = Column(Integer, ForeignKey('players.sofifa_id'), nullable=True)
+        # player_id = Column(Integer, ForeignKey('players.sofifa_id', ondelete='CASCADE'), nullable=True)
+        player_id = Column(String(60), ForeignKey('players.id'), nullable=True)
         scout_id = Column(String(60), ForeignKey('scouts.id'), nullable=True)
     else:
         text = ""

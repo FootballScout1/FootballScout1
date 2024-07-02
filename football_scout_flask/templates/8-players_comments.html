@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<HTML lang="en">
+    <HEAD>
+        <TITLE>Football Scout</TITLE>
+    </HEAD>
+    <BODY>
+        <H1>Players and Comments</H1>
+        <UL>
+            {% for player in players %}
+            <LI>{{ player.first_name }} {{ player.last_name }}
+                <UL>
+                    {% for comment in player.comments %}
+                    <LI>{{ comment.text }}</LI>
+                    {% endfor %}
+                </UL>
+            </LI>
+            {% endfor %}
+        </UL>
+    </BODY>
+</HTML>
+

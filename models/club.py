@@ -2,13 +2,14 @@
 """ holds class Club"""
 # import models
 from models.base_model import BaseModel, Base
-from models import storage_t
+# from models import storage_t
 # from models.location import Location
-# from os import getenv
+from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String #, ForeignKey
 from sqlalchemy.orm import relationship
 
+storage_t = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 
 class Club(BaseModel, Base):
     """Representation of Club """
