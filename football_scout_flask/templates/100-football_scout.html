@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HBNB - Football Scout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/4-common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/6-filters.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/8-places.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+        </div>
+        <h1>FOOTBALL_SCOUT - Football Scout</h1>
+    </header>
+    <section class="filters">
+        <h3>Players</h3>
+        <div class="filter">
+            <h4>&nbsp;</h4>
+            <ul>
+                {% for player in players %}
+                    <li>{{ player.first_name }} {{ player.last_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h3>Comments</h3>
+        <div class="filter">
+            <h4>&nbsp;</h4>
+            <ul>
+                {% for comment in comments %}
+                    <li>{{ comment.text }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h3>Scouts</h3>
+        <div class="filter">
+            <h4>&nbsp;</h4>
+            <ul>
+                {% for scout in scouts %}
+                    <li>{{ scout.first_name }} {{ scout.last_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h3>Clubs</h3>
+        <div class="filter">
+            <h4>&nbsp;</h4>
+            <ul>
+                {% for club in clubs %}
+                    <li>{{ club.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 HBNB - Football Scout</p>
+    </footer>
+</body>
+</html>
+

@@ -3,7 +3,16 @@
 initialize the models package
 """
 
+from dotenv import load_dotenv
 from os import getenv
+
+# Load environment variables from .env
+load_dotenv()
+
+# Access the variables
+FOOTBALL_SCOUT_ENV = getenv("FOOTBALL_SCOUT_ENV")
+FOOTBALL_SCOUT_TYPE_STORAGE = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
+
 # from models.base_model import BaseModel, Base
 # from models.club import Club
 # from models.location import Location

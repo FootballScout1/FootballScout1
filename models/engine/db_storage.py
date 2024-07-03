@@ -3,6 +3,8 @@
 Contains the class DBStorage
 """
 
+from dotenv import load_dotenv
+
 # import models
 # from models import storage
 from models.base_model import BaseModel, Base
@@ -20,6 +22,11 @@ from os import getenv
 # import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+
+load_dotenv()
+
+FOOTBALL_SCOUT_ENV = getenv("FOOTBALL_SCOUT_ENV")
+FOOTBALL_SCOUT_TYPE_STORAGE = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 
 classes = {"Club": Club, "Player": Player, "Scout": Scout,
            "Comment": Comment, "Like": Like,
