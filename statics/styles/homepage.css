@@ -35,7 +35,11 @@ header {
 }
 
 nav {
+	padding-top: 30px;
 	grid-area: nav;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 footer {
@@ -44,4 +48,68 @@ footer {
 
 main {
 	grid-area: content;
+}
+
+.nav-container .home{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.nav-container .notifications{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.nav-container .lists-and-reports{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.nav-container .add-post{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.nav-container .home{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.account{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.user-info{
+	background-color: green;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid skyblue;
+}
+
+.input-field{
+        font-size: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        height: 50px;
+        width: 100%;
+        padding: 0 10px 0 45px;
+        border: none;
+        border-radius: 30px;
+        outline: none;
+        transition: .2s ease;
+		margin-top: 30px;
+		margin-bottom: 40px;
 }
