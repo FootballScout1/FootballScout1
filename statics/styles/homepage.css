@@ -145,3 +145,14 @@ main {
 .card{
 	border-color: rgba(0, 0, 0, 0.8);
 }
+
+main .lead-post{
+	margin-top: 10px;
+	width: 100%;
+	border: 1px solid red;
+}
+
+.lead-post{
+	display: flex;
+	justify-content: center;
+}
