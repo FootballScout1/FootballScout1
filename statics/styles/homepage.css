@@ -143,6 +143,28 @@ main .lead-post{
 }
 
 .lead-post{
+	margin-top: 20px;
+	margin-bottom: 20px;
 	display: flex;
+	flex-direction: row;
+	width: 100%;
 	justify-content: center;
+}
+
+.lead-post .pfp-container{
+	width: 200px;
+	border: 1px solid green;
+}
+
+.lead-post .post-body{
+	display: flex;
+	flex-direction: column;
+	flex-basis: 3fr;
+	border: 1px solid green;
+}
+
+.lead-post .post-body .reactions {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
