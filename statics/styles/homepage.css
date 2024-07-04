@@ -19,7 +19,7 @@ body {
 		'nav content sidebar'
 		'footer footer footer';
 
-	grid-template-columns: 1fr 4fr 1fr;
+	grid-template-columns: 1fr 800px 1fr;
 	grid-template-rows: 80px 1fr 70px;
 }
 
@@ -60,23 +60,23 @@ main {
 	border: 1px solid red;
 }
 
+.nav-container .home,
+.nav-container .lists,
+.nav-container .reports,
+.account,
 .nav-container .notifications{
 	color: #fff;
 	padding: 20px;
 	border: 1px solid red;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
 }
 
-.nav-container .lists{
-	color: #fff;
-	padding: 20px;
-	border: 1px solid red;
-}
+.account,
+.nav-container i { font-size: 1.4rem; }
+.nav-container strong { font-size: 1.3rem; }
 
-.nav-container .reports{
-	color: #fff;
-	padding: 20px;
-	border: 1px solid red;
-}
 
 .nav-container .add-post{
 	color: #fff;
@@ -84,11 +84,7 @@ main {
 	border: 1px solid red;
 }
 
-.account{
-	color: #fff;
-	padding: 20px;
-	border: 1px solid red;
-}
+.nav-container .add-post button { font-size: 20px; }
 
 /* .user-info{
 	background-color: green;
