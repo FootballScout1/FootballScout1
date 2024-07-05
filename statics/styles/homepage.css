@@ -94,6 +94,20 @@ main {
         gap: 1rem;
 }
 
+
+.nav-container .home,
+.nav-container .lists,
+.nav-container .reports,
+.account,
+.nav-container .notifications{
+        color: #fff;
+        padding: 20px;
+        border: 1px solid red;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+}
+
 .account,
 .nav-container i { font-size: 1.4rem; }
 .nav-container strong { font-size: 1.3rem; }
@@ -153,8 +167,25 @@ main {
 
 .card{
         border-color: rgba(0, 0, 0, 0.8);
-        /* width: 100%; */
+        width: 100%;
 }
+
+main::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+}
+
+main::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+}
+
+main::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scroll thumb */
+}
+
+main::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scroll thumb on hover */
+}
+
 
 main .lead-post{
         margin-top: 10px;
