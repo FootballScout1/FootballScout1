@@ -26,8 +26,8 @@ class Club(BaseModel, Base):
         #                       cascade="all, delete, delete-orphan")
         country = Column(String(128), nullable=False)
         league = Column(String(128), nullable=False)
-        players = relationship("Player", backref="club", cascade="all, delete, delete-orphan")
-        scouts = relationship("Scout", backref="club", cascade="all, delete, delete-orphan")
+        players = relationship("Player", back_populates="club", cascade="all, delete, delete-orphan")
+        scouts = relationship("Scout", back_populates="club", cascade="all, delete, delete-orphan")
         # scouts = relationship("Scout", secondary=scout_club, back_populates="clubs")
     else:
         name = ""

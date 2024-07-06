@@ -7,19 +7,19 @@ import json
 import models
 from models.base_model import BaseModel
 from models.club import Club
-from models.location import Location
+# from models.location import Location
 from models.player import Player
 from models.scout import Scout
-from models.skill import Skill
-from models.rating import Rating
+# from models.skill import Skill
+# from models.rating import Rating
 from models.comment import Comment
 from models.like import Like
 from models.post import Post
 from models.user import User
 
-classes = {"Club": Club, "BaseModel": BaseModel, "Location": Location,
-           "Player": Player, "Scout": Scout, "Skill": Skill,
-           "Rating": Rating, "Comment": Comment, "Like": Like,
+classes = {"Club": Club, "BaseModel": BaseModel,
+           "Player": Player, "Scout": Scout,
+           "Comment": Comment, "Like": Like,
            "Post": Post, "User": User}
 
 

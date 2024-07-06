@@ -169,7 +169,15 @@ class DBStorage:
 
         # return count
 
+        # if cls:
+        #    return len(self.all(cls))
+        # else:
+        #    return len(self.all())
+
         if cls:
-            return len(self.all(cls))
+            return self.__session.query(cls).count()
         else:
-            return len(self.all())
+            counts = {}
+            for _cls in [User, Club, Comment, Like, Player, Post, Scout]:
+                counts[_cls.__name__.lower()] = self.__session.query(_cls).count()
+            return counts
