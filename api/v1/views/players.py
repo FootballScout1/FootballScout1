@@ -5,16 +5,13 @@ View module for handling Player objects
 
 from flask import Flask, jsonify, request, abort
 from api.v1.views import app_views
-from models import storage, Player, Club
+from models import storage, Player
 
-@app_views.route('/clubs/<club_id>/players', methods=['GET'])
-def get_players(club_id):
-    """Retrieves the list of all Player objects of a Club"""
-    club = storage.get(Club, club_id)
-    if not club:
-        abort(404)
-    players = [player.to_dict() for player in club.players]
-    return jsonify(players), 200
+@app_views.route('/players', methods=['GET'])
+def get_players():
+    """Retrieves the list of all Player objects"""
+    players = storage.all(Player).values()
+    return jsonify([player.to_dict() for player in players])
 
 @app_views.route('/players/<player_id>', methods=['GET'])
 def get_player(player_id):
@@ -22,7 +19,7 @@ def get_player(player_id):
     player = storage.get(Player, player_id)
     if not player:
         abort(404)
-    return jsonify(player.to_dict()), 200
+    return jsonify(player.to_dict())
 
 @app_views.route('/players/<player_id>', methods=['DELETE'])
 def delete_player(player_id):
@@ -34,22 +31,17 @@ def delete_player(player_id):
     storage.save()
     return jsonify({}), 200
 
-@app_views.route('/clubs/<club_id>/players', methods=['POST'])
-def create_player(club_id):
-    """Creates a Player"""
-    club = storage.get(Club, club_id)
-    if not club:
-        abort(404)
+@app_views.route('/players', methods=['POST'])
+def create_player():
+    """Creates a Player object"""
+    if not request.get_json():
+        abort(400, description="Not a JSON")
     data = request.get_json()
-    if not data:
-        abort(400, 'Not a JSON')
-    if 'email' not in data or 'password' not in data:
-        abort(400, 'Missing email or password')
-    data['club_id'] = club_id
-    new_player = Player(**data)
-    storage.new(new_player)
-    storage.save()
-    return jsonify(new_player.to_dict()), 201
+    if 'name' not in data:
+        abort(400, description="Missing name")
+    player = Player(**data)
+    player.save()
+    return jsonify(player.to_dict()), 201
 
 @app_views.route('/players/<player_id>', methods=['PUT'])
 def update_player(player_id):
@@ -57,65 +49,13 @@ def update_player(player_id):
     player = storage.get(Player, player_id)
     if not player:
         abort(404)
+    if not request.get_json():
+        abort(400, description="Not a JSON")
     data = request.get_json()
-    if not data:
-        abort(400, 'Not a JSON')
-
-    # Update attributes
+    ignore_keys = ['id', 'created_at', 'updated_at']
     for key, value in data.items():
-        if key not in ['id', 'created_at', 'updated_at']:
+        if key not in ignore_keys:
             setattr(player, key, value)
-    
-    # Specific check for club_id to ensure it exists
-    if 'club_id' in data:
-        club_id = data['club_id']
-        club = storage.get(Club, club_id)
-        if not club:
-            abort(400, 'Invalid club_id')
-        player.club_id = club_id
-
-    storage.save()
+    player.save()
     return jsonify(player.to_dict()), 200
 
-@app_views.route('/players/<player_id>/club', methods=['GET'])
-def get_player_club(player_id):
-    """Retrieves the list of all clubs associated with a Player"""
-    player = storage.get(Player, player_id)
-    if not player:
-        abort(404)
-
-    # if not player.club:
-    #    abort(404, 'Club not found for this player')
-
-    # club_info = {
-    #    'club_name': player.club.name,
-    #    'country': player.club.country,
-    #    'league': player.club.league
-        # More fields later
-    # }
-    # clubs = [club.to_dict() for club in player.clubs]
-    # return jsonify(club_info), 200
-
-    club = storage.get(Club, player.club_id)
-    if not club:
-        abort(404)
-
-    return jsonify(club.to_dict()), 200
-
-@app_views.route('/clubs/<club_id>', methods=['GET'])
-def get_club(club_id):
-    """Retrieves a Club object"""
-    club = storage.get(Club, club_id)
-    if not club:
-        abort(404)
-    return jsonify(club.to_dict()), 200
-
-@app_views.route('/clubs/<club_id>', methods=['DELETE'])
-def delete_club(club_id):
-    """Deletes a Club object"""
-    club = storage.get(Club, club_id)
-    if not club:
-        abort(404)
-    club.delete()
-    storage.save()
-    return jsonify({}), 200
