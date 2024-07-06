@@ -168,7 +168,7 @@ main::-webkit-scrollbar {
 }
 
 main::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Color of the track */
+    background: black; /* Color of the track */
 }
 
 main::-webkit-scrollbar-thumb {
@@ -183,7 +183,8 @@ main::-webkit-scrollbar-thumb:hover {
 main .lead-post{
         margin-top: 10px;
         width: 100%;
-        border-bottom: 1px solid red;
+        /* border-bottom: 1px solid #808080; */
+        border-bottom: 1px solid rgba(77, 77, 77, 0.5);
 }
 
 .lead-post{
@@ -197,7 +198,7 @@ main .lead-post{
 
 .lead-post .pfp-container{
         width: 200px;
-        border: 1px solid green;
+        /* border: 1px solid green; */
 }
 
 .pfp-container .pfp{
@@ -205,7 +206,7 @@ main .lead-post{
         height: 60px;
         border-radius: 50%;
         overflow: hidden;
-        border: 1px solid red;
+        border: none;
         margin-left: 10px;
         margin-top: 10px;
 }
@@ -214,7 +215,7 @@ main .lead-post{
         display: flex;
         flex-direction: column;
         flex-basis: 3fr;
-        border: 1px solid green;
+        /* border: 1px solid green; */
         justify-self: center;
         align-self: center;
         padding-left: 10px;
@@ -249,9 +250,13 @@ main .lead-post{
         display: flex;
         flex-direction: row;
         flex-grow: 1;
-        flex-basis: 0;
+        /* flex-basis: 0; */
         max-width: 14.28%;
-        border: 1px solid red;
+        /* border: 1px solid red; */
         justify-content: space-evenly;
-        /* padding-bottom: -115px; */
+        align-self: center;
 }
+
+.lead-post .post-body .reactions > div p { align-self: center; }
+
+.lead-post .post-body .reactions > div i { align-self: center; margin-bottom: 15px; }
