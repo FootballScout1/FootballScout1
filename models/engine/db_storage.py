@@ -146,7 +146,8 @@ class DBStorage:
         if cls not in classes.values():
             return None
 
-        all_cls = storage.all(cls)
+        # all_cls = storage.all(cls)
+        all_cls = self.all(cls)
         for value in all_cls.values():
             if (value.id == id):
                 return value
@@ -157,13 +158,18 @@ class DBStorage:
         """
         count the number of objects in storage
         """
-        all_class = classes.values()
+        # all_class = classes.values()
 
-        if not cls:
-            count = 0
-            for clas in all_class:
-                count += len(storage.all(clas).values())
+        # if not cls:
+        #    count = 0
+        #    for clas in all_class:
+        #        count += len(storage.all(clas).values())
+        # else:
+        #    count = len(storage.all(cls).values())
+
+        # return count
+
+        if cls:
+            return len(self.all(cls))
         else:
-            count = len(storage.all(cls).values())
-
-        return count
+            return len(self.all())

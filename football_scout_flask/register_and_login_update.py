@@ -31,7 +31,8 @@ def login():
 # Route for the welcome page
 @app.route('/welcome')
 def welcome():
-    return 'Welcome to Football Scout!'
+    # return 'Welcome to Football Scout!'
+    return render_template('homepage.html')
 
 # Route for rendering the registration page
 @app.route('/register', methods=['GET'])
