@@ -1,13 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 * {
         box-sizing: border-box;
         padding: 0;
         margin: 0;
         background: black;
+        font-family: 'Nunito', sans-serif;
 }
 
 body {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 16px;
+        /* font-family: 'Open Sans', sans-serif; */
+        /* font-size: 18px; */
         height: 100vh;
         width: 80%;
         margin-left: auto;
@@ -244,6 +246,13 @@ main .lead-post{
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
+}
+
+.lead-post .post-body .post-content{
+        margin-top: 10px;
+        font-size: 18px;
+        justify-content: center;
+        line-height: 1.5em;
 }
 
 .lead-post .post-body .reactions > div{
