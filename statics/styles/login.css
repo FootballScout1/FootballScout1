@@ -35,8 +35,8 @@ body{
 }
 .nav-logo p{
         color: white;
-        font-size: 25px;
-        font-weight: 600;
+        font-size: 35px;
+        font-weight: 800;
 }
 .nav-menu ul{
         display: flex;
