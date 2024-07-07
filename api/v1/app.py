@@ -9,10 +9,15 @@ from api.v1.views import app_views
 from os import getenv
 from dotenv import load_dotenv
 from werkzeug.exceptions import NotFound
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Allow CORS for all domains
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 app.register_blueprint(app_views)
 
 
