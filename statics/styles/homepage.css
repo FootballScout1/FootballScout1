@@ -87,7 +87,7 @@ main {
 .nav-container .home{
         color: #fff;
         padding: 20px;
-        border: 1px solid red;
+        /* border: 1px solid red; */
 }
 
 .nav-container .home,
@@ -104,8 +104,15 @@ main {
         gap: 1rem;
 }
 
-.nav-container .home > *:hover{
-        background: linear-gradient(to right, #999999, #fff);
+.nav-container .home:hover,
+.nav-container .lists:hover,
+.nav-container .reports:hover,
+.account:hover,
+.nav-container .notifications:hover{
+        background-color: rgba(48, 48, 48, 0.5);
+        border-top: 1px solid rgba(204, 204, 204, 0.3);
+        border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+        border-right: 5px solid rgba(204, 204, 204, 0.5);
 }
 
 .account,
@@ -225,13 +232,12 @@ main .lead-post{
         flex-direction: column;
         flex-basis: 3fr;
         border: 1px solid green;
-        border-color: linear-gradient();
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
         border-bottom-left-radius: 20px;
         justify-self: center;
         align-self: center;
-        padding: 10px 20px 10px;
+        padding: 0px 20px 0px;
 }
 
 .lead-post .post-body .post-username {
