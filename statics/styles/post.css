@@ -259,6 +259,8 @@ main .lead-post{
         justify-content: space-between;
 }
 
+.lead-post ~ .lead-post .post-body .reactions { display: none; }
+
 .lead-post .post-body .post-content{
         margin-top: 10px;
         font-size: 18px;
