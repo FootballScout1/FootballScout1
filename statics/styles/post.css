@@ -102,6 +102,7 @@ main {
         display: flex;
         align-items: center;
         gap: 1rem;
+        text-decoration: none;
 }
 
 .nav-container .home:hover,
@@ -154,6 +155,11 @@ main {
         align-content: center;
         justify-content: center;
         font-size: 20px;
+}
+
+.btn-create:hover{
+        border: 2px double #CCCCCC;
+        background: linear-gradient(to bottom right, #C33764, #1D2671);
 }
 
 .card-body-btns{
@@ -284,6 +290,11 @@ main .lead-post{
         border: 1px solid red;
         justify-content: space-evenly;
         align-self: center;
+}
+
+.lead-post .post-body .reactions > div:last-of-type {
+        padding-top: 5px;
+        padding-bottom: 5px;
 }
 
 .lead-post .post-body .reactions > div:hover{
