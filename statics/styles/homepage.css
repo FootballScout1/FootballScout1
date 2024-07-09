@@ -303,3 +303,5 @@ main .lead-post{
 .lead-post .post-body .reactions > div p { align-self: center; position: relative; top: 50%; translate: 0 25%;}
 
 .lead-post .post-body .reactions > div i { align-self: center; position: relative; }
+
+a { text-decoration: none; color: #FFF; }
