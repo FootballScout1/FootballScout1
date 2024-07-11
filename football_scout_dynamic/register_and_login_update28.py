@@ -37,6 +37,10 @@ db_session = Session()
 # Flask-Dance Google OAuth configuration
 google_bp = make_google_blueprint(client_id=app.config['GOOGLE_CLIENT_ID'],
                                   client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+                                  scope=[
+                                      "openid",
+                                      "https://www.googleapis.com/auth/userinfo.email",
+                                      "https://www.googleapis.com/auth/userinfo.profile"],
                                   redirect_to='google_login')
 
 app.register_blueprint(google_bp, url_prefix='/google_login')
@@ -56,7 +60,7 @@ def generate_cache_id():
 @app.route('/login', methods=['GET'])
 def login_page():
     cache_id = generate_cache_id()
-    return render_template('login_update7.html', cache_id=cache_id)
+    return render_template('login_update10.html', cache_id=cache_id)
 
 # Route for handling the login form submission (password-based)
 @app.route('/login', methods=['POST'])
@@ -105,13 +109,13 @@ def homepage():
         "lists": ["List 1", "List 2", "List 3"],
         "reports": ["Report 1", "Report 2", "Report 3"]
     }
-    return render_template('homepage6.html', content=content, cache_id=cache_id)
+    return render_template('homepage10.html', content=content, cache_id=cache_id)
 
 # Route for rendering the registration page
 @app.route('/register', methods=['GET'])
 def register_page():
     cache_id = generate_cache_id()
-    return render_template('register.html', cache_id=cache_id)
+    return render_template('register10.html', cache_id=cache_id)
 
 # Route for handling the registration form submission including sending email verification
 @app.route('/register', methods=['POST'])
@@ -147,7 +151,12 @@ def google_login():
 
     resp = google.get('/oauth2/v2/userinfo')
     assert resp.ok, resp.text
-    email = resp.json()['email']
+    print(resp.json())
+
+    email = resp.json().get('email')
+    if not email:
+        flash('Email not found in Google response', 'error')
+        return redirect(url_for('login_page'))
 
     user = db_session.query(User).filter_by(email=email).first()
 

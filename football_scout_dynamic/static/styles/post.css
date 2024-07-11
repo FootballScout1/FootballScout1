@@ -84,6 +84,12 @@ main {
         height: 100vh - 150px;
 }
 
+.nav-container .home{
+        color: #fff;
+        padding: 20px;
+        /* border: 1px solid red; */
+}
+
 .nav-container .home,
 .nav-container .lists,
 .nav-container .reports,
@@ -265,6 +271,8 @@ main .lead-post{
         justify-content: space-between;
 }
 
+.lead-post ~ .lead-post .post-body .reactions { display: none; }
+
 .lead-post .post-body .post-content{
         margin-top: 10px;
         font-size: 18px;
@@ -303,5 +311,3 @@ main .lead-post{
 .lead-post .post-body .reactions > div p { align-self: center; position: relative; top: 50%; translate: 0 25%;}
 
 .lead-post .post-body .reactions > div i { align-self: center; position: relative; }
-
-a { text-decoration: none; color: #FFF; }
