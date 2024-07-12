@@ -12,22 +12,23 @@ from models.scout import Scout
 from models.post import Post
 from models.like import Like
 from models.comment import Comment
+from hashlib import md5
 
 
-players_positions = Table('players_positions', Base.metadata,
-                          Column('player_id', ForeignKey('players.id'),
-                                 primary_key=True),
-                          Column('position_id', ForeignKey('positions.id'),
-                                 primary_key=True)
-                          )
+if storage_t == 'db':
+    players_positions = Table('players_positions', Base.metadata,
+                              Column('player_id', ForeignKey('players.id'),
+                                     primary_key=True),
+                              Column('position_id', ForeignKey('positions.id'),
+                                     primary_key=True)
+                              )
 
-
-scouts_players = Table('scouts_players', Base.metadata,
-                       Column('scout_id', ForeignKey('scouts.id'),
-                              primary_key=True),
-                       Column('player_id', ForeignKey('players.id'),
-                              primary_key=True)
-                       )
+    scouts_players = Table('scouts_players', Base.metadata,
+                           Column('scout_id', ForeignKey('scouts.id'),
+                                  primary_key=True),
+                           Column('player_id', ForeignKey('players.id'),
+                                  primary_key=True)
+                           )
 
 
 class Player(BaseModel, Base):
@@ -42,7 +43,7 @@ class Player(BaseModel, Base):
         second_name = Column(String(60), nullable=False)
         height = Column(Integer, nullable=False, default=0)
         weight = Column(Integer, nullable=False, default=0)
-        date_of_birth = Column(DateTime, nullable=False)
+        date_of_birth = Column(DateTime, nullable=True)
         club_id = Column(Integer, ForeignKey('clubs.id'), nullable=False)
 
         positions = relationship('Position', secondary=players_positions,
@@ -64,14 +65,23 @@ class Player(BaseModel, Base):
         height = 0
         weight = 0
         date_of_birth = ""
-        club_id = ""
+        club = ""
+
         positions = []
         scouts = []
         posts = []
         likes = []
         comments = []
 
-
     def __init__(self, *args, **kwargs):
         """initializes Like"""
         super().__init__(*args, **kwargs)
+
+        if kwargs.get("password"):
+            self.password = md5(kwargs["password"].encode()).hexdigest()
+
+    def __setattr__(self, name, value):
+        """sets a password with md5 encryption"""
+        if name == "password":
+            value = md5(value.encode()).hexdigest()
+        super().__setattr__(name, value)

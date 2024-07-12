@@ -3,34 +3,28 @@
 Contains the class DBStorage
 """
 
-from dotenv import load_dotenv
-
-# import models
-# from models import storage
-from models.base_model import BaseModel, Base
+from models.base_model import Base, BaseModel
 from models.club import Club
-# from models.location import Location
+from models.country import Country
 from models.player import Player
 from models.scout import Scout
-# from models.skill import Skill
-# from models.rating import Rating
 from models.comment import Comment
 from models.like import Like
 from models.post import Post
 from models.user import User
+from models.position import Position
 from os import getenv
-# import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-load_dotenv()
 
 FOOTBALL_SCOUT_ENV = getenv("FOOTBALL_SCOUT_ENV")
 FOOTBALL_SCOUT_TYPE_STORAGE = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 
-classes = {"Club": Club, "Player": Player, "Scout": Scout,
-           "Comment": Comment, "Like": Like,
-           "Post": Post, "User": User}
+classes = {
+    "Club": Club, "Player": Player, "Scout": Scout,
+    "Comment": Comment, "Like": Like, "Position": Position,
+    "Post": Post, "User": User, "Country": Country,
+}
 
 
 class DBStorage:
@@ -54,7 +48,7 @@ class DBStorage:
         # self.__engine = create_engine(sqlite3:///test.db)
         # if FBS_ENV == "test":
         #    Base.metadata.drop_all(self.__engine)
-        
+
         FOOTBALL_SCOUT_ENV = getenv('FOOTBALL_SCOUT_ENV')
         if FOOTBALL_SCOUT_ENV == 'test':
             FOOTBALL_SCOUT_MYSQL_USER = getenv('FOOTBALL_SCOUT_TEST_MYSQL_USER')
@@ -178,6 +172,6 @@ class DBStorage:
             return self.__session.query(cls).count()
         else:
             counts = {}
-            for _cls in [User, Club, Comment, Like, Player, Post, Scout]:
+            for _cls in [User, Club, Comment, Like, Player, Post, Scout, Country, Position]:
                 counts[_cls.__name__.lower()] = self.__session.query(_cls).count()
             return counts

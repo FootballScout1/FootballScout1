@@ -3,9 +3,7 @@
 import models
 from models import storage_t
 from models.base_model import BaseModel, Base
-from os import getenv
-import sqlalchemy
-from sqlalchemy import Column, String  # ForeignKey
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
 

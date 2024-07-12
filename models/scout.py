@@ -5,13 +5,13 @@ Module defines the Scout class
 """
 from models import storage_t
 from models.base_model import BaseModel, Base
-import sqlalchemy
-from sqlalchemy import Column, DateTime, String, ForeignKey, Integer, Table
+from sqlalchemy import Column, DateTime, String, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
 from models.player import Player, scouts_players
 from models.post import Post
 from models.like import Like
 from models.comment import Comment
+from hashlib import md5
 
 
 class Scout(BaseModel, Base):
@@ -38,7 +38,8 @@ class Scout(BaseModel, Base):
         password = ""
         first_name = ""
         second_name = ""
-        club_id = ""
+        club = ""
+
         players = []
         likes = []
         comments = []
@@ -49,3 +50,12 @@ class Scout(BaseModel, Base):
         Initializes Scout
         """
         super().__init__(*args, **kwargs)
+
+        if kwargs.get("password"):
+            self.password = md5(kwargs["password"].encode()).hexdigest()
+
+    def __setattr__(self, name, value):
+        """sets a password with md5 encryption"""
+        if name == "password":
+            value = md5(value.encode()).hexdigest()
+        super().__setattr__(name, value)

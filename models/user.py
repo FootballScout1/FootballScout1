@@ -1,11 +1,8 @@
 #!/usr/bin/python3
 """ holds class User """
 
-# import models
 from models import storage_t
 from models.base_model import BaseModel, Base
-# from os import getenv
-import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from hashlib import md5
@@ -19,13 +16,18 @@ class User(BaseModel, Base):
         password = Column(String(255), nullable=False)
         first_name = Column(String(255), nullable=True)
         last_name = Column(String(255), nullable=True)
-        comments = relationship("Comment", backref="user", cascade="all, delete, delete-orphan")
-        likes = relationship("Like", backref="user", cascade="all, delete, delete-orphan")
+        comments = relationship("Comment", backref="user",
+                                cascade="all, delete, delete-orphan")
+        likes = relationship("Like", backref="user",
+                             cascade="all, delete, delete-orphan")
     else:
         email = ""
         password = ""
         first_name = ""
         last_name = ""
+
+        comments = []
+        likes = []
 
     def __init__(self, *args, **kwargs):
         """initializes user"""
