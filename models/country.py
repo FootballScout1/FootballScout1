@@ -1,26 +1,23 @@
 #!/usr/bin/python
-""" holds class Location"""
-# import models
+""" holds class Country"""
 from models import storage_t
 from models.base_model import BaseModel, Base
-from os import getenv
-import sqlalchemy
-from sqlalchemy import Column, String  # ForeignKey
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref
 
 
-class Location(BaseModel, Base):
+class Country(BaseModel, Base):
     """Representation of Location """
     if storage_t == "db":
-        __tablename__ = 'locations'
-        # club_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-        name = Column(String(128), nullable=False)
+        __tablename__ = 'countries'
+        name = Column(String(60), nullable=False)
         clubs = relationship("Club",
-                             backref="location",
+                             backref=backref("country"),
                              cascade="all, delete, delete-orphan")
     else:
-        # club_id = ""
         name = ""
+        clubs = []
 
     def __init__(self, *args, **kwargs):
         """initializes location"""
