@@ -5,13 +5,12 @@ Module for the Player class
 """
 from models import storage_t
 from models.base_model import BaseModel, Base
-import sqlalchemy
 from sqlalchemy import Column, DateTime, String, ForeignKey, Integer, Table
 from sqlalchemy.orm import backref, relationship
-from models.scout import Scout
-from models.post import Post
-from models.like import Like
-from models.comment import Comment
+# from models.scout import Scout
+# from models.post import Post
+# from models.like import Like
+# from models.comment import Comment
 from hashlib import md5
 
 
@@ -43,7 +42,8 @@ class Player(BaseModel, Base):
         second_name = Column(String(60), nullable=False)
         height = Column(Integer, nullable=False, default=0)
         weight = Column(Integer, nullable=False, default=0)
-        date_of_birth = Column(DateTime, nullable=True)
+        # date_of_birth = Column(DateTime, nullable=True)
+        date_of_birth = Column(String(60), nullable=True)
         club_id = Column(Integer, ForeignKey('clubs.id'), nullable=False)
 
         positions = relationship('Position', secondary=players_positions,
@@ -65,7 +65,7 @@ class Player(BaseModel, Base):
         height = 0
         weight = 0
         date_of_birth = ""
-        club = ""
+        club_id = ""
 
         positions = []
         scouts = []

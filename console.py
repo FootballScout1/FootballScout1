@@ -1,32 +1,26 @@
 #!/usr/bin/env python3
 """ console """
 
-from dotenv import load_dotenv
-import os
-
-# Load environment variables from .env file
-load_dotenv()
-
 import cmd
 from datetime import datetime
-# import models
 from models import storage
 from models.base_model import BaseModel
+from models.country import Country
+from models.club import Club
+from models.position import Position
+from models.post import Post
 from models.comment import Comment
 from models.like import Like
-from models.player import Player
-# from models.rating import Rating
-# from models.skill import Skill
-from models.club import Club
-# from models.location import Location
-from models.post import Post
-from models.scout import Scout
 from models.user import User
+from models.player import Player
+from models.scout import Scout
 import shlex  # for splitting the line along spaces except in double quotes
 
-classes = {"BaseModel": BaseModel, "Comment": Comment, "Like": Like,
-           "Player": Player, "Club": Club,
-           "Post": Post, "Scout": Scout, "User": User}
+classes = {
+    "BaseModel": BaseModel, "Country": Country, "Club": Club,
+    "Player": Player, "Scout": Scout, "User": User, "Post": Post,
+    "Like": Like, "Comment": Comment, "Position": Position
+}
 
 
 class FootballScoutCommand(cmd.Cmd):

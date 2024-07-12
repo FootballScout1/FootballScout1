@@ -4,10 +4,9 @@ Contains class BaseModel
 """
 
 from datetime import datetime
+from models import storage_t
 # import models
-# from models import storage, storage_t
 from os import getenv
-import sqlalchemy
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
@@ -15,16 +14,13 @@ import uuid
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
 Base = object
-# if models.storage_t == "db":
-if getenv("FOOTBALL_SCOUT_TYPE_STORAGE") == "db":
+if storage_t == "db":
     Base = declarative_base()
-# else:
 
 
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
-    # if models.storage_t == "db":
-    if getenv("FOOTBALL_SCOUT_TYPE_STORAGE") == "db":
+    if storage_t == "db":
         __abstract__ = True
         id = Column(String(60), primary_key=True)
         created_at = Column(DateTime, default=datetime.utcnow)

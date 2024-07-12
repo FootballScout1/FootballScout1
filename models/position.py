@@ -5,7 +5,7 @@ Module defines class Position
 
 from models import storage_t
 from models.base_model import Base, BaseModel
-from models.player import Player, players_positions
+from models.player import players_positions
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 

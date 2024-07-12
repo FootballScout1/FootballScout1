@@ -10,6 +10,7 @@ class Like(BaseModel, Base):
     """Representation of Like"""
     if storage_t == 'db':
         __tablename__ = 'likes'
+        post_id = Column(String(60), ForeignKey('posts.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=True)
         player_id = Column(String(60), ForeignKey('players.id'), nullable=True)
         scout_id = Column(String(60), ForeignKey('scouts.id'), nullable=True)
@@ -21,6 +22,7 @@ class Like(BaseModel, Base):
         )
 
     else:
+        post_id = ""
         user_id = ""
         player_id = ""
         scout_id = ""

@@ -14,8 +14,8 @@ class User(BaseModel, Base):
         __tablename__ = 'users'
         email = Column(String(255), nullable=False)
         password = Column(String(255), nullable=False)
-        first_name = Column(String(255), nullable=True)
-        last_name = Column(String(255), nullable=True)
+        first_name = Column(String(255), nullable=False)
+        second_name = Column(String(255), nullable=False)
         comments = relationship("Comment", backref="user",
                                 cascade="all, delete, delete-orphan")
         likes = relationship("Like", backref="user",
@@ -24,7 +24,7 @@ class User(BaseModel, Base):
         email = ""
         password = ""
         first_name = ""
-        last_name = ""
+        second_name = ""
 
         comments = []
         likes = []

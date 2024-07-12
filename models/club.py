@@ -1,15 +1,12 @@
 #!/usr/bin/python3
 """ holds class Club"""
 from models.base_model import BaseModel, Base
-from models.player import Player
-from models.scout import Scout
-from models.country import Country
+# from models.player import Player
+# from models.scout import Scout
+# from models.country import Country
 from models import storage_t
-from os import getenv
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship, backref
-
-storage_t = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 
 
 class Club(BaseModel, Base):
@@ -25,7 +22,7 @@ class Club(BaseModel, Base):
                               cascade="all, delete, delete-orphan")
     else:
         name = ""
-        country = ""
+        country_id = ""
 
         players = []
         scouts = []

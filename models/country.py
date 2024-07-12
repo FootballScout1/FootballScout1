@@ -1,6 +1,5 @@
 #!/usr/bin/python
 """ holds class Country"""
-import models
 from models import storage_t
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String

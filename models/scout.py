@@ -7,10 +7,11 @@ from models import storage_t
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, DateTime, String, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
-from models.player import Player, scouts_players
-from models.post import Post
-from models.like import Like
-from models.comment import Comment
+from models.player import scouts_players
+# from models.player import Player, scouts_players
+# from models.post import Post
+# from models.like import Like
+# from models.comment import Comment
 from hashlib import md5
 
 
@@ -25,7 +26,7 @@ class Scout(BaseModel, Base):
         password = Column(String(60), nullable=False)
         first_name = Column(String(60), nullable=False)
         second_name = Column(String(60), nullable=False)
-        club_id = Column(Integer, ForeignKey('clubs.id'), nullable=False)
+        club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False)
 
         players = relationship('Player', secondary=scouts_players,
                                back_populates='scouts')
@@ -38,7 +39,7 @@ class Scout(BaseModel, Base):
         password = ""
         first_name = ""
         second_name = ""
-        club = ""
+        club_id = ""
 
         players = []
         likes = []
