@@ -9,3 +9,6 @@ from api.v1.views.users import *
 from api.v1.views.scouts import *
 from api.v1.views.clubs import *
 from api.v1.views.players_search import *
+from api.v1.views.posts import *
+from api.v1.views.likes import *
+from api.v1.views.comments import *

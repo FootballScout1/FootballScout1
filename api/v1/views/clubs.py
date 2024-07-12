@@ -7,6 +7,8 @@ from flask import jsonify, request, abort
 from api.v1.views import app_views
 from models import storage
 from models.club import Club
+from models.player import Player
+from models.scout import Scout
 
 @app_views.route('/clubs', methods=['GET'])
 def get_clubs():
@@ -60,3 +62,20 @@ def update_club(club_id):
     club.save()
     return jsonify(club.to_dict()), 200
 
+@app_views.route('/clubs/<club_id>/players', methods=['GET'])
+def get_players_in_club(club_id):
+    """Retrieves the list of all Player objects in a club"""
+    club = storage.get(Club, club_id)
+    if not club:
+        abort(404)
+    players = [player.to_dict() for player in club.players]
+    return jsonify(players)
+
+@app_views.route('/clubs/<club_id>/scouts', methods=['GET'])
+def get_scouts_in_club(club_id):
+    """Retrieves the list of all Scout objects in a club"""
+    club = storage.get(Club, club_id)
+    if not club:
+        abort(404)
+    scouts = [scout.to_dict() for scout in club.scouts]
+    return jsonify(scouts)

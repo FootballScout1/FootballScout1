@@ -5,7 +5,7 @@ View module for handling Player objects
 
 from flask import Flask, jsonify, request, abort
 from api.v1.views import app_views
-from models import storage, Player
+from models import storage, Player, Post
 
 @app_views.route('/players', methods=['GET'])
 def get_players():
@@ -59,3 +59,27 @@ def update_player(player_id):
     player.save()
     return jsonify(player.to_dict()), 200
 
+@app_views.route('/players/<player_id>/posts', methods=['GET'])
+def get_player_posts(player_id):
+    """Fetches all posts made by a specific player"""
+    player = storage.get(Player, player_id)
+    if not player:
+        abort(404)
+    posts = [post.to_dict() for post in player.posts]
+    return jsonify(posts)
+
+@app_views.route('/players/<player_id>/posts', methods=['POST'])
+def create_player_post(player_id):
+    """Creates a new post for a specific player"""
+    player = storage.get(Player, player_id)
+    if not player:
+        abort(404)
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    data = request.get_json()
+    if 'content' not in data:
+        abort(400, description="Missing content")
+    data['player_id'] = player_id
+    post = Post(**data)
+    post.save()
+    return jsonify(post.to_dict()), 201

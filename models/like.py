@@ -17,6 +17,8 @@ class Like(BaseModel, Base):
         player_id = Column(String(60), ForeignKey('players.id'), nullable=True)
         # player_id = Column(Integer, ForeignKey('players.sofifa_id', ondelete='CASCADE'), nullable=True)
         scout_id = Column(String(60), ForeignKey('scouts.id'), nullable=True)
+
+        post_id = Column(String(60), ForeignKey('posts.id'), nullable=False)
     else:
         video_id = ""
         user_id = ""

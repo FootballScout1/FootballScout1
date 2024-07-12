@@ -8,7 +8,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String #, ForeignKey
 from sqlalchemy.orm import relationship
-from models.scout_club import scout_club
+# from models.scout_club import scout_club
 
 storage_t = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 

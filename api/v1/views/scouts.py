@@ -5,7 +5,7 @@ View module for handling Scout objects
 
 from flask import Flask, jsonify, request, abort
 from api.v1.views import app_views
-from models import storage, Scout
+from models import storage, Scout, Player
 
 @app_views.route('/scouts', methods=['GET'])
 def get_scouts():
@@ -59,3 +59,39 @@ def update_scout(scout_id):
     scout.save()
     return jsonify(scout.to_dict()), 200
 
+@app_views.route('/scouts/<scout_id>/players', methods=['GET'])
+def get_scouted_players(scout_id):
+    """Retrieve the list of players being scouted by a specific scout"""
+    scout = storage.get(Scout, scout_id)
+    if not scout:
+        abort(404)
+    players = [player.to_dict() for player in scout.scouted_players]
+    return jsonify(players)
+
+@app_views.route('/scouts/<scout_id>/players/<player_id>', methods=['POST'])
+def start_scouting_player(scout_id, player_id):
+    """Start scouting a player (bookmark functionality)"""
+    scout = storage.get(Scout, scout_id)
+    if not scout:
+        abort(404)
+    player = storage.get(Player, player_id)
+    if not player:
+        abort(404)
+    if player not in scout.scouted_players:
+        scout.scouted_players.append(player)
+        scout.save()
+    return jsonify(scout.to_dict()), 200
+
+@app_views.route('/scouts/<scout_id>/players/<player_id>', methods=['DELETE'])
+def stop_scouting_player(scout_id, player_id):
+    """Stop scouting a player"""
+    scout = storage.get(Scout, scout_id)
+    if not scout:
+        abort(404)
+    player = storage.get(Player, player_id)
+    if not player:
+        abort(404)
+    if player in scout.scouted_players:
+        scout.scouted_players.remove(player)
+        scout.save()
+    return jsonify(scout.to_dict()), 200

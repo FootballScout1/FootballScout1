@@ -54,6 +54,34 @@ def update_user(user_id):
     if not request.get_json():
         abort(400, description="Not a JSON")
     data = request.get_json()
+    
+    # Upgrade user to scout or player
+    if 'role' in data:
+        role = data['role']
+        if role == 'scout':
+            # Check if user is already a scout
+            if not isinstance(user, Scout):
+                scout = Scout(**user.to_dict())
+                scout.save()
+                user.delete()
+                storage.save()
+                return jsonify(scout.to_dict()), 200
+            else:
+                return jsonify(user.to_dict()), 200
+        elif role == 'player':
+            # Check if user is already a player
+            if not isinstance(user, Player):
+                player = Player(**user.to_dict())
+                player.save()
+                user.delete()
+                storage.save()
+                return jsonify(player.to_dict()), 200
+            else:
+                return jsonify(user.to_dict()), 200
+        else:
+            abort(400, description="Invalid role")
+
+
     ignore_keys = ['id', 'email', 'created_at', 'updated_at']
     for key, value in data.items():
         if key not in ignore_keys:

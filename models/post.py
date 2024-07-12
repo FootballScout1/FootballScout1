@@ -15,6 +15,10 @@ class Post(BaseModel, Base):
         __tablename__ = 'posts'
         video_link = Column(String(255), nullable=True)
         comments = relationship("Comment", backref="post", cascade="all, delete, delete-orphan")
+
+        player_id = Column(String(60), ForeignKey('players.id'), nullable=False)
+        comments = relationship('Comment', backref='post', cascade='all, delete-orphan')
+        likes = relationship('Like', backref='post', cascade='all, delete-orphan')
     else:
         video_link = ""
 
