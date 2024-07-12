@@ -7,3 +7,5 @@ models/rating.py
 models/skill.py
 ../.gitignore
 static_files/
+config.py
+.env

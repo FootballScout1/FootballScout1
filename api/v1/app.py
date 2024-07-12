@@ -41,5 +41,5 @@ def sample_route():
 if __name__ == "__main__":
     host = getenv('FOOTBALL_SCOUT_API_HOST', '0.0.0.0')
     port = int(getenv('FOOTBALL_SCOUT_API_PORT', 5000))
-    app.run(host=host, port=port, threaded=True)
+    app.run(host=host, port=port, threaded=True, debug=True)
 

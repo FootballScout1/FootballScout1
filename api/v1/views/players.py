@@ -3,7 +3,7 @@
 View module for handling Player objects
 """
 
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, make_response
 from api.v1.views import app_views
 from models import storage, Player, Post
 
@@ -32,16 +32,42 @@ def delete_player(player_id):
     return jsonify({}), 200
 
 @app_views.route('/players', methods=['POST'])
+# def create_player():
+#    """Creates a Player object"""
+#    if not request.get_json():
+#        abort(400, description="Not a JSON")
+#    data = request.get_json()
+#    if 'name' not in data:
+#        abort(400, description="Missing name")
+#    player = Player(**data)
+#    player.save()
+#    return jsonify(player.to_dict()), 201
 def create_player():
-    """Creates a Player object"""
-    if not request.get_json():
-        abort(400, description="Not a JSON")
-    data = request.get_json()
-    if 'name' not in data:
-        abort(400, description="Missing name")
-    player = Player(**data)
-    player.save()
-    return jsonify(player.to_dict()), 201
+    """Creates a new Player"""
+    if not request.json:
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+
+    # Ensure required fields are present
+    required_fields = ["email", "password", "first_name", "second_name"]
+    for field in required_fields:
+        if field not in request.json:
+            return make_response(jsonify({"error": f"Missing {field}"}), 400)
+
+    player_data = {
+        "email": request.json.get("email"),
+        "password": request.json.get("password"),
+        "first_name": request.json.get("first_name"),
+        "second_name": request.json.get("second_name"),
+        "nationality": request.json.get("nationality", ""),
+        "position": request.json.get("position", ""),
+        "height": request.json.get("height", 0),
+        "weight": request.json.get("weight", 0),
+        "club_id": request.json.get("club_id", "")
+    }
+
+    new_player = Player(**player_data)
+    new_player.save()
+    return make_response(jsonify(new_player.to_dict()), 201)
 
 @app_views.route('/players/<player_id>', methods=['PUT'])
 def update_player(player_id):
