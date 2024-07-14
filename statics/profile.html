@@ -20,7 +20,7 @@
                         <div class="header-container">
                                 <div class="logo">
                                         <a href="homepage.html"
-                                        style="color: white; text-decoration: none;"><h1>Football Scout</h1></a>
+                                                style="color: white; text-decoration: none;"><h1>Football Scout</h1></a>
                                 </div>
                         </div>
                 </header>
@@ -43,16 +43,16 @@
                                         </div>
                                         <div class="general-settings">
                                                 <div class="fname-group">
-                                                        <label class="fname-label">Username</label>
+                                                        <label class="fname-label">First Name</label>
                                                         <input type="text" class="fname-input" value="john">
                                                 </div>
                                                 <div class="sname-group">
-                                                        <label class="sname-label">Name</label>
+                                                        <label class="sname-label">Second Name</label>
                                                         <input type="text" class="sname-input" value="doe">
                                                 </div>
                                                 <div class="email-group">
                                                         <label class="email-label">E-mail</label>
-                                                        <input type="text" class="email-input" value="johndoe@mail.com">
+                                                        <input type="email" class="email-input" value="johndoe@mail.com">
                                                 </div>
                                         </div>
                                         <div class="btn-container">
@@ -83,24 +83,24 @@
                                 <div class="account-settings-player" id="account-settings-player">
                                         <div class="general-settings">
                                                 <div class="club-group">
-                                                        <label class="club-label">Select your club</label>
-                                                        <input type="text" class="club-input" value="">
+                                                        <label for="club-input" class="club-label">Select your club</label>
+                                                        <input type="text" id="club-input" name="club" value="">
                                                 </div>
                                                 <div class="positions-group">
-                                                        <label class="positions-label">Select a maximum of 3 positions</label>
-                                                        <input type="text" class="positions-input" value="">
+                                                        <label for="positions-input" class="positions-label">Select a maximum of 3 positions</label>
+                                                        <input type="text" id="positions-input" name="positions" value="">
                                                 </div>
                                                 <div class="dob-group">
-                                                        <label class="dob-label">Date of Birth</label>
-                                                        <input type="text" class="dob-input" value="">
+                                                        <label for="dob-input" class="dob-label">Date of Birth</label>
+                                                        <input type="date" id="dob-input" name="date_of_birth" value="">
                                                 </div>
                                                 <div class="height-group">
-                                                        <label class="height-label">Height in cm</label>
-                                                        <input type="text" class="height-input" value="">
+                                                        <label for="height-input" class="height-label">Height in cm</label>
+                                                        <input type="number" id="height-input" name="height" value="">
                                                 </div>
                                                 <div class="weight-group">
-                                                        <label class="weight-label">Weight in kgs</label>
-                                                        <input type="text" class="weight-input" value="">
+                                                        <label for="weight-input" class="weight-label">Weight in kgs</label>
+                                                        <input type="number" id="weight-input" name="weight" value="">
                                                 </div>
                                         </div>
                                         <div class="btn-container">
@@ -130,8 +130,6 @@
                         }
                         $('.account-settings-navbar a').click(function(event) {
                                 event.preventDefault();
-                                // $('.account-settings-general a').removeClass("active");
-                                // $(this).addClass("active");
                                 var targetDivId = $(this).attr('href');
                                 hideAllSections();
                                 $(targetDivId).show();
