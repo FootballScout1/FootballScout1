@@ -25,14 +25,14 @@
                         </div>
                 </header>
                 <main>
-                        <div class="account-settings-navbar" style="border: 1px solid blue;">
+                        <div class="account-settings-navbar">
                                 <a href="#account-settings-general">General</a>
                                 <a href="#account-settings-password">Change Password</a>
-                                <a href="#account-settings-player">I am a scout</a>
-                                <a href="#account-settings-scout">I am a player</a>
+                                <a href="#account-settings-player">I am a player</a>
+                                <a href="#account-settings-scout">I am a scout</a>
                                 <!-- <a href="homepage.html">Home</a> -->
                         </div>
-                        <div class="account-settings" style="border:1px solid yellow">
+                        <div class="account-settings">
                                 <div class="account-settings-general" id="account-settings-general">
                                         <div class="pfp-container">
                                                 <div class="pfp-img"></div>
@@ -130,6 +130,8 @@
                         }
                         $('.account-settings-navbar a').click(function(event) {
                                 event.preventDefault();
+                                // $('.account-settings-general a').removeClass("active");
+                                // $(this).addClass("active");
                                 var targetDivId = $(this).attr('href');
                                 hideAllSections();
                                 $(targetDivId).show();

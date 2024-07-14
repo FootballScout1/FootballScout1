@@ -14,17 +14,33 @@ body {
         margin: 0 auto;
 }
 
-header{
+header {
+        grid-area: header;
+        position: sticky;
+        /* width: 100%; */
         height: 70px;
+        top: 0;
+        z-index: 1;
+        background-color: black;
+        color: #fff;
+        padding: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.8);
+}
+
+header .logo h1{
+        color: white;
+        font-size: 35px;
+        font-weight: 800;
 }
 
 main {
-        border: 2px solid red;
+        border: 1px solid rgba(0, 0, 0, 0.8);
         display: flex;
         /* height: 100vh - 130px; */
 }
 
 main .account-settings-navbar {
+        margin-top: 20px;
         width: 33%;
         display: flex;
         justify-content: top;
@@ -48,7 +64,6 @@ main .account-settings-navbar a:hover {
         background-color: rgba(48, 48, 48, 0.5);
         border-top: 1px solid rgba(204, 204, 204, 0.3);
         border-bottom: 1px solid rgba(204, 204, 204, 0.3);
-        border-right: 5px solid rgba(204, 204, 204, 0.5);
 }
 
 main .account-settings {
@@ -75,7 +90,8 @@ main .account-settings .account-settings-scout {
 main .account-settings .account-settings-general .pfp-container {
         display: flex;
         flex-direction: row;
-        padding: 30px;
+        padding: 10px 30px 0px 30px;
+        margin-bottom: 20px;
 }
 
 main .account-settings .account-settings-general .pfp-container .pfp-img{
@@ -134,4 +150,9 @@ main .account-settings .account-settings-general .pfp-container .pfp-selector{
         background: blue;
         border-radius: 10px;
         margin-left: 10px;
+}
+
+.account-settings-navbar a.active {
+        background-color: rgba(48, 48, 48, 0.5);
+        border: 1px solid white;
 }
