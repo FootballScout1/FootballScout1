@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+* {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        background: black;
+        font-family: 'Nunito', sans-serif;
+        color: white;
+}
+
+body {
+        background-color: black;
+        width: 60%;
+        margin: 0 auto;
+}
+
+header{
+        height: 70px;
+}
+
+main {
+        border: 2px solid red;
+        display: flex;
+        /* height: 100vh - 130px; */
+}
+
+main .account-settings-navbar {
+        width: 33%;
+        display: flex;
+        justify-content: top;
+        flex-direction: column;
+        font-size: 1.4rem;
+}
+
+main .account-settings-navbar a {
+        padding: 20px;
+        text-decoration: none;
+        color: white;
+        margin-bottom: 20px;
+        border: 1px solid rgba(77, 77, 77, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-decoration: none;
+}
+
+main .account-settings-navbar a:hover {
+        background-color: rgba(48, 48, 48, 0.5);
+        border-top: 1px solid rgba(204, 204, 204, 0.3);
+        border-bottom: 1px solid rgba(204, 204, 204, 0.3);
+        border-right: 5px solid rgba(204, 204, 204, 0.5);
+}
+
+main .account-settings {
+        width: 67%;
+        /* display: none; */
+}
+
+main .account-settings .account-settings-general {
+        display: flex;
+        flex-direction: column;
+        padding: 30px;
+        font-size: 18px;
+}
+main .account-settings .account-settings-player ,
+main .account-settings .account-settings-password ,
+main .account-settings .account-settings-scout {
+        display: flex;
+        flex-direction: column;
+        padding: 30px;
+        font-size: 18px;
+        display: none;
+}
+
+main .account-settings .account-settings-general .pfp-container {
+        display: flex;
+        flex-direction: row;
+        padding: 30px;
+}
+
+main .account-settings .account-settings-general .pfp-container .pfp-img{
+        background-image: url('../images/soccer-stadium-full-people.jpg');
+        height: 120px;
+        width: 120px;
+}
+
+main .account-settings .account-settings-general .pfp-container .pfp-selector{
+        border: 2px solid green;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        justify-content: center;
+        align-content: center;
+        margin-left: 50px;
+        padding: 0 60px;
+}
+
+.general-settings div {
+        display: flex;
+        flex-direction: column;
+        padding: 0 10px;
+        margin-bottom: 20px;
+}
+
+.general-settings .cpwd-group input,
+.general-settings .npwd-group input,
+.general-settings .rpwd-group input,
+.general-settings .fname-group input,
+.general-settings .sname-group input,
+.general-settings .email-group input{
+        padding: 10px 20px;
+        border-radius: 10px;
+        /* background: darkgray; */
+}
+
+.general-settings .cpwd-group label,
+.general-settings .npwd-group label,
+.general-settings .rpwd-group label,
+.general-settings .fname-group label,
+.general-settings .sname-group label,
+.general-settings .email-group label{
+        margin-bottom: 10px;
+}
+
+.btn-container {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px 10px;
+}
+
+.btn-container button {
+        width: 150px;
+        padding: 10px 0px;
+        background: blue;
+        border-radius: 10px;
+        margin-left: 10px;
+}
