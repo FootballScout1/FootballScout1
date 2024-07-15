@@ -18,16 +18,17 @@ storage.reload()
 # # Delay the import of model classes
 def init_models():
      """ Function to import models after setting storage_t """
-     global Club, Player, Scout, Comment, Like, Post, User, Position, Country
+     global Club, Player, Scout, Comment, Like, Post, User, Position, Country, UserRoleEnum
      from models.country import Country
      from models.club import Club
      from models.position import Position
      from models.post import Post
      from models.comment import Comment
      from models.like import Like
-     from models.user import User
      from models.player import Player
      from models.scout import Scout
+     from models.user import User
+     from models.user_role_enum import UserRoleEnum
 #
 #
 init_models()

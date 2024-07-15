@@ -21,7 +21,7 @@ class Like(BaseModel, Base):
         __table_args__ = (
             CheckConstraint('user_id IS NOT NULL OR \
             player_id IS NOT NULL OR scout_id IS NOT NULL',
-                            name='check_at_least_one_id'),
+                            name='check_at_least_one_like_id'),
         )
 
     else:
@@ -33,3 +33,10 @@ class Like(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes Like"""
         super().__init__(*args, **kwargs)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        like_dict = super().to_dict()
+        if "_sa_instance_state" in like_dict:
+            del like_dict["_sa_instance_state"]
+        return like_dict

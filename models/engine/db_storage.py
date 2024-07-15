@@ -28,8 +28,19 @@ class DBStorage:
         #     .format(user, password, hostname, database),
         #     pool_pre_ping=True, echo=False
         # )
-        db = "sqlite:///footDB.db"
-        self.__engine = create_engine(db, pool_pre_ping=True)
+        # db = "sqlite:///footDB.db"
+        # self.__engine = create_engine(db, pool_pre_ping=True)
+
+        user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
+        password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
+        host = getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')
+        database = getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')
+
+        self.__engine = create_engine(
+            f"mysql+mysqldb://{user}:{password}@{host}/{database}",
+            pool_pre_ping=True,
+            echo=False
+        )
 
         if _env == 'test':
             Base.metadata.drop_all(bind=self.__engine)
@@ -46,17 +57,71 @@ class DBStorage:
         from models.like import Like
         from models.position import Position
 
-        _classes = [Country, Club, User, Player, Post, Comment, Like, Position, Scout]
-        all_obj = {}
-        if self.__session is None:
-            self.reload()
-        if cls:
-            for obj in self.__session.query(cls):
-                all_obj[obj.__class__.__name__ + "." + obj.id] = obj
-        else:
-            for model in _classes:
-                for obj in self.__session.query(model):
-                    all_obj[obj.__class__.__name__ + "." + obj.id] = obj
+        #  _classes = [Country, Club, User, Player, Post, Comment, Like, Position, Scout]
+        
+        _classes = {
+            'Country': Country, 'Club': Club, 'User': User,
+            'Player': Player, 'Scout': Scout, 'Post': Post,
+            'Comment': Comment, 'Like': Like, 'Position': Position
+        }
+
+        if cls is None:
+            result = {}
+            for class_name, class_type in _classes.items():
+                for obj in self.__session.query(class_type).all():
+                    key = f"{class_name}.{obj.id}"
+                    result[key] = obj
+            return result
+
+        if isinstance(cls, str):
+            cls = _classes.get(cls)
+
+        if cls is None:
+            raise ValueError(f"Class {cls} not found in _classes dictionary")
+
+        result = {}
+        for obj in self.__session.query(cls).all():
+            key = f"{cls.__name__}.{obj.id}"
+            result[key] = obj
+
+        return result
+
+        # all_obj = {}
+        # if self.__session is None:
+        #    self.reload()
+        # if cls:
+
+            # if cls.__name__ in _classes:
+            #    all_obj = {obj.__class__.__name__ + "." + obj.id: obj for obj in self.__session.query(_classes[cls.__name__]).all()}
+        # else:
+        #    for model in _classes.values():
+        #        for obj in self.__session.query(model).all():
+        #            all_obj[obj.__class__.__name__ + "." + obj.id] = obj
+
+
+            # Ensure cls is an SQLAlchemy model
+            # if cls in _classes:
+            #    for obj in self.__session.query(cls).all():
+            #        all_obj[f"{cls.__name__}.{obj.id}"] = obj
+            #        return self.__session.query(cls).all()
+            #else:
+            #    return {}
+
+
+            # for obj in self.__session.query(cls):
+            #    all_obj[obj.__class__.__name__ + "." + obj.id] = obj
+        # else:
+        #    for model in _classes:
+        #        for obj in self.__session.query(model):
+        #            all_obj[obj.__class__.__name__  + "." + obj.id] = obj
+        #            all_obj[f"{model.__name__}.{obj.id}"] = obj
+            
+            # for obj in self.__session.query(cls).all():
+            #    all_obj[f"{cls.__name__}.{obj.id}"] = obj
+        # else:
+        #    for model in _classes:
+        #        for obj in self.__session.query(model).all():
+        #            all_obj[f"{model.__name__}.{obj.id}"] = obj
 
         return (all_obj)
 
@@ -156,3 +221,7 @@ class DBStorage:
             count = len(storage.all(cls).values())
 
         return count
+
+    def rollback(self):
+        """Rollback the current session."""
+        self.__session.rollback()

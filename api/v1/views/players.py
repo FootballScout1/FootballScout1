@@ -48,7 +48,7 @@ def create_player():
         return make_response(jsonify({"error": "Not a JSON"}), 400)
 
     # Ensure required fields are present
-    required_fields = ["email", "password", "first_name", "second_name"]
+    required_fields = ["email", "password", "first_name", "last_name"]
     for field in required_fields:
         if field not in request.json:
             return make_response(jsonify({"error": f"Missing {field}"}), 400)
@@ -57,7 +57,7 @@ def create_player():
         "email": request.json.get("email"),
         "password": request.json.get("password"),
         "first_name": request.json.get("first_name"),
-        "second_name": request.json.get("second_name"),
+        "last_name": request.json.get("last_name"),
         "nationality": request.json.get("nationality", ""),
         "position": request.json.get("position", ""),
         "height": request.json.get("height", 0),

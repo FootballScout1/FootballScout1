@@ -22,3 +22,10 @@ class Country(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes location"""
         super().__init__(*args, **kwargs)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        country_dict = super().to_dict()
+        if "_sa_instance_state" in country_dict:
+            del country_dict["_sa_instance_state"]
+        return country_dict

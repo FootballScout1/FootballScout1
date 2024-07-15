@@ -5,7 +5,11 @@ View module for handling Scout objects
 
 from flask import Flask, jsonify, request, abort
 from api.v1.views import app_views
-from models import storage, Scout, Player
+from models import storage, Scout, Player, User
+
+from datetime import datetime  # Import datetime module
+import uuid  # Import uuid module for generating UUIDs
+from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 
 @app_views.route('/scouts', methods=['GET'])
 def get_scouts():
@@ -36,12 +40,81 @@ def create_scout():
     """Creates a Scout object"""
     if not request.get_json():
         abort(400, description="Not a JSON")
+    # data = request.get_json()
+    # if 'first_name' not in data or 'last_name' not in data:
+    #    abort(400, description="Missing first_name or last_name")
+    # if 'name' not in data:
+        # abort(400, description="Missing name")
+    # scout = Scout(**data)
+    # scout.save()
+    # return jsonify(scout.to_dict()), 201
+
     data = request.get_json()
-    if 'name' not in data:
-        abort(400, description="Missing name")
-    scout = Scout(**data)
-    scout.save()
-    return jsonify(scout.to_dict()), 201
+
+    # Check for required fields
+    # required_fields = ['club_id', 'first_name', 'last_name', 'email', 'password']
+    required_fields = ['user_id', 'club_id']  # Add user_id to link to existing user
+    for field in required_fields:
+        if field not in data:
+            abort(400, description=f"Missing {field}")
+
+    # Generate a new unique ID for the scout if needed
+    # scout_id = data.get('id')
+    # if not scout_id:
+    #    scout_id = str(uuid.uuid4())  # Generate a new UUID
+
+    # Retrieve the user by user_id
+    user = storage.get(User, data['user_id'])
+    if not user:
+        abort(404, description="User not found")
+
+     # Check if user is already a scout
+    if user.role == 'scout':
+        abort(400, description="User is already a scout")
+
+    try:
+        # Switch user role to scout and transfer data
+        user.switch_role('scout')
+
+        # Create a new scout instance
+        new_scout = Scout(
+            email=user.email,
+            password=user.password,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            club_id=data['club_id'],
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+        new_scout.save()
+
+        return jsonify({"message": "Scout created successfully!"}), 201
+    except ValueError as e:
+        abort(400, description=str(e))
+    
+    # Create a new scout instance
+    # new_scout = Scout(
+    #    id=scout_id,
+    #    club_id=data['club_id'],
+    #    first_name=data['first_name'],
+    #    last_name=data['last_name'],
+    #    email=data['email'],
+    #    password=data['password'],
+    #    created_at=datetime.utcnow(),
+    #    updated_at=datetime.utcnow()
+    # )
+
+    # try:
+        # Add new scout to the database
+        # storage.new(new_scout)
+        # storage.save()
+    #    new_scout.save()
+        # return jsonify({"message": "Scout created successfully!"}), 201
+    #    return jsonify(new_scout.to_dict()), 201
+    # except IntegrityError as e:
+    #    storage.rollback()
+    #    abort(400, description=str(e))
+        # return jsonify({"error": str(e.orig)}), 400
 
 @app_views.route('/scouts/<scout_id>', methods=['PUT'])
 def update_scout(scout_id):

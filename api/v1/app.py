@@ -10,6 +10,7 @@ from os import getenv
 from dotenv import load_dotenv
 from werkzeug.exceptions import NotFound
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 
 load_dotenv()
 

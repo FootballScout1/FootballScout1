@@ -39,3 +39,10 @@ class Club(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes club"""
         super().__init__(*args, **kwargs)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        club_dict = super().to_dict()
+        if "_sa_instance_state" in club_dict:
+            del club_dict["_sa_instance_state"]
+        return club_dict

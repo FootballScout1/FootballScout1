@@ -5,6 +5,7 @@ Module defines the Scout class
 """
 from models import storage_t
 from models.base_model import BaseModel, Base
+# from models.user import User
 from sqlalchemy import Column, DateTime, String, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
 from models.player import scouts_players
@@ -12,7 +13,7 @@ from models.player import scouts_players
 # from models.post import Post
 # from models.like import Like
 # from models.comment import Comment
-from hashlib import md5
+# from hashlib import md5
 
 
 class Scout(BaseModel, Base):
@@ -22,10 +23,12 @@ class Scout(BaseModel, Base):
     if storage_t == 'db':
         __tablename__ = "scouts"
 
-        email = Column(String(60), nullable=False)
-        password = Column(String(60), nullable=False)
-        first_name = Column(String(60), nullable=False)
-        second_name = Column(String(60), nullable=False)
+        # id = Column(Integer, ForeignKey('users.id'), primary_key=True)  # Establish foreign key relationship
+
+        email = Column(String(255), nullable=False)
+        password = Column(String(255), nullable=False)
+        first_name = Column(String(255), nullable=False)
+        last_name = Column(String(255), nullable=False)
         club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False)
 
         players = relationship('Player', secondary=scouts_players,
@@ -34,11 +37,12 @@ class Scout(BaseModel, Base):
         comments = relationship('Comment', backref=backref("scout"))
         posts = relationship('Post', backref=backref("scout"))
 
+
     else:
         email = ""
         password = ""
         first_name = ""
-        second_name = ""
+        last_name = ""
         club_id = ""
 
         players = []
@@ -50,13 +54,30 @@ class Scout(BaseModel, Base):
         """
         Initializes Scout
         """
+
+        # if kwargs.get("email"):
+        #    self.email = kwargs["email"]
+        # if kwargs.get("password"):
+        #    self.password = kwargs["password"]
+        # if kwargs.get("first_name"):
+        #    self.first_name = kwargs["first_name"]
+        # if kwargs.get("last_name"):
+        #    self.last_name = kwargs["last_name"]
+
         super().__init__(*args, **kwargs)
 
-        if kwargs.get("password"):
-            self.password = md5(kwargs["password"].encode()).hexdigest()
+        # if kwargs.get("password"):
+            # self.password = md5(kwargs["password"].encode()).hexdigest()
 
     def __setattr__(self, name, value):
         """sets a password with md5 encryption"""
-        if name == "password":
-            value = md5(value.encode()).hexdigest()
+        # if name == "password":
+        #    value = md5(value.encode()).hexdigest()
         super().__setattr__(name, value)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        scout_dict = super().to_dict()
+        if "_sa_instance_state" in scout_dict:
+            del scout_dict["_sa_instance_state"]
+        return scout_dict

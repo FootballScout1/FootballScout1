@@ -185,6 +185,349 @@ class FootballScoutCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
+    def do_role_switch(self, line):
+        """Switch user role to either 'scout' or 'player' with club_id"""
+        args = shlex.split(line)
+        if len(args) != 3:
+            print("** usage: role_switch <user_id> <role> <club_id> **")
+            return
+
+        user_id, new_role, club_id = args
+        if new_role not in ['scout', 'player']:
+            print("** invalid role **")
+            return
+
+        # Find the user by ID
+        key = f"User.{user_id}"
+        user = storage.all().get(key)
+        if not user:
+            print(f"** no user found with id: {user_id} **")
+            return
+
+        # Create a new instance of the specified role with the same attributes
+        if new_role == 'player':
+            new_instance = Player(
+                id=user.id,
+                email=user.email,
+                password=user.password,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                club_id=club_id
+            )
+        elif new_role == 'scout':
+            new_instance = Scout(
+                id=user.id,
+                email=user.email,
+                password=user.password,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                club_id=club_id
+            )
+        # else:
+        #    print("** invalid role **")
+        #    return
+
+        # Set created_at and updated_at to current time
+        new_instance.created_at = datetime.utcnow()
+        new_instance.updated_at = datetime.utcnow()
+
+        # Save the new instance and delete the old user instance
+        try:
+            # new_instance.save()
+            # storage.delete(user)
+            # storage.save()
+            
+            storage.new(new_instance)  # Register new instance
+            storage.save()  # Commit the new instance to the database
+            storage.delete(user)  # Mark the original user instance for deletion
+            storage.save()  # Commit the deletion to the database
+
+            print(f"User {user_id} switched to {new_role} role and original user deleted.")
+        except Exception as e:
+            storage.rollback()
+            print(f"Error switching role: {str(e)}")
+
+#    def do_role_switch(self, line):
+#        """Switch user role to either 'scout' or 'player'"""
+#        args = shlex.split(line)
+#        if len(args) != 2:
+#            print("** usage: role_switch <user_id> <role> **")
+#            return
+#
+#        user_id, new_role = args
+#        if new_role not in ['scout', 'player']:
+#            print("** invalid role **")
+#            return
+#
+#        # Find the user by ID
+#        key = f"User.{user_id}"
+#        user = storage.all().get(key)
+#        if not user:
+#            print(f"** no user found with id: {user_id} **")
+#            return
+#
+#        # Delete the user
+#        # storage.delete(user)
+#
+#        # Create a new instance of the specified role with the same attributes
+#        if new_role == 'player':
+#            new_instance = Player(
+#                email=user.email,
+#                password=user.password,
+#                first_name=user.first_name,
+#                last_name=user.last_name
+#            )
+#        elif new_role == 'scout':
+#            new_instance = Scout(
+#                email=user.email,
+#                password=user.password,
+#                first_name=user.first_name,
+#                last_name=user.last_name
+#            )
+#        else:
+#            print("** invalid role **")
+#            return
+#
+#        new_instance.save()
+#        print(f"User {user_id} switched to {new_role} role and original user deleted.")
+
+
+#    def do_role_switch(self, line):
+#        """Switch user role to either player or scout"""
+#
+#        try:
+#            user1_id, new_role = line.split()
+#        except ValueError:
+#            print("** usage: role_switch <user_id> <new_role> **")
+#            return
+#
+#        if new_role not in ['player', 'scout']:
+#            print("** role must be either 'player' or 'scout' **")
+#            return
+#
+#        print(f"Looking for user with ID: {user1_id} and switching to role: {new_role}")
+#
+#        from models import storage
+#        users = storage.all("User")
+#
+#        user_to_switch = None
+#        for user in users.values():
+#            if user.id == user1_id:
+#                user_to_switch = user
+#                break
+#
+#        if not user_to_switch:
+#            print("** no user found with the given ID **")
+#            return
+#
+#        new_instance = None
+#
+#        # Create a new instance of the specified role with the same attributes
+#        # if new_role == 'player':
+#        #    new_instance = Player(
+#        #        email=user.email,
+#        #        password=user.password,
+#        #        first_name=user.first_name,
+#        #        last_name=user.last_name
+#        #    )
+#        # elif new_role == 'scout':
+#        #    new_instance = Scout(
+#        #        email=user.email,
+#        #        password=user.password,
+#        #        first_name=user.first_name,
+#        #        last_name=user.last_name
+#        #    )
+#        # else:
+#        #    print("** invalid role **")
+#        #    return
+#
+#        # new_instance.save()
+#        # print(f"User {user_id} switched to {new_role} role and original user deleted.")
+#
+#        if new_role == "player":
+#            new_instance = Player(**user_to_switch.__dict__)
+#        elif new_role == "scout":
+#            new_instance = Scout(**user_to_switch.__dict__)
+#
+#        if new_instance:
+#            new_instance.id = user_to_switch.id  # Retain the original user ID
+#            new_instance.save()
+#            print(f"User {user1_id} role switched to {new_role}")
+#        
+#            # Delete the original user
+#        #    storage.delete(user_to_switch)
+#            storage.save()
+#            print(f"User {user1_id} switched to {new_role} role and original user deleted.")
+#        else:
+#            print("** error creating new instance **")
+
+#    def do_role_switch(self, line):
+#        """Switch user role to either player or scout"""
+#
+#        user1_id = line.strip()
+#        print(f"Looking for user with ID: {user1_id}")
+#
+#        from models import storage
+#        users_test = storage.all("User")
+#        print(f"Total users found: {len(users_test)}")
+#
+#        # user1 = None
+#        # for user_obj in users_test.values():
+#        #    print(f"Checking user with ID: {user_obj.id}")
+#        #    if user_obj.id == user1_id:
+#        #        user1 = user_obj
+#        #        break
+#
+#        # if not user1:
+#        #    print("** No user found **")
+#        #    return
+#
+#        # print(f"User found: {user1.first_name} {user1.last_name}")
+#
+#        args = shlex.split(line)
+#        if len(args) != 2:
+#            print("** Usage: role_switch <user_id> <new_role> **")
+#            return
+#        user_id = args[0]
+#        new_role = args[1]
+#
+##        # Search for the user with the given ID
+##        users = storage.all(User)
+##        user_found = False
+##
+##        for user in users.values():
+##            if user.id == user_id:
+##                user_found = True
+##                break
+##        if not user_found:
+##            print("** No user found **")
+##
+##        user_update = storage.get("User", user_id)
+##        print("user_update: {}".format(user_update))
+#
+#
+#
+##        # Create new instance based on role
+##        if new_role == "player":
+##            new_instance = Player(
+##                id=user.id,
+##                email=user.email,
+##                password=user.password,  # Inherit password
+##                first_name=user.first_name,
+##                last_name=user.last_name,
+##            )
+##        elif new_role == "scout":
+##            new_instance = Scout(
+##                id=user.id,
+##                email=user.email,
+##                password=user.password,  # Inherit password
+##                first_name=user.first_name,
+##                last_name=user.last_name,
+##            )
+##        # else:
+##        #    print("** Invalid role **")
+##        #    return
+##
+##        # Save the new instance
+##        storage.new(new_instance)
+##        storage.delete(user)
+##        storage.save()
+##        print("Role switched to", new_role)
+#
+#
+#        # Search for the user with the given ID
+#        users = storage.all(User)
+#        user_found = False
+#        for user in users.values():
+#            if user.id == user_id:
+#                user.role = new_role
+#                user.save()
+#                print(f"User {user_id} role switched to {new_role}")
+#                user_found = True
+#                break
+#        if not user_found:
+#            print("** No user found **")
+#
+#
+#        # args = line.split()
+##        args = shlex.split(line)
+##        if len(args) != 2:
+##            print("Usage: role_switch <user_id> <new_role>")
+##            return
+##
+##        user_id, new_role = args[0], args[1]
+##        if new_role not in ['player', 'scout']:
+##            print("** Invalid role **")
+##            return
+##
+##        from models import storage
+##        user = storage.get("User", user_id)
+##        # if user is None:
+##        if not user:
+##            print("** No user found **")
+##            return
+##
+##        # Ensure the user has a password
+##        # if user.password is None:
+##        if not user.password:
+##            print("** User password is missing **")
+##            return
+##
+##        # Create new instance based on role
+##        if new_role == "player":
+##            new_instance = Player(
+##                id=user.id,
+##                email=user.email,
+##                password=user.password,  # Inherit password
+##                first_name=user.first_name,
+##                last_name=user.last_name,
+##            )
+##        elif new_role == "scout":
+##            new_instance = Scout(
+##                id=user.id,
+##                email=user.email,
+##                password=user.password,  # Inherit password
+##                first_name=user.first_name,
+##                last_name=user.last_name,
+##            )
+##        # else:
+##        #    print("** Invalid role **")
+##        #    return
+##
+##        # Save the new instance
+##        storage.new(new_instance)
+##        storage.delete(user)
+##        storage.save()
+##        print("Role switched to", new_role)
+#
+#        # user_id, new_role = args[0], args[1]
+#        # if new_role not in ['player', 'scout']:
+#        #    print("Invalid role. Role must be either 'player' or 'scout'.")
+#        #    return
+#
+#        # user = storage.get(User, user_id)
+#        # if not user:
+#        #    print(f"No user found with id {user_id}")
+#        #    return
+#
+#        # Create new player or scout with existing user attributes and ID
+#        # if new_role == 'player':
+#        #    new_instance = Player(**user.to_dict())
+#        # else:  # new_role == 'scout'
+#        #    new_instance = Scout(**user.to_dict())
+#
+#        # Assign the same ID
+#        # new_instance.id = user.id
+#
+#        # Update role in user object
+#        # user.role = new_role
+#
+#        # Save new instance and updated user
+#        # storage.new(new_instance)
+#        # storage.save()
+#
+#        print(f"User {user_id} switched to {new_role} role.")
+
 
 if __name__ == '__main__':
     FootballScoutCommand().cmdloop()

@@ -50,3 +50,10 @@ class Post(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes Post"""
         super().__init__(*args, **kwargs)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        post_dict = super().to_dict()
+        if "_sa_instance_state" in post_dict:
+            del post_dict["_sa_instance_state"]
+        return post_dict

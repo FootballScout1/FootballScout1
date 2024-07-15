@@ -5,13 +5,14 @@ Module for the Player class
 """
 from models import storage_t
 from models.base_model import BaseModel, Base
+# from models.user import User
 from sqlalchemy import Column, DateTime, String, ForeignKey, Integer, Table
 from sqlalchemy.orm import backref, relationship
 # from models.scout import Scout
 # from models.post import Post
 # from models.like import Like
 # from models.comment import Comment
-from hashlib import md5
+# from hashlib import md5
 
 
 if storage_t == 'db':
@@ -36,15 +37,18 @@ class Player(BaseModel, Base):
     """
     if storage_t == 'db':
         __tablename__ = 'players'
-        email = Column(String(60), nullable=False)
-        password = Column(String(60), nullable=False)
-        first_name = Column(String(60), nullable=False)
-        second_name = Column(String(60), nullable=False)
+
+        # id = Column(Integer, ForeignKey('users.id'), primary_key=True)  # Establish foreign key relationship
+
+        email = Column(String(255), nullable=False)
+        password = Column(String(255), nullable=False)
+        first_name = Column(String(255), nullable=False)
+        last_name = Column(String(255), nullable=False)
         height = Column(Integer, nullable=False, default=0)
         weight = Column(Integer, nullable=False, default=0)
         # date_of_birth = Column(DateTime, nullable=True)
         date_of_birth = Column(String(60), nullable=True)
-        club_id = Column(Integer, ForeignKey('clubs.id'), nullable=False)
+        club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False) # Integer
 
         positions = relationship('Position', secondary=players_positions,
                                  back_populates='players')
@@ -61,7 +65,7 @@ class Player(BaseModel, Base):
         email = ""
         password = ""
         first_name = ""
-        second_name = ""
+        last_name = ""
         height = 0
         weight = 0
         date_of_birth = ""
@@ -73,15 +77,26 @@ class Player(BaseModel, Base):
         likes = []
         comments = []
 
+    # __mapper_args__ = {
+    #    'exclude_properties': ['_sa_instance_state']
+    # }
+
     def __init__(self, *args, **kwargs):
         """initializes Like"""
         super().__init__(*args, **kwargs)
 
-        if kwargs.get("password"):
-            self.password = md5(kwargs["password"].encode()).hexdigest()
+        # if kwargs.get("password"):
+        #    self.password = md5(kwargs["password"].encode()).hexdigest()
 
     def __setattr__(self, name, value):
         """sets a password with md5 encryption"""
-        if name == "password":
-            value = md5(value.encode()).hexdigest()
+        # if name == "password":
+        #    value = md5(value.encode()).hexdigest()
         super().__setattr__(name, value)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        player_dict = super().to_dict()
+        if "_sa_instance_state" in player_dict:
+            del player_dict["_sa_instance_state"]
+        return player_dict

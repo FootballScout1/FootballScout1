@@ -30,3 +30,10 @@ class Position(BaseModel, Base):
         Initializes a Position object
         """
         super().__init__(*args, **kwargs)
+
+    def to_dict(self):
+        """Converts the object to a dictionary format"""
+        position_dict = super().to_dict()
+        if "_sa_instance_state" in position_dict:
+            del position_dict["_sa_instance_state"]
+        return position_dict
