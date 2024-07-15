@@ -94,9 +94,27 @@ class Player(BaseModel, Base):
         #    value = md5(value.encode()).hexdigest()
         super().__setattr__(name, value)
 
+    # def to_dict(self):
+    #    """Converts the object to a dictionary format"""
+    #    player_dict = super().to_dict()
+    #    if "_sa_instance_state" in player_dict:
+    #        del player_dict["_sa_instance_state"]
+    #    return player_dict
+
     def to_dict(self):
-        """Converts the object to a dictionary format"""
-        player_dict = super().to_dict()
-        if "_sa_instance_state" in player_dict:
-            del player_dict["_sa_instance_state"]
+        """
+        Returns a dictionary representation of a Player instance.
+        """
+        player_dict = {
+            'id': self.id,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'height': self.height,
+            'weight': self.weight,
+            'date_of_birth': self.date_of_birth,
+            'club_id': self.club_id,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
         return player_dict

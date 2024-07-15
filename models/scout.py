@@ -75,9 +75,24 @@ class Scout(BaseModel, Base):
         #    value = md5(value.encode()).hexdigest()
         super().__setattr__(name, value)
 
+    # def to_dict(self):
+    #    """Converts the object to a dictionary format"""
+    #    scout_dict = super().to_dict()
+    #    if "_sa_instance_state" in scout_dict:
+    #        del scout_dict["_sa_instance_state"]
+    #    return scout_dict
+
     def to_dict(self):
-        """Converts the object to a dictionary format"""
-        scout_dict = super().to_dict()
-        if "_sa_instance_state" in scout_dict:
-            del scout_dict["_sa_instance_state"]
+        """
+        Returns a dictionary representation of a Scout instance.
+        """
+        scout_dict = {
+            'id': self.id,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat(),
+            'players': [player.to_dict() for player in self.players]  # Convert related Player objects to dictionaries
+        }
         return scout_dict
