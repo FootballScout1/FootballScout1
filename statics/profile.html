@@ -26,6 +26,9 @@
                 </header>
                 <main>
                         <div class="account-settings-navbar">
+                                <h3 style="align-self: center; padding: 20px 10px; font-size: 25px;">
+                                        Account Settings
+                                </h3>
                                 <a href="#account-settings-general">General</a>
                                 <a href="#account-settings-password">Change Password</a>
                                 <a href="#account-settings-player">I am a player</a>
@@ -34,91 +37,124 @@
                         </div>
                         <div class="account-settings">
                                 <div class="account-settings-general" id="account-settings-general">
-                                        <div class="pfp-container">
-                                                <div class="pfp-img"></div>
-                                                <div class="pfp-selector">
-                                                        <button>Upload new photo</button>
-                                                        <p>Allowed JPG or PNG, Max size of 800k</p>
-                                                </div>
+                                        <div class="pfp-preview" style="margin-bottom: 20px; width: 150px; height: 150px; background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover; border-radius: 10px;">
                                         </div>
-                                        <div class="general-settings">
-                                                <div class="fname-group">
-                                                        <label class="fname-label">First Name</label>
-                                                        <input type="text" class="fname-input" value="john">
+                                        <form>
+                                                <label for="new-pfp" class="pfp-label">Upload new profile picture</label>
+                                                <input type="file" class="pfp-input" id="new-pfp" value="">
+                                                <label for="first_name">First Name</label>
+                                                <input type="text" id="first_name" value="">
+                                                <label for="last_name">Last Name</label>
+                                                <input type="text" id="last_name" value="">
+                                                <label for="email">Email</label>
+                                                <input type="email" id="email" value="">
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
                                                 </div>
-                                                <div class="sname-group">
-                                                        <label class="sname-label">Second Name</label>
-                                                        <input type="text" class="sname-input" value="doe">
-                                                </div>
-                                                <div class="email-group">
-                                                        <label class="email-label">E-mail</label>
-                                                        <input type="email" class="email-input" value="johndoe@mail.com">
-                                                </div>
-                                        </div>
-                                        <div class="btn-container">
-                                                <button class="btn-general-save">Save</button>
-                                                <button class="btn-general-cancel">Cancel</button>
-                                        </div>
+                                        </form>
                                 </div>
                                 <div class="account-settings-password" id="account-settings-password">
-                                        <div class="general-settings">
-                                                <div class="cpwd-group">
-                                                        <label class="cpwd-label">Current Password</label>
-                                                        <input type="text" class="cpwd-input" value="">
+                                        <form>
+                                                <label for="old-password">Old Password</label>
+                                                <input type="password" id="old-password" value="">
+                                                <label for="new-password">New Password</label>
+                                                <input type="password" id="new-password" value="">
+                                                <label for="confirm-password">Confirm New Password</label>
+                                                <input type="password" id="confirm-password" value="">
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
                                                 </div>
-                                                <div class="npwd-group">
-                                                        <label class="npwd-label">New Password</label>
-                                                        <input type="text" class="npwd-input" value="">
-                                                </div>
-                                                <div class="rpwd-group">
-                                                        <label class="rpwd-label">Repeat New Password</label>
-                                                        <input type="text" class="rpwd-input" value="">
-                                                </div>
-                                        </div>
-                                        <div class="btn-container">
-                                                <button class="btn-general-save">Save</button>
-                                                <button class="btn-general-cancel">Cancel</button>
-                                        </div>
+                                        </form>
                                 </div>
                                 <div class="account-settings-player" id="account-settings-player">
-                                        <div class="general-settings">
-                                                <div class="club-group">
-                                                        <label for="club-input" class="club-label">Select your club</label>
-                                                        <input type="text" id="club-input" name="club" value="">
+                                        <form>
+                                                <label for="position">First Preferred Position</label>
+                                                <select name="position" id="position">
+                                                        <option value="GK">Goalkeeper</option>
+                                                        <option value="CB">Centre Back</option>
+                                                        <option value="RB">Right Back</option>
+                                                        <option value="LB">Left Back</option>
+                                                        <option value="RWB">Right Wing Back</option>
+                                                        <option value="LWB">Left Wing Back</option>
+                                                        <option value="RM">Right Midfielder</option>
+                                                        <option value="LM">Left Midfielder</option>
+                                                        <option value="CDM">Central Defensive Midfielder</option>
+                                                        <option value="CM">Central Midfielder</option>
+                                                        <option value="CAM">Central Attacking Midfielder</option>
+                                                        <option value="RW">Right Winger</option>
+                                                        <option value="LW">Left Winger</option>
+                                                        <option value="CF">Centre Forward</option>
+                                                </select>
+                                                <label for="position">Second Preferred Position</label>
+                                                <select name="position" id="position">
+                                                        <option value="GK">Goalkeeper</option>
+                                                        <option value="CB">Centre Back</option>
+                                                        <option value="RB">Right Back</option>
+                                                        <option value="LB">Left Back</option>
+                                                        <option value="RWB">Right Wing Back</option>
+                                                        <option value="LWB">Left Wing Back</option>
+                                                        <option value="RM">Right Midfielder</option>
+                                                        <option value="LM">Left Midfielder</option>
+                                                        <option value="CDM">Central Defensive Midfielder</option>
+                                                        <option value="CM">Central Midfielder</option>
+                                                        <option value="CAM">Central Attacking Midfielder</option>
+                                                        <option value="RW">Right Winger</option>
+                                                        <option value="LW">Left Winger</option>
+                                                        <option value="CF">Centre Forward</option>
+                                                </select>
+                                                <label for="position">Third Preferred Position</label>
+                                                <select name="position" id="position">
+                                                        <option value="GK">Goalkeeper</option>
+                                                        <option value="CB">Centre Back</option>
+                                                        <option value="RB">Right Back</option>
+                                                        <option value="LB">Left Back</option>
+                                                        <option value="RWB">Right Wing Back</option>
+                                                        <option value="LWB">Left Wing Back</option>
+                                                        <option value="RM">Right Midfielder</option>
+                                                        <option value="LM">Left Midfielder</option>
+                                                        <option value="CDM">Central Defensive Midfielder</option>
+                                                        <option value="CM">Central Midfielder</option>
+                                                        <option value="CAM">Central Attacking Midfielder</option>
+                                                        <option value="RW">Right Winger</option>
+                                                        <option value="LW">Left Winger</option>
+                                                        <option value="CF">Centre Forward</option>
+                                                </select>
+                                                <label for="club">Club</label>
+                                                <select name="club" id="club">
+                                                        <option value="Atlanta">Atlanta</option>
+                                                        <option value="Roma">Roma</option>
+                                                        <option value="Newport">Newport</option>
+                                                </select>
+                                                <label for="height">Height in centimetres</label>
+                                                <input type="text" id="height" value="">
+                                                <label for="weight">Weight in kilograms</label>
+                                                <input type="text" id="weight" value="">
+                                                <label for="foot">Preferred Foot</label>
+                                                <select name="foot" id="foot">
+                                                        <option value="Right">Right</option>
+                                                        <option value="Left">Left</option>
+                                                </select>
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
                                                 </div>
-                                                <div class="positions-group">
-                                                        <label for="positions-input" class="positions-label">Select a maximum of 3 positions</label>
-                                                        <input type="text" id="positions-input" name="positions" value="">
-                                                </div>
-                                                <div class="dob-group">
-                                                        <label for="dob-input" class="dob-label">Date of Birth</label>
-                                                        <input type="date" id="dob-input" name="date_of_birth" value="">
-                                                </div>
-                                                <div class="height-group">
-                                                        <label for="height-input" class="height-label">Height in cm</label>
-                                                        <input type="number" id="height-input" name="height" value="">
-                                                </div>
-                                                <div class="weight-group">
-                                                        <label for="weight-input" class="weight-label">Weight in kgs</label>
-                                                        <input type="number" id="weight-input" name="weight" value="">
-                                                </div>
-                                        </div>
-                                        <div class="btn-container">
-                                                <button class="btn-general-save">Save</button>
-                                                <button class="btn-general-cancel">Cancel</button>
-                                        </div>
+                                        </form>
                                 </div>
                                 <div class="account-settings-scout" id="account-settings-scout">
-                                        <div class="general-settings">
-                                                <div class="club-group">
-                                                        <label class="club-label">Select your club</label>
-                                                        <input type="text" class="club-input" value="">
+                                        <form>
+                                                <label for="club">Club</label>
+                                                <select name="club" id="club">
+                                                        <option value="Atlanta">Atlanta</option>
+                                                        <option value="Roma">Roma</option>
+                                                        <option value="Newport">Newport</option>
+                                                </select>
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
                                                 </div>
-                                        </div>
-                                        <div class="btn-container">
-                                                <button class="btn-general-save">Save</button>
-                                                <button class="btn-general-cancel">Cancel</button>
-                                        </div>
+                                        </form>
                                 </div>
                         </div>
                 </main>

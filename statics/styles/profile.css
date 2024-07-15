@@ -111,31 +111,51 @@ main .account-settings .account-settings-general .pfp-container .pfp-selector{
         padding: 0 60px;
 }
 
-.general-settings div {
-        display: flex;
-        flex-direction: column;
-        padding: 0 10px;
-        margin-bottom: 20px;
-}
-
-.general-settings .cpwd-group input,
-.general-settings .npwd-group input,
-.general-settings .rpwd-group input,
-.general-settings .fname-group input,
-.general-settings .sname-group input,
-.general-settings .email-group input{
+.account-settings-scout form input,
+.account-settings-scout form select,
+.account-settings-player form input,
+.account-settings-player form select,
+.account-settings-password form input,
+.account-settings-general form input{
         padding: 10px 20px;
         border-radius: 10px;
+        margin-bottom: 20px;
         /* background: darkgray; */
 }
 
-.general-settings .cpwd-group label,
-.general-settings .npwd-group label,
-.general-settings .rpwd-group label,
-.general-settings .fname-group label,
-.general-settings .sname-group label,
-.general-settings .email-group label{
+.account-settings-general form label{
         margin-bottom: 10px;
+        margin-bottom: 20px;
+}
+
+.account-settings form label,
+.account-settings form input {
+        margin-bottom: 10px;
+        width: 100%;
+}
+
+.form-buttons{
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px 10px;
+}
+
+.account-settings form input[type="submit"],
+.account-settings form input[type="reset"] {
+        width: 120px;
+        padding: 10px 0px;
+        background: blue;
+        border-radius: 10px;
+        margin-left: 10px;
+}
+
+.account-settings-general .pfp-label{
+        margin-bottom: 10px;
+        width: 100%;
+}
+.account-settings-general .pfp-input {
+        border: 1px solid white;
+        width: 100%;
 }
 
 .btn-container {
