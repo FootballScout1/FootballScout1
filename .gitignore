@@ -9,3 +9,4 @@ models/skill.py
 static_files/
 config.py
 .env
+dynamic/__pycache__/
