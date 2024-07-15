@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+        <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>FootBall Scout</title>
+                <link rel="icon" href="images/favicons/logo.svg" type="image/x-icon">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+                        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+                <link rel="stylesheet" href="styles/profile.css">
+        </head>
+
+        <body>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+                </script>
+                <header>
+                        <div class="header-container">
+                                <div class="logo">
+                                        <a href="homepage.html"
+                                                style="color: white; text-decoration: none;"><h1>Football Scout</h1></a>
+                                </div>
+                        </div>
+                </header>
+                <main>
+                        <div class="account-settings-navbar">
+                                <h3 style="align-self: center; padding: 20px 10px; font-size: 25px;">
+                                        Account Settings
+                                </h3>
+                                <a href="#account-settings-general">General</a>
+                                <a href="#account-settings-password">Change Password</a>
+                                <a href="#account-settings-player">I am a player</a>
+                                <a href="#account-settings-scout">I am a scout</a>
+                                <!-- <a href="homepage.html">Home</a> -->
+                        </div>
+                        <div class="account-settings">
+                                <div class="account-settings-general" id="account-settings-general">
+                                        <div class="pfp-preview" style="margin-bottom: 20px; width: 150px; height: 150px; background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover; border-radius: 10px;">
+                                        </div>
+                                        <form>
+                                                <label for="new-pfp" class="pfp-label">Upload new profile picture</label>
+                                                <input type="file" class="pfp-input" id="new-pfp" value="">
+                                                <label for="first_name">First Name</label>
+                                                <input type="text" id="first_name" value="">
+                                                <label for="last_name">Last Name</label>
+                                                <input type="text" id="last_name" value="">
+                                                <label for="email">Email</label>
+                                                <input type="email" id="email" value="">
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
+                                                </div>
+                                        </form>
+                                </div>
+                                <div class="account-settings-password" id="account-settings-password">
+                                        <form>
+                                                <label for="old-password">Old Password</label>
+                                                <input type="password" id="old-password" value="">
+                                                <label for="new-password">New Password</label>
+                                                <input type="password" id="new-password" value="">
+                                                <label for="confirm-password">Confirm New Password</label>
+                                                <input type="password" id="confirm-password" value="">
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
+                                                </div>
+                                        </form>
+                                </div>
+                                <div class="account-settings-player" id="account-settings-player">
+                                        <form>
+                                                <label for="position">First Preferred Position</label>
+                                                <select name="position" id="position">
+                                                        <option value="GK">Goalkeeper</option>
+                                                        <option value="CB">Centre Back</option>
+                                                        <option value="RB">Right Back</option>
+                                                        <option value="LB">Left Back</option>
+                                                        <option value="RWB">Right Wing Back</option>
+                                                        <option value="LWB">Left Wing Back</option>
+                                                        <option value="RM">Right Midfielder</option>
+                                                        <option value="LM">Left Midfielder</option>
+                                                        <option value="CDM">Central Defensive Midfielder</option>
+                                                        <option value="CM">Central Midfielder</option>
+                                                        <option value="CAM">Central Attacking Midfielder</option>
+                                                        <option value="RW">Right Winger</option>
+                                                        <option value="LW">Left Winger</option>
+                                                        <option value="CF">Centre Forward</option>
+                                                </select>
+                                                <label for="position">Second Preferred Position</label>
+                                                <select name="position" id="position">
+                                                        <option value="GK">Goalkeeper</option>
+                                                        <option value="CB">Centre Back</option>
+                                                        <option value="RB">Right Back</option>
+                                                        <option value="LB">Left Back</option>
+                                                        <option value="RWB">Right Wing Back</option>
+                                                        <option value="LWB">Left Wing Back</option>
+                                                        <option value="RM">Right Midfielder</option>
+                                                        <option value="LM">Left Midfielder</option>
+                                                        <option value="CDM">Central Defensive Midfielder</option>
+                                                        <option value="CM">Central Midfielder</option>
+                                                        <option value="CAM">Central Attacking Midfielder</option>
+                                                        <option value="RW">Right Winger</option>
+                                                        <option value="LW">Left Winger</option>
+                                                        <option value="CF">Centre Forward</option>
+                                                </select>
+                                                <label for="position">Third Preferred Position</label>
+                                                <select name="position" id="position">
+                                                        <option value="GK">Goalkeeper</option>
+                                                        <option value="CB">Centre Back</option>
+                                                        <option value="RB">Right Back</option>
+                                                        <option value="LB">Left Back</option>
+                                                        <option value="RWB">Right Wing Back</option>
+                                                        <option value="LWB">Left Wing Back</option>
+                                                        <option value="RM">Right Midfielder</option>
+                                                        <option value="LM">Left Midfielder</option>
+                                                        <option value="CDM">Central Defensive Midfielder</option>
+                                                        <option value="CM">Central Midfielder</option>
+                                                        <option value="CAM">Central Attacking Midfielder</option>
+                                                        <option value="RW">Right Winger</option>
+                                                        <option value="LW">Left Winger</option>
+                                                        <option value="CF">Centre Forward</option>
+                                                </select>
+                                                <label for="club">Club</label>
+                                                <select name="club" id="club">
+                                                        <option value="Atlanta">Atlanta</option>
+                                                        <option value="Roma">Roma</option>
+                                                        <option value="Newport">Newport</option>
+                                                </select>
+                                                <label for="height">Height in centimetres</label>
+                                                <input type="text" id="height" value="">
+                                                <label for="weight">Weight in kilograms</label>
+                                                <input type="text" id="weight" value="">
+                                                <label for="foot">Preferred Foot</label>
+                                                <select name="foot" id="foot">
+                                                        <option value="Right">Right</option>
+                                                        <option value="Left">Left</option>
+                                                </select>
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
+                                                </div>
+                                        </form>
+                                </div>
+                                <div class="account-settings-scout" id="account-settings-scout">
+                                        <form>
+                                                <label for="club">Club</label>
+                                                <select name="club" id="club">
+                                                        <option value="Atlanta">Atlanta</option>
+                                                        <option value="Roma">Roma</option>
+                                                        <option value="Newport">Newport</option>
+                                                </select>
+                                                <div class="form-buttons">
+                                                        <input type="submit" value="Save">
+                                                        <input type="reset" value="Cancel">
+                                                </div>
+                                        </form>
+                                </div>
+                        </div>
+                </main>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script>
+                $(document).ready(function() {
+                        function hideAllSections() {
+                                $('.account-settings-general, .account-settings-password, .account-settings-player, .account-settings-scout').hide();
+                        }
+                        $('.account-settings-navbar a').click(function(event) {
+                                event.preventDefault();
+                                var targetDivId = $(this).attr('href');
+                                hideAllSections();
+                                $(targetDivId).show();
+                        });
+                });
+                </script>
+        </body>
+</html>
