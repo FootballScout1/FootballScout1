@@ -46,8 +46,8 @@ class Player(BaseModel, Base):
         last_name = Column(String(255), nullable=False)
         height = Column(Integer, nullable=False, default=0)
         weight = Column(Integer, nullable=False, default=0)
-        # date_of_birth = Column(DateTime, nullable=True)
-        date_of_birth = Column(String(60), nullable=True)
+        date_of_birth = Column(DateTime, nullable=True)
+        # date_of_birth = Column(String(60), nullable=True)
         club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False) # Integer
 
         positions = relationship('Position', secondary=players_positions,
