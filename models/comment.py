@@ -27,7 +27,7 @@ class Comment(BaseModel, Base):
         )
 
     else:
-        content = ""
+        text = ""
         post_id = ""
         user_id = ""
         player_id = ""
