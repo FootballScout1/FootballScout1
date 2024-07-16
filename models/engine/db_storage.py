@@ -28,8 +28,8 @@ class DBStorage:
         #     .format(user, password, hostname, database),
         #     pool_pre_ping=True, echo=False
         # )
-        # db = "sqlite:///footDB.db"
-        # self.__engine = create_engine(db, pool_pre_ping=True)
+        db = "sqlite:///footDB.db"
+        self.__engine = create_engine(db, pool_pre_ping=True)
 
         # user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
         # password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
@@ -42,16 +42,16 @@ class DBStorage:
         #    echo=False
         # )
 
-        user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
-        password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
-        host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
-        database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
-
-        self.__engine = create_engine(
-            f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
-            pool_pre_ping=True,
-            echo=False
-        )
+        # user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
+        # password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
+        # host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
+        # database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
+        #
+        # self.__engine = create_engine(
+        #     f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
+        #     pool_pre_ping=True,
+        #     echo=False
+        # )
 
         if _env == 'test':
             Base.metadata.drop_all(bind=self.__engine)
@@ -69,7 +69,7 @@ class DBStorage:
         from models.position import Position
 
         #  _classes = [Country, Club, User, Player, Post, Comment, Like, Position, Scout]
-        
+
         _classes = {
             'Country': Country, 'Club': Club, 'User': User,
             'Player': Player, 'Scout': Scout, 'Post': Post,
@@ -126,7 +126,7 @@ class DBStorage:
         #        for obj in self.__session.query(model):
         #            all_obj[obj.__class__.__name__  + "." + obj.id] = obj
         #            all_obj[f"{model.__name__}.{obj.id}"] = obj
-            
+
             # for obj in self.__session.query(cls).all():
             #    all_obj[f"{cls.__name__}.{obj.id}"] = obj
         # else:
