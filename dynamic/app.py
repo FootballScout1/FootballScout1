@@ -76,7 +76,10 @@ def register():
     session.add(new_user)
     session.commit()
 
-    return redirect(url_for('login_page'))
+    # Fetch the newly created user to get their details
+    user = session.query(User).filter_by(email=email).first()
+
+    return redirect(url_for('homepage', username=user.first_name))
 
 # Route for testing the post.html template with dynamic data
 @app.route('/test_post')
