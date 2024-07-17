@@ -23,6 +23,11 @@ engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+# Route for redirecting the root URL to the login page
+@app.route('/')
+def index():
+    return redirect(url_for('login_page'))
+
 # Route for rendering the login page
 @app.route('/login', methods=['GET'])
 def login_page():
@@ -83,7 +88,7 @@ def test_post():
         {"username": "Jane Smith", "position": "GK", "club": "Real Madrid", "location": "Spain",
          "content": "Dolores dolorum eum numquam magni qui at facere nihil voluptates sunt commodi."}
     ]
-    return render_template('post.html', posts=posts)
+    return render_template('post.html')
 
 # Route for rendering the addpost.html template
 @app.route('/addpost', methods=['GET'])
@@ -129,6 +134,14 @@ def create_icon():
 @app.route('/comment_icon')
 def comment_icon():
     return redirect(url_for('comment_page'))
+
+@app.route('/profile')
+def profile():
+    content = {
+        'username': 'example_username',  # You can replace this with actual user data
+        'email': 'example_email@example.com'
+    }
+    return render_template('profile.html', content=content)
 
 if __name__ == '__main__':
     app.run(debug=True)
