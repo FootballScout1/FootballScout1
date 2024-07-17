@@ -27,7 +27,6 @@ session = Session()
 # Route for redirecting the root URL to the login page
 @app.route('/')
 def index():
-   # return redirect(url_for('login_page'))
    return redirect(url_for('homepage'))
 
 # Route for rendering the login page
