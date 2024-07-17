@@ -31,27 +31,27 @@ class DBStorage:
         # db = "sqlite:///footDB.db"
         # self.__engine = create_engine(db, pool_pre_ping=True)
 
-        user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
-        password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
-        host = getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')
-        database = getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')
+        # user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
+        # password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
+        # host = getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')
+        # database = getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')
 
+        # self.__engine = create_engine(
+        #    f"mysql+mysqldb://{user}:{password}@{host}/{database}",
+        #    pool_pre_ping=True,
+        #    echo=False
+        #)
+
+        user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
+        password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
+        host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
+        database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
+        
         self.__engine = create_engine(
-            f"mysql+mysqldb://{user}:{password}@{host}/{database}",
+            f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
             pool_pre_ping=True,
             echo=False
         )
-
-        # user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
-        # password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
-        # host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
-        # database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
-        #
-        # self.__engine = create_engine(
-        #     f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
-        #     pool_pre_ping=True,
-        #     echo=False
-        # )
 
         if _env == 'test':
             Base.metadata.drop_all(bind=self.__engine)
