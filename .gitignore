@@ -10,3 +10,4 @@ static_files/
 config.py
 .env
 dynamic/__pycache__/
+models/association_tables.py
