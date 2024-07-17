@@ -5,7 +5,7 @@ Module defines class Position
 
 from models import storage_t
 from models.base_model import Base, BaseModel
-from models.player import players_positions
+# from models.player import players_positions
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
@@ -18,6 +18,8 @@ class Position(BaseModel, Base):
         __tablename__ = "positions"
         name = Column(String(60), nullable=False)
         abbrev = Column(String(4), nullable=False)
+
+        from models.player import players_positions
         players = relationship('Player', secondary=players_positions,
                                back_populates='positions')
     else:

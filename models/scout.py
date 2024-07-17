@@ -8,7 +8,7 @@ from models.base_model import BaseModel, Base
 # from models.user import User
 from sqlalchemy import Column, DateTime, String, ForeignKey, Integer
 from sqlalchemy.orm import backref, relationship
-from models.player import scouts_players
+# from models.player import scouts_players
 # from models.player import Player, scouts_players
 # from models.post import Post
 # from models.like import Like
@@ -30,7 +30,8 @@ class Scout(BaseModel, Base):
         first_name = Column(String(255), nullable=False)
         last_name = Column(String(255), nullable=False)
         club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False)
-
+        
+        from models.player import scouts_players
         players = relationship('Player', secondary=scouts_players,
                                back_populates='scouts')
         likes = relationship('Like', backref=backref("scout"))
