@@ -17,10 +17,6 @@ class DBStorage:
 
     def __init__(self):
         """Instaniates a DBStorage instance"""
-        # user = getenv('HBNB_MYSQL_USER')
-        # password = getenv('HBNB_MYSQL_PWD')
-        # hostname = getenv('HBNB_MYSQL_HOST')
-        # database = getenv('HBNB_MYSQL_DB')
         _env = getenv('FOOTBALL_SCOUT_ENV')
 
         # self.__engine = create_engine(

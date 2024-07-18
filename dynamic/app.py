@@ -42,11 +42,10 @@ def login():
 
     # Authentication logic, such as checking the database for the user
     user = session.query(User).filter_by(email=username).first()
-    if user and user.password == password:  # Placeholder logic, add password hashing comparison
+    if user and user.password == password:  # Placeholder logic, add google auth api and password hashing comparison later
         return redirect(url_for('homepage', username=user.first_name))
     else:
-        return 'Login Failed', 401
-
+        return 'Login Failed', 401                                                                                                                                                                                                           
 # Route for rendering the homepage after login
 @app.route('/homepage')
 def homepage():
