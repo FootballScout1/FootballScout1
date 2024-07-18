@@ -8,9 +8,11 @@ storage_t = getenv("FOOTBALL_SCOUT_TYPE_STORAGE")
 
 if storage_t == "db":
     from models.engine.db_storage import DBStorage
+    print(f"Storage type: {storage_t}")  # Debug print
     storage = DBStorage()
 else:
     from models.engine.file_storage import FileStorage
+    print(f"Storage type: {storage_t}")  # Debug print
     storage = FileStorage()
 storage.reload()
 #

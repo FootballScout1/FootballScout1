@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import datetime
 import random
 from models import scout
@@ -16,19 +16,30 @@ from models.user import User
 from models.position import Position
 from os import getenv
 
-# db = "sqlite:///footDB.db"
-# engine = create_engine(db, pool_pre_ping=True)
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
 
-user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
-password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
-host = getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')
-database = getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')
+# user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
+# password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
+# host = getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')
+# database = getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')
 
-engine = create_engine(
-    f"mysql+mysqldb://{user}:{password}@{host}/{database}",
-    pool_pre_ping=True,
-    echo=False
-)
+# engine = create_engine(
+#    f"mysql+mysqldb://{user}:{password}@{host}/{database}",
+#    pool_pre_ping=True,
+#    echo=False
+# )
+
+# user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
+# password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
+# host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
+# database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
+
+# engine = create_engine(
+#    f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
+#    pool_pre_ping=True,
+#    echo=False
+# )
 
 session = Session(engine)
 

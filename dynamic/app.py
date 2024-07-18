@@ -1,28 +1,70 @@
 import os
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, jsonify
 from models.user import User
 from models.post import Post
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
+
+# from flask import Flask, jsonify
+from models import storage
+from dynamic.v1.views import app_views
+# from os import getenv
+from dotenv import load_dotenv
+from werkzeug.exceptions import NotFound
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+
+load_dotenv()
+
 app = Flask(__name__)
+
+# Allow CORS for all domains
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+app.register_blueprint(app_views)
+
+
+
+# app = Flask(__name__)
+
+# Database setup
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
 
 # Database setup
 # engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+# user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+# password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+# host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+# database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
 
 # Create the engine using the PostgreSQL connection string
-DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-engine = create_engine(DATABASE_URL)
+# DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+# engine = create_engine(DATABASE_URL)
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    """Close storage session"""
+    storage.close()
+
+# Custom 404 error handler
+@app.errorhandler(404)
+def not_found_error(error):
+    return jsonify({"error": "Not found"}), 404
+
+# Sample route to demonstrate 404 handling
+@app.route('/dynamic/v1/sample')
+def sample_route():
+    # Example route
+    return jsonify({"message": "This is a sample route"}), 200
 
 # Route for redirecting the root URL to the login page
 @app.route('/')
@@ -203,6 +245,11 @@ def profile():
     }
     return render_template('profile.html', content=content)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#    app.run(debug=True)
+
+if __name__ == "__main__":
+    host = getenv('FOOTBALL_SCOUT_API_HOST', '0.0.0.0')
+    port = int(getenv('FOOTBALL_SCOUT_API_PORT', 5000))
+    app.run(host=host, port=port, threaded=True, debug=True)
 
