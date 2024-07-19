@@ -11,7 +11,6 @@
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
                 <link rel="stylesheet" href="styles/post.css">
                 <style>
-
                         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
                         * {
                                 box-sizing: border-box;
@@ -342,15 +341,19 @@
                 <main>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
+                                        <a class="pfp" href="#" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover; display: flex;">
+                                        </a>
                                 </div>
                                 <div class="post-body">
                                         <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
+                                                {% if post.player_name %}
+                                                <p><strong id="username">{{ post.player_name }}</strong> plays <strong>{{ post.player_position }}</strong> for <strong>{{ post.player_club }}</strong></p>
+                                                {% else %}
+                                                <p><strong id="username">{{ post.scout_name }}</strong> scout for <strong>{{ post.scout_club }}</strong></p>
+                                                {% endif %}
                                                 <div class="post-location">
                                                         <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
+                                                        <p><strong>{{ post.country }}</strong></p>
                                                 </div>
                                         </div>
                                         <iframe width="620" height="345"
@@ -358,41 +361,47 @@
                                                 frameborder="0"
                                                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 10px; align-self: center;"></iframe>
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
+                                        <a class="post-content" href="post.html" style="color: white; text-decoration: none;">
+                                                {{ post.content }}
+                                        </a>
                                         <div class="reactions">
                                                 <div class="comment">
                                                         <a href="comment.html" style="color: white; display: flex;">
                                                                 <i class="bi-chat-left fs-5"></i>
                                                         </a>
-                                                        <p class="comment-count">99</p>
+                                                        <p class="comment-count">{{ post.comments_count }}</p>
                                                 </div>
                                                 <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
+                                                        <a href="#" style="color: white; display: flex;">
+                                                                <i class="bi-hand-thumbs-up fs-5"></i>
+                                                        </a>
+                                                        <p class="like-count">{{ post.likes_count }}</p>
                                                 </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
                                                 <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
+                                                        <a href="#" style="color: white; display: flex;">
+                                                                <i class="bi-journal-bookmark fs-5"></i>
+                                                        </a>
                                                         <p>scout</p>
                                                 </div>
                                                 <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
+                                                        <a href="#" style="color: white; display: flex;">
+                                                                <i class="bi-pen fs-5"></i>
+                                                        </a>
                                                         <p>sign</p>
                                                 </div>
                                                 <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
+                                                        <a href="#" style="color: white; display: flex;">
+                                                                <i class="bi-bookmark-star fs-5"></i>
+                                                        </a>
+                                                        <a href="#" style="color: white; display: flex;">
+                                                                <i class="bi-share fs-5"></i>
+                                                        </a>
                                                 </div>
                                         </div>
                                 </div>
                         </div>
+
+                        {% for comment in comments %}
                         <div class="lead-post">
                                 <div class="pfp-container">
                                         <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
@@ -400,21 +409,24 @@
                                 </div>
                                 <div class="post-body">
                                         <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
+                                                {% if comment.player_name %}
+                                                <p><strong id="username">{{ comment.player_name }}</strong> plays <strong>{{ comment.player_position }}</strong> for <strong>{{ comment.player_club }}</strong></p>
                                                 <div class="post-location">
                                                         <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
+                                                        <p><strong>{{ comment.country }}</strong></p>
                                                 </div>
+                                                {% elif post.scout_name %}
+                                                <p><strong id="username">{{ comment.scout_name }}</strong> scout for <strong>{{ post.scout_club }}</strong></p>
+                                                <div class="post-location">
+                                                        <i class="bi-geo-alt"></i>
+                                                        <p><strong>{{ comment.country }}</strong></p>
+                                                </div>
+                                                {% else %}
+                                                <p><strong id="username">{{ comment.user_name }}</strong></p>
+                                                {% endif %}
                                         </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
                                         <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
+                                                {{ comment.text }}
                                         </p>
                                         <div class="reactions">
                                                 <div class="comment">
@@ -425,10 +437,6 @@
                                                         <i class="bi-hand-thumbs-up fs-5"></i>
                                                         <p class="like-count">99</p>
                                                 </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
                                                 <div class="scout">
                                                         <i class="bi-journal-bookmark fs-5"></i>
                                                         <p>scout</p>
@@ -444,363 +452,7 @@
                                         </div>
                                 </div>
                         </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="lead-post">
-                                <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover;">
-                                        </div>
-                                </div>
-                                <div class="post-body">
-                                        <div class="post-username">
-                                                <p><strong>John Doe </strong> plays <strong>DMF</strong> for <strong>Atalanta United</strong></p>
-                                                <div class="post-location">
-                                                        <i class="bi-geo-alt"></i>
-                                                        <p><strong>South Africa</strong></p>
-                                                </div>
-                                        </div>
-                                        <!-- <iframe width="620" height="345" -->
-                                        <!--         src="https://www.youtube.com/embed/YJTKlAvbDo4?si=N0uTRIx7iypfDPDK" title="YouTube video player" -->
-                                        <!--         frameborder="0" -->
-                                        <!--         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" -->
-                                        <!--         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                                        <p class="post-content">
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores dolorum eum numquam magni qui at
-                                                facere nihil voluptates sunt commodi. Voluptatem magnam perspiciatis, voluptatum earum magni
-                                                architecto beatae totam ab?
-                                        </p>
-                                        <div class="reactions">
-                                                <div class="comment">
-                                                        <i class="bi-chat-left fs-5"></i>
-                                                        <p class="comment-count">99</p>
-                                                </div>
-                                                <div class="like">
-                                                        <i class="bi-hand-thumbs-up fs-5"></i>
-                                                        <p class="like-count">99</p>
-                                                </div>
-                                                <!-- <div class="play"> -->
-                                                <!--         <i class="bi-play fs-4"></i> -->
-                                                <!--         <p>play</p> -->
-                                                <!-- </div> -->
-                                                <div class="scout">
-                                                        <i class="bi-journal-bookmark fs-5"></i>
-                                                        <p>scout</p>
-                                                </div>
-                                                <div class="sign">
-                                                        <i class="bi-pen fs-5"></i>
-                                                        <p>sign</p>
-                                                </div>
-                                                <div class="list-and-share">
-                                                        <i class="bi-bookmark-star fs-5"></i>
-                                                        <i class="bi-share fs-5"></i>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
+                        {% endfor %}
                 </main>
                 <nav>
                         <div class="nav-container">
@@ -833,24 +485,24 @@
                         <div class="input-box">
                                 <input type="text" class="input-field" placeholder="Search">
                         </div>
-                        <div class="card";">
-                                <div class="card-pfp-container" style="width: 100%; overflow: hidden;">
-                                        <div class="pfp" style="position: relative; height: 100%; padding-bottom: 100%; background-image: url('/images/view-soccer-ball.jpg')">
-                                        </div>
-                                </div>
-                                <div class="card-body">
-                                        <h5 class="card-title" style="color: white"><b>CR7's The GOAT</b></h5>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">An item</li>
-                                        <li class="list-group-item">A second item</li>
-                                        <li class="list-group-item">A third item</li>
-                                </ul>
-                                <div class="card-body-btns">
-                                <button class="btn">Track</button>
-                                <button class="btn">Sign</button>
-                                </div>
-                        </div>
+                        <!-- <div class="card";"> -->
+                        <!--         <div class="card-pfp-container" style="width: 100%; overflow: hidden;"> -->
+                        <!--                 <div class="pfp" style="position: relative; height: 100%; padding-bottom: 100%; background-image: url('/images/view-soccer-ball.jpg')"> -->
+                        <!--                 </div> -->
+                        <!--         </div> -->
+                        <!--         <div class="card-body"> -->
+                        <!--                 <h5 class="card-title" style="color: white"><b>CR7's The GOAT</b></h5> -->
+                        <!--         </div> -->
+                        <!--         <ul class="list-group list-group-flush"> -->
+                        <!--                 <li class="list-group-item">An item</li> -->
+                        <!--                 <li class="list-group-item">A second item</li> -->
+                        <!--                 <li class="list-group-item">A third item</li> -->
+                        <!--         </ul> -->
+                        <!--         <div class="card-body-btns"> -->
+                        <!--         <button class="btn">Track</button> -->
+                        <!--         <button class="btn">Sign</button> -->
+                        <!--         </div> -->
+                        <!-- </div> -->
                 </aside>
         <footer>Footer</footer>
         </body>
