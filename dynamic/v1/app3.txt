@@ -1,0 +1,127 @@
+import os
+from flask import Flask, request, render_template, redirect, url_for, jsonify
+from models.user import User
+from models.post import Post
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from models import storage
+from dynamic.v1.views import app_views
+from dotenv import load_dotenv
+from werkzeug.exceptions import NotFound
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask import send_from_directory
+
+load_dotenv()
+
+# Get the absolute path to the project directory
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Set the upload folder path
+UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Allow CORS for all domains
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# Register blueprint once
+if not app.blueprints.get('app_views'):
+    app.register_blueprint(app_views)
+
+# Database setup
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+@app.teardown_appcontext
+def teardown_db(exception):
+    """Close storage session"""
+    storage.close()
+
+# Custom 404 error handler
+@app.errorhandler(404)
+def not_found_error(error):
+    return jsonify({"error": "Not found"}), 404
+
+# Sample route to demonstrate 404 handling
+@app.route('/dynamic/v1/sample')
+def sample_route():
+    # Example route
+    return jsonify({"message": "This is a sample route"}), 200
+
+# Route for redirecting the root URL to the login page
+@app.route('/')
+def index():
+   return redirect(url_for('homepage'))
+
+# Route for rendering the login page
+@app.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
+
+# Route for handling the login form submission
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    # Authentication logic, such as checking username and password
+    user = session.query(User).filter_by(username=username, password=password).first()
+
+    if user:
+        return redirect(url_for('profile', username=username))
+    else:
+        return render_template('login.html', error="Invalid username or password")
+
+# Route for rendering the homepage
+@app.route('/homepage')
+def homepage():
+    return render_template('homepage.html')
+
+# Route for rendering the profile page
+@app.route('/profile/<username>')
+def profile(username):
+    user = session.query(User).filter_by(username=username).first()
+    if not user:
+        raise NotFound("User not found")
+    content = {
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "profile_picture": user.profile_picture
+    }
+    return render_template('profile.html', content=content)
+
+# Route for handling profile picture uploads
+@app.route('/upload_profile_picture', methods=['POST'])
+def upload_profile_picture():
+    if 'profile_picture' not in request.files:
+        return redirect(url_for('profile', username=request.form.get('username')))
+    file = request.files['profile_picture']
+    if file.filename == '':
+        return redirect(url_for('profile', username=request.form.get('username')))
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        user = session.query(User).filter_by(username=request.form.get('username')).first()
+        user.profile_picture = filename
+        session.commit()
+        return redirect(url_for('profile', username=user.username))
+    return redirect(url_for('profile', username=request.form.get('username')))
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+# Route for serving uploaded profile pictures
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+

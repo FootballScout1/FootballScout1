@@ -25,7 +25,7 @@
                 <header>
                         <div class="header-container">
                                 <div class="logo">
-                                        <a href="{{ url_for('home_icon', username=content.username) }}"
+                                        <a href="{{ url_for('home_icon', user_id=content.user_id) }}"
                                                 style="color: white; text-decoration: none;"><h1>Football Scout</h1></a>
                                 </div>
                         </div>
@@ -43,17 +43,25 @@
                         </div>
                         <div class="account-settings">
                                 <div class="account-settings-general" id="account-settings-general">
-                                        <div class="pfp-preview" style="margin-bottom: 20px; width: 150px; height: 150px; background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; border-radius: 10px;">
+                                        <div class="pfp-preview" style="margin-bottom: 20px; width: 150px; height: 150px; background-image: url('{{ url_for('uploaded_file', filename=content.profile_picture) if content.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; border-radius: 10px;">
                                         </div>
-                                        <form>
+                                        <form action="{{ url_for('upload_profile_picture', user_id=content.id) }}" method="POST" enctype="multipart/form-data">
                                                 <label for="new-pfp" class="pfp-label">Upload new profile picture</label>
-                                                <input type="file" class="pfp-input" id="new-pfp" value="">
-                                                <label for="first_name">First Name</label>
+                                                <input type="file" class="pfp-input" id="new-pfp" name="profile_picture" accept="image/*">
+                                                <!--<label for="first_name">First Name</label>
                                                 <input type="text" id="first_name" value="">
                                                 <label for="last_name">Last Name</label>
                                                 <input type="text" id="last_name" value="">
                                                 <label for="email">Email</label>
-                                                <input type="email" id="email" value="">
+						<input type="email" id="email" value="">-->
+						
+						<label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ content.first_name }}">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ content.last_name }}">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ content.email }}">
+
                                                 <div class="form-buttons">
                                                         <input type="submit" value="Save">
                                                         <input type="reset" value="Cancel">

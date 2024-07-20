@@ -24,7 +24,6 @@ Base = object
 if storage_t == "db":
     Base = declarative_base()
 
-
 class BaseModel:
     """The BaseModel class from which future classes will be derived"""
     if storage_t == "db":

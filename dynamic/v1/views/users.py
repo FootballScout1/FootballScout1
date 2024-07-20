@@ -1,28 +1,53 @@
+# dynamic/v1/views/users.py
+
 #!/usr/bin/python3
 """
 View module for handling User objects
 """
 
-from flask import Flask, jsonify, request, abort
+from os import path
+from flask import Flask, jsonify, request, abort, render_template, redirect, url_for, g, session
+from sqlalchemy import create_engine
+from werkzeug.utils import secure_filename
 from dynamic.v1.views import app_views
 from models import storage, User, UserRoleEnum, Club, Player, Scout
 from console import FootballScoutCommand
+import logging
+from sqlalchemy.orm import sessionmaker
+from models.base_model import Base
+
+logging.basicConfig(level=logging.DEBUG)
+
+# Database setup
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
+
+# Create a session
+Session = sessionmaker(bind=engine)
+session_db = Session()
+
+@app_views.before_request
+def load_user():
+    user_id = get_current_user_id()  # Function to get the current user ID
+    if user_id:
+        user = storage.get(User, user_id)
+        if user:
+            g.user_content = user.to_dict()
+        else:
+            g.user_content = {}
+    else:
+        g.user_content = {}
+
+def get_current_user_id():
+    """Get the current user ID from the session."""
+    return session.get('user_id')
 
 @app_views.route('/users', methods=['GET'])
 def get_users():
     """Retrieves the list of all User objects"""
-    # users = User.query.all()
     users = storage.all(User).values()
-    users_list = []
-    for user in users:
-        user_data = {
-            'id': user.id,
-            'name': (user.first_name or '') + ' ' + (user.last_name or ''),
-            'role': user.role.value if user.role else None  # Convert the enum to its value and Handle NoneType for user.role
-        }
-        users_list.append(user_data)
+    users_list = [user.to_dict() for user in users]
     return jsonify(users_list)
-    # return jsonify([user.to_dict() for user in users])
 
 @app_views.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
@@ -30,64 +55,21 @@ def get_user(user_id):
     user = storage.get(User, user_id)
     if not user:
         abort(404)
-
-    # user_list = []
-    # for attr in user:
-    user_data = {
-        'id': user.id,
-        'name': (user.first_name or '') + ' ' + (user.last_name or ''),
-        'role': user.role.value if user.role else None  # Convert the enum to its value and Handle NoneType for user.role
-    }
-    return jsonify(user_data)
-    # user_list.append(user_data)
-    # return jsonify(user_list)
-
-    # return jsonify(user.to_dict())
-
-@app_views.route('/users/<user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    """Deletes a User object"""
-    user = storage.get(User, user_id)
-    if not user:
-        abort(404)
-    user.delete()
-    storage.save()
-    return jsonify({}), 200
+    return jsonify(user.to_dict())
 
 @app_views.route('/users', methods=['POST'])
 def create_user():
-    """Creates a User object"""
-    if not request.get_json():
-        abort(400, description="Not a JSON")
-    data = request.get_json()
-    if 'email' not in data:
-        abort(400, description="Missing email")
-    if 'password' not in data:
-        abort(400, description="Missing password")
-    if 'first_name' not in data:
-        abort(400, description="Missing first_name")
-    if 'last_name' not in data:
-        abort(400, description="Missing last_name")
-    
-    # Ensure role is set to 'ordinary' if not provided
-    role = data.get('role', 'ordinary')
-    if role not in ['ordinary', 'player', 'scout']:
-        abort(400, description="Invalid role")
-
-    # Create the User object with proper role
-    data['role'] = UserRoleEnum[role]  # Convert role string to UserRoleEnum
-
-    user = User(**data)
-    user.save()
-
-    user_data = {
-        'id': user.id,
-        'name': (user.first_name or '') + ' ' + (user.last_name or ''),
-        'role': user.role.value if user.role else None  # Convert the enum to its value and Handle NoneType for user.role
-    }
-    return jsonify(user_data), 201
-
-    # return jsonify(user.to_dict()), 201
+    """Creates a User"""
+    if not request.json:
+        abort(400, 'Not a JSON')
+    if 'email' not in request.json:
+        abort(400, 'Missing email')
+    if 'password' not in request.json:
+        abort(400, 'Missing password')
+    new_user = User(**request.json)
+    storage.new(new_user)
+    storage.save()
+    return jsonify(new_user.to_dict()), 201
 
 @app_views.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -95,157 +77,49 @@ def update_user(user_id):
     user = storage.get(User, user_id)
     if not user:
         abort(404)
+    if not request.json:
+        abort(400, 'Not a JSON')
+    ignore = ['id', 'email', 'created_at', 'updated_at']
+    for key, value in request.json.items():
+        if key not in ignore:
+            setattr(user, key, value)
+    storage.save()
+    return jsonify(user.to_dict())
 
-    if not request.get_json():
-        abort(400, description="Not a JSON")
+@app_views.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    """Deletes a User object"""
+    user = storage.get(User, user_id)
+    if not user:
+        abort(404)
+    storage.delete(user)
+    storage.save()
+    return jsonify({})
 
-    data = request.get_json()
+@app_views.route('/users/<user_id>/profile_picture', methods=['POST'])
+def upload_profile_picture(user_id):
+    """Upload a profile picture for a user"""
+    user = storage.get(User, user_id)
+    if not user:
+        abort(404)
 
-    # Check if 'role' is in the update data
-    if 'role' in data:
-        new_role = data['role']
-        if new_role not in ['scout', 'player']:
-            abort(400, description="Invalid role")
+    if 'file' not in request.files:
+        abort(400, 'No file part')
+    file = request.files['file']
+    if file.filename == '':
+        abort(400, 'No selected file')
 
-    # Check if 'club_id' is provided and valid
-    if 'club_id' in data:
-        club_id = data['club_id']
-        club = storage.get(Club, club_id)
-        if not club:
-            abort(400, description=f"Club with ID {club_id} not found")
-        
-        # Assign club_id to user
-        user.club_id = club_id
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(path.join(app.config['UPLOAD_FOLDER'], filename))
+        user.profile_picture = filename
+        storage.save()
+        return jsonify(user.to_dict()), 200
 
-    try:
-        # Update user role if 'role' is provided
-        if 'role' in data:
-            # Use the role_switch method from console.py to switch roles
-            FootballScoutCommand().do_role_switch(f"{user_id} {new_role} {club_id}")
+    abort(400, 'File type not allowed')
 
-            # Retrieve the new role instance
-            if new_role == 'player':
-                # new_instance = storage.session.query(Player).filter_by(id=user_id).first()
-                new_instance = storage.get(Player, user_id)
-                if not new_instance:
-                    abort(404, description="New Player instance not found")
-                player_data = {
-                    'id': new_instance.id,
-                    'name': (new_instance.first_name or '') + ' ' + (new_instance.last_name or ''),
-                    'email': new_instance.email,
-                    'height': new_instance.height,
-                    'weight': new_instance.weight,
-                    'date_of_birth': new_instance.date_of_birth,
-                    'club_id': new_instance.club_id,
-                    'created_at': new_instance.created_at,
-                    'updated_at': new_instance.updated_at
-                }
-                return jsonify(player_data), 200
+def allowed_file(filename):
+    """Check if the file is an allowed type"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-            elif new_role == 'scout':
-                # new_instance = storage.session.query(Scout).filter_by(id=user_id).first()
-                new_instance = storage.get(Scout, user_id)
-                if not new_instance:
-                    abort(404, description="New Scout instance not found")
-                scout_data = {
-                    'id': new_instance.id,
-                    'name': (new_instance.first_name or '') + ' ' + (new_instance.last_name or ''),
-                    'email': new_instance.email,
-                    'club_id': new_instance.club_id,
-                    'created_at': new_instance.created_at,
-                    'updated_at': new_instance.updated_at
-                }
-                return jsonify(scout_data), 200
-
-        # except Exception as e:
-        #    abort(400, description=f"Failed to switch role: {str(e)}")
-
-    # Check if 'club_id' is provided and valid
-    # if 'club_id' in data:
-    #    club_id = data['club_id']
-    #    club = storage.get(Club, club_id)
-    #    if not club:
-    #        abort(400, description=f"Club with ID {club_id} not found")
-
-        # Assign club_id to user
-        # user.club_id = club_id
-    
-        # Update other attributes
-        # ignore_keys = ['id', 'email', 'created_at', 'updated_at', 'role', 'club_id']
-        # for key, value in data.items():
-        #    if key not in ignore_keys:
-        #        setattr(user, key, value)
-
-        # user.save()
-
-    except Exception as e:
-        storage.rollback()  # Ensure the session is rolled back
-        abort(400, description=f"Failed to update user: {str(e)}")
-
-    # If no role change, return updated user info
-    # user_data = {
-    #    'id': user.id,
-    #    'name': (user.first_name or '') + ' ' + (user.last_name or ''),
-    #    'role': user.role.value if user.role else None,  # Convert the enum to its value and Handle NoneType for user.role
-    #    'club_id': user.club_id
-    # }
-    # return jsonify(user_data), 200
-
-#@app_views.route('/users/<user_id>', methods=['PUT'])
-#def update_user(user_id):
-#    """Updates a User object"""
-#    user = storage.get(User, user_id)
-#    if not user:
-#        abort(404)
-#    if not request.get_json():
-#        abort(400, description="Not a JSON")
-#    data = request.get_json()
-#    
-#    # Upgrade user to scout or player
-#    # if 'role' in data:
-#    #    role = data['role']
-#    #    if role == 'scout':
-#    #        # Check if user is already a scout
-#    #        if not isinstance(user, Scout):
-#    #            scout = Scout(**user.to_dict())
-#    #            scout.save()
-#    #            user.delete()
-#    #            storage.save()
-#    #            return jsonify(scout.to_dict()), 200
-#    #        else:
-#    #            return jsonify(user.to_dict()), 200
-#    #    elif role == 'player':
-#            # Check if user is already a player
-#    #        if not isinstance(user, Player):
-#    #            player = Player(**user.to_dict())
-#    #            player.save()
-#    #            user.delete()
-#    #            storage.save()
-#    #            return jsonify(player.to_dict()), 200
-#    #        else:
-#    #            return jsonify(user.to_dict()), 200
-#    #    else:
-#    #        abort(400, description="Invalid role")
-#    
-#    # Upgrade user to scout or player
-#    if 'role' in data:
-#        if data['role'] not in UserRoleEnum._member_names_:
-#        # if data['role'] not in ['ordinary', 'player', 'scout']:
-#            return jsonify({"error": "Invalid role"}), 400
-#        # user.role = data['role']
-#
-#        # user.role = UserRoleEnum[data['role']]  # Convert string to UserRoleEnum
-#        
-#        try:
-#            user.switch_role(data['role'])
-#            return jsonify(user.to_dict()), 200
-#        except ValueError as e:
-#            abort(400, description=str(e))
-#
-#    ignore_keys = ['id', 'email', 'created_at', 'updated_at']
-#    for key, value in data.items():
-#        if key not in ignore_keys:
-#            setattr(user, key, value)
-#    user.save()
-#    return jsonify(user.to_dict()), 200
 

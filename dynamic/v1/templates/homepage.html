@@ -31,7 +31,8 @@
                 <main>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <a class="pfp" href="#" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+				<a class="pfp" href="#" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+				<!--<a class="pfp" href="#" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">-->
                                         </a>
                                 </div>
                                 <div class="post-body">
@@ -91,7 +92,8 @@
                         </div>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">
+				<div class="pfp" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+				<!--<div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">-->
                                         </div>
                                 </div>
                                 <div class="post-body">
@@ -150,7 +152,8 @@
                         </div>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">
+				<div class="pfp" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+				<!--<div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">-->
                                         </div>
                                 </div>
                                 <div class="post-body">
@@ -209,7 +212,8 @@
                         </div>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">
+				<div class="pfp" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+					<!--<div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">-->
                                         </div>
                                 </div>
                                 <div class="post-body">
@@ -268,7 +272,8 @@
                         </div>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">
+					<div class="pfp" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+					<!--<div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">-->
                                         </div>
                                 </div>
                                 <div class="post-body">
@@ -327,7 +332,8 @@
                         </div>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">
+					<div class="pfp" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+				<!--<div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">-->
                                         </div>
                                 </div>
                                 <div class="post-body">
@@ -386,7 +392,8 @@
                         </div>
                         <div class="lead-post">
                                 <div class="pfp-container">
-                                        <div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">
+					<div class="pfp" style="background-image: url('{{ user.profile_picture if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
+					<!--<div class="pfp" style="background-image: url('{{ url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover;">-->
                                         </div>
                                 </div>
                                 <div class="post-body">
@@ -446,7 +453,7 @@
                 </main>
                 <nav>
                         <div class="nav-container">
-                                <a href="{{ url_for('home_icon', username=content.username) }}" class="home">
+                                <a href="{{ url_for('home_icon', user_id=content.id) }}" class="home">
                                         <i class="home-icon bi-house"></i>
                                         <strong>Home</strong>
                                 </a>
@@ -466,7 +473,9 @@
                                         <button class="btn btn-create">Create</button>
                                 </a>
                         </div>
-                        <a href="{{ url_for('profile') }}" class="account">
+			<!--<a href="{{ url_for('profile', user_id=current_user.id) }}" class="account">-->
+			<a href="{{ url_for('profile', filename=content.profile_picture) if content.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}" class="account">
+			<!--<a href="{{ url_for('profile') }}" class="account">-->
                                 <i class="profile-icon bi-person"></i>
                         <strong>Profile</strong>
                         </a>

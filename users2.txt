@@ -1,0 +1,307 @@
+#!/usr/bin/python3
+"""
+View module for handling User objects
+"""
+
+from os import path
+from flask import Flask, jsonify, request, abort, render_template, redirect, url_for
+from sqlalchemy import create_engine
+from werkzeug.utils import secure_filename
+from dynamic.v1.views import app_views
+from models import storage, User, UserRoleEnum, Club, Player, Scout
+from console import FootballScoutCommand
+import logging
+
+from sqlalchemy.orm import sessionmaker
+from models.base_model import Base
+
+logging.basicConfig(level=logging.DEBUG)
+
+# Get the absolute path to the project directory
+# basedir = path.abspath(path.dirname(__file__))
+
+# Set the upload folder path
+# from dynamic.v1.app import basedir
+# UPLOAD_FOLDER = path.join(basedir, 'uploads')
+
+# app = Flask(__name__)
+# from dynamic.v1.app import app
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Database setup
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
+
+# Create a session
+Session = sessionmaker(bind=engine)
+session = Session()
+
+
+
+@app_views.route('/users', methods=['GET'])
+def get_users():
+    """Retrieves the list of all User objects"""
+    users = storage.all(User).values()
+    users_list = []
+    for user in users:
+        user_data = {
+            'id': user.id,
+            'name': (user.first_name or '') + ' ' + (user.last_name or ''),
+            'role': user.role.value if user.role else None  # Convert the enum to its value and Handle NoneType for user.role
+        }
+        users_list.append(user_data)
+    return jsonify(users_list)
+
+@app_views.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    """Retrieves a User object"""
+    user = storage.get(User, user_id)
+    if not user:
+        abort(404)
+
+    user_data = {
+        'id': user.id,
+        'name': (user.first_name or '') + ' ' + (user.last_name or ''),
+        'role': user.role.value if user.role else None  # Convert the enum to its value and Handle NoneType for user.role
+    }
+    return jsonify(user_data)
+
+@app_views.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    """Deletes a User object"""
+    user = storage.get(User, user_id)
+    if not user:
+        abort(404)
+    user.delete()
+    storage.save()
+    return jsonify({}), 200
+
+@app_views.route('/users', methods=['POST'])
+def create_user():
+    """Creates a User object"""
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    data = request.get_json()
+    if 'email' not in data:
+        abort(400, description="Missing email")
+    if 'password' not in data:
+        abort(400, description="Missing password")
+    if 'first_name' not in data:
+        abort(400, description="Missing first_name")
+    if 'last_name' not in data:
+        abort(400, description="Missing last_name")
+    
+    # Ensure role is set to 'ordinary' if not provided
+    role = data.get('role', 'ordinary')
+    if role not in ['ordinary', 'player', 'scout']:
+        abort(400, description="Invalid role")
+
+    # Create the User object with proper role
+    data['role'] = UserRoleEnum[role]  # Convert role string to UserRoleEnum
+
+    user = User(**data)
+    user.save()
+
+    user_data = {
+        'id': user.id,
+        'name': (user.first_name or '') + ' ' + (user.last_name or ''),
+        'role': user.role.value if user.role else None  # Convert the enum to its value and Handle NoneType for user.role
+    }
+    return jsonify(user_data), 201
+
+@app_views.route('/users/<user_id>', methods=['PUT'])
+def update_user(user_id):
+    """Updates a User object"""
+    user = storage.get(User, user_id)
+    if not user:
+        abort(404)
+
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+
+    data = request.get_json()
+
+    # Check if 'role' is in the update data
+    if 'role' in data:
+        new_role = data['role']
+        if new_role not in ['scout', 'player']:
+            abort(400, description="Invalid role")
+
+    # Check if 'club_id' is provided and valid
+    if 'club_id' in data:
+        club_id = data['club_id']
+        club = storage.get(Club, club_id)
+        if not club:
+            abort(400, description=f"Club with ID {club_id} not found")
+        
+        # Assign club_id to user
+        user.club_id = club_id
+
+    try:
+        # Update user role if 'role' is provided
+        if 'role' in data:
+            # Use the role_switch method from console.py to switch roles
+            FootballScoutCommand().do_role_switch(f"{user_id} {new_role} {club_id}")
+
+            # Retrieve the new role instance
+            if new_role == 'player':
+                new_instance = storage.get(Player, user_id)
+                if not new_instance:
+                    abort(404, description="New Player instance not found")
+                player_data = {
+                    'id': new_instance.id,
+                    'name': (new_instance.first_name or '') + ' ' + (new_instance.last_name or ''),
+                    'email': new_instance.email,
+                    'height': new_instance.height,
+                    'weight': new_instance.weight,
+                    'date_of_birth': new_instance.date_of_birth,
+                    'club_id': new_instance.club_id,
+                    'created_at': new_instance.created_at,
+                    'updated_at': new_instance.updated_at
+                }
+                return jsonify(player_data), 200
+
+            elif new_role == 'scout':
+                new_instance = storage.get(Scout, user_id)
+                if not new_instance:
+                    abort(404, description="New Scout instance not found")
+                scout_data = {
+                    'id': new_instance.id,
+                    'name': (new_instance.first_name or '') + ' ' + (new_instance.last_name or ''),
+                    'email': new_instance.email,
+                    'club_id': new_instance.club_id,
+                    'created_at': new_instance.created_at,
+                    'updated_at': new_instance.updated_at
+                }
+                return jsonify(scout_data), 200
+
+    except Exception as e:
+        storage.rollback()  # Ensure the session is rolled back
+        abort(400, description=f"Failed to update user: {str(e)}")
+
+def allowed_file(filename):
+    from dynamic.v1.app import app
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app_views.route('/profile/<user_id>', methods=['GET'])
+def profile(user_id):
+
+    # Fetch user data based on user_id
+    user_data = session.query(User).filter_by(id=user_id).first()
+
+    if user_data:
+        content = {
+            "username": user_data.first_name,
+            "profile_picture": user_data.profile_picture,
+            "first_name": user_data.first_name,
+            "last_name": user_data.last_name,
+            "email": user_data.email,
+            "id": user_data.id
+        }
+        return render_template('profile.html', content=content)
+    else:
+        return "User not found", 404
+
+    # Fetch user data from the database
+    # user = storage.get(User, user_id)
+
+    # if user is None:
+    #    return jsonify({"error": "User not found"}), 404
+
+    # user_data = {
+    #    "id": user.id,
+    #    "first_name": user.first_name,
+    #    "last_name": user.last_name,
+        # "role": user.role.value,
+    #    'role': user.role.value if user.role else None, # Convert the enum to its value and Handle NoneType for user.role
+        # "created_at": user.created_at,
+        # "updated_at": user.updated_at,
+    #    "created_at": user.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+    #    "updated_at": user.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+    #    "email": user.email,
+    #    "profile_picture": user.profile_picture or 'images/soccer-stadium-full-people.jpg'
+    # }
+    # return render_template('profile.html', user=user_data)
+    # return jsonify(user_data)
+
+    # print(user)
+    # if not user:
+    #    abort(404, description="User not found")
+
+    # content = {
+    #    'id': 'user.id',
+    #    'email': 'user.email',
+    #    'first_name': 'user.first_name',
+    #    'last_name': 'user.last_name',  
+    #    'profile_picture': user.profile_picture or 'default_profile.png'
+    # }
+    # return render_template('profile.html', content=content)
+
+@app_views.route('/upload_profile_picture/<user_id>', methods=['POST'])
+def upload_profile_picture(user_id):
+    from dynamic.v1.app import app
+
+    # Fetch user data from the database
+    user = storage.get(User, user_id)
+
+    if not user:
+        abort(404, description="User not found")
+
+    if 'profile_picture' not in request.files:
+        logging.debug("No profile picture in request files")
+        return jsonify({"error": "No profile picture in request files"}), 400
+        # return redirect(url_for('profile'))
+
+    file = request.files['profile_picture']
+    if file.filename == '':
+        logging.debug("Empty filename")
+        return jsonify({"error": "Empty filename"}), 400
+        # return redirect(url_for('profile'))
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = path.join(app.config['UPLOAD_FOLDER'], filename)
+        logging.debug(f"Saving file to {filepath}")
+        file.save(filepath)
+
+        # Update user's profile picture path in the database
+        # user = session.query(User).filter_by(id='user_id').first()
+        user.profile_picture = filename
+        session.commit()
+
+        # Fetch updated user data
+        user = storage.get(User, user_id)
+        if not user:
+            abort(404, description="User not found")
+
+        logging.debug(f"Updating user {user.first_name} profile picture to {filename}")
+        # Return user data as JSON
+        user_data = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "profile_picture": user.profile_picture,
+            'role': user.role.value if user.role else None,  # Convert the enum to its value and Handle NoneType for user.role
+            "created_at": user.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+            "updated_at": user.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        }
+
+        return jsonify(user_data)
+
+        # if user:
+        #    logging.debug(f"Updating user {user.first_name} profile picture to {filename}")
+        #    user.profile_picture = filename  # Store only the filename
+            # user.profile_picture = filepath
+        #    storage.save()
+            # session.commit()
+
+    # return redirect(url_for('profile'))
+
+@app_views.route('/uploads/<filename>')
+def uploaded_file(filename):
+    from flask import send_from_directory
+    # from dynamic.v1.app import app
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    # return send_from_directory('dynamic/v1/uploads', filename)

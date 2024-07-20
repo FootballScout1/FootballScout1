@@ -41,7 +41,7 @@
                 </main>
                 <nav>
                         <div class="nav-container">
-                                <a href="{{ url_for('home_icon', username=content.username if content else 'default_user') }}" class="home">
+                                <a href="{{ url_for('home_icon', user_id=content.user_id if content else 'default_user') }}" class="home">
                                         <i class="home-icon bi-house"></i>
                                         <strong>Home</strong>
                                 </a>
