@@ -24,7 +24,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Set a secret key for session management
-app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key_here')
+app.secret_key = os.getenv('SECRET_KEY', 'later')
 
 # Allow CORS for all domains
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -187,6 +187,13 @@ def comment_page(user_id):
 def home_icon(user_id):
     # Fetch user data based on user_id
     user_data = session_db.query(User).filter_by(id=user_id).first()
+
+    # user = storage.get(User, user_id)
+    # if not user:
+    #    return "User not found", 404
+    # return render_template('homepage.html', content=user.to_dict())
+
+
 
     if user_data:
         content = {

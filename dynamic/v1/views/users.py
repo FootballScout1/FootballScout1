@@ -6,7 +6,7 @@ View module for handling User objects
 """
 
 from os import path
-from flask import Flask, jsonify, request, abort, render_template, redirect, url_for, g, session
+from flask import Flask, jsonify, request, abort, render_template, redirect, url_for, g, session, send_from_directory
 from sqlalchemy import create_engine
 from werkzeug.utils import secure_filename
 from dynamic.v1.views import app_views
@@ -99,27 +99,55 @@ def delete_user(user_id):
 @app_views.route('/users/<user_id>/profile_picture', methods=['POST'])
 def upload_profile_picture(user_id):
     """Upload a profile picture for a user"""
+    from dynamic.v1.app import app
     user = storage.get(User, user_id)
     if not user:
         abort(404)
 
-    if 'file' not in request.files:
-        abort(400, 'No file part')
-    file = request.files['file']
+    if 'profile_picture' not in request.files:
+        logging.debug("No profile picture in request files")
+        return jsonify({"error": "No profile picture in request files"}), 400
+
+    file = request.files['profile_picture']
     if file.filename == '':
-        abort(400, 'No selected file')
+        logging.debug("Empty filename")
+        return jsonify({"error": "Empty filename"}), 400
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(path.join(app.config['UPLOAD_FOLDER'], filename))
-        user.profile_picture = filename
-        storage.save()
-        return jsonify(user.to_dict()), 200
+        filepath = path.join(app.config['UPLOAD_FOLDER'], filename)
+        logging.debug(f"Saving file to {filepath}")
+        file.save(filepath)
 
-    abort(400, 'File type not allowed')
+        # Update user's profile picture path in the database
+        user.profile_picture = filename
+        user.save()
+
+        logging.debug(f"Updating user {user.first_name} profile picture to {filename}")
+        # return jsonify(user.to_dict())
+        return redirect(url_for('app_views.profile', user_id=user.id))
+
+    logging.debug("File type not allowed or file is invalid")
+    return jsonify({"error": "File type not allowed or file is invalid"}), 400
+
+    # if 'file' not in request.files:
+    #    abort(400, 'No file part')
+    # file = request.files['file']
+    # if file.filename == '':
+    #    abort(400, 'No selected file')
+
+    # if file and allowed_file(file.filename):
+    #    filename = secure_filename(file.filename)
+    #    file.save(path.join(app.config['UPLOAD_FOLDER'], filename))
+    #    user.profile_picture = filename
+    #    storage.save()
+    #    return jsonify(user.to_dict()), 200
+
+    # abort(400, 'File type not allowed')
 
 def allowed_file(filename):
     """Check if the file is an allowed type"""
+    from dynamic.v1.app import app
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @app_views.route('/profile/<user_id>', methods=['GET'])
@@ -129,3 +157,9 @@ def profile(user_id):
     if not user:
         return "User not found", 404
     return render_template('profile.html', content=user.to_dict())
+
+# Route for serving uploaded profile pictures
+@app_views.route('/uploads/<filename>')
+def uploaded_file(filename):
+    from dynamic.v1.app import app
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

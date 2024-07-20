@@ -25,7 +25,7 @@
                 <header>
                         <div class="header-container">
                                 <div class="logo">
-                                        <a href="{{ url_for('home_icon', user_id=content.user_id) }}"
+                                        <a href="{{ url_for('home_icon', user_id=content.id) }}"
                                                 style="color: white; text-decoration: none;"><h1>Football Scout</h1></a>
                                 </div>
                         </div>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="account-settings">
                                 <div class="account-settings-general" id="account-settings-general">
-                                        <div class="pfp-preview" style="margin-bottom: 20px; width: 150px; height: 150px; background-image: url('{{ url_for('uploaded_file', filename=content.profile_picture) if content.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; border-radius: 10px;">
+                                        <div class="pfp-preview" style="margin-bottom: 20px; width: 150px; height: 150px; background-image: url('{{ url_for('app_views.uploaded_file', filename=content.profile_picture) if content.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; border-radius: 10px;">
                                         </div>
                                         <form action="{{ url_for('app_views.upload_profile_picture', user_id=content.id) }}" method="POST" enctype="multipart/form-data">
                                                 <label for="new-pfp" class="pfp-label">Upload new profile picture</label>
