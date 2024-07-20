@@ -5,7 +5,7 @@
 View module for handling User objects
 """
 
-from os import path
+from os import path, getenv
 from flask import Flask, jsonify, request, abort, render_template, redirect, url_for, g, session, send_from_directory
 from sqlalchemy import create_engine
 from werkzeug.utils import secure_filename
@@ -28,10 +28,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
 
 # Create the engine using the PostgreSQL connection string
 DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
