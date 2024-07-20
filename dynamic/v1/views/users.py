@@ -15,6 +15,7 @@ from console import FootballScoutCommand
 import logging
 from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
+import uuid
 
 logging.basicConfig(level=logging.DEBUG)
 

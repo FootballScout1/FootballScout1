@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from werkzeug.exceptions import NotFound
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+import uuid
 
 load_dotenv()
 
@@ -111,7 +112,7 @@ def homepage():
         "lists": ["List 1", "List 2", "List 3"],
         "reports": ["Report 1", "Report 2", "Report 3"]
     }
-    return render_template('homepage.html', content=content)
+    return render_template('homepage.html', content=content, cache_id=uuid.uuid4())
 
 # Route for rendering the registration page
 @app.route('/register', methods=['GET'])
