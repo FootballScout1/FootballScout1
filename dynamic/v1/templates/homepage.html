@@ -474,7 +474,8 @@
                                 </a>
                         </div>
 			<!--<a href="{{ url_for('app_views.profile', user_id=content.id) }}" class="account">-->
-			<a href="{{ url_for('app_views.profile', filename=content.profile_picture) if content.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}" class="account">
+				<a href="{{ url_for('app_views.profile', user_id=content.id) }}" class="account">
+					<!--if content.id else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}" class="account">-->
 			<!--<a href="{{ url_for('app_views.profile', user_id=content.id) }}" class="account">-->
                                 <i class="profile-icon bi-person"></i>
                         <strong>Profile</strong>
