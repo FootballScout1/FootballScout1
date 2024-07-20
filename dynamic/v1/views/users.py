@@ -122,4 +122,12 @@ def allowed_file(filename):
     """Check if the file is an allowed type"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+@app_views.route('/profile/<user_id>', methods=['GET'])
+def profile(user_id):
 
+    # Fetch user data based on user_id
+    user = storage.get(User, user_id)
+    if not user:
+        return "User not found", 404
+
+    return render_template('profile.html', content=user.to_dict())

@@ -61,7 +61,7 @@
                                         <button class="btn btn-create">Create</button>
                                 </a>
                         </div>
-                        <a href="{{ url_for('profile') }}" class="account">
+                        <a href="{{ url_for('app_views.profile', user_id=content.id) }}" class="account">
                                 <i class="profile-icon bi-person"></i>
                         <strong>Profile</strong>
                         </a>

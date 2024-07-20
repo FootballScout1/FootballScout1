@@ -106,6 +106,7 @@ def homepage():
     content = {
         "id": user.id,
         "username": username,
+        "profile_picture": user.profile_picture,
         "notifications": ["Notification 1", "Notification 2", "Notification 3"],
         "lists": ["List 1", "List 2", "List 3"],
         "reports": ["Report 1", "Report 2", "Report 3"]
@@ -164,14 +165,22 @@ def add_post():
     return redirect(url_for('test_post'))  # Redirect to a test route or homepage
 
 # Route for rendering the comment.html template
-@app.route('/comment')
-def comment_page():
+@app.route('/comment/<user_id>')
+def comment_page(user_id):
+
+    # Fetch user data based on user_id
+    user = storage.get(User, user_id)
+    if not user:
+        return "User not found", 404
+
+    return render_template('comment.html', content=user.to_dict())
+
     # Example data for testing purposes
-    comments = [
-        {"username": "John Doe", "comment": "Great post!"},
-        {"username": "Jane Smith", "comment": "Nice job!"},
-    ]
-    return render_template('comment.html', comments=comments)
+    # comments = [
+    #    {"username": "John Doe", "comment": "Great post!"},
+    #    {"username": "Jane Smith", "comment": "Nice job!"},
+    # ]
+    # return render_template('comment.html', comments=comments)
 
 # Route for handling home icon click, redirects to the homepage
 @app.route('/home_icon/<user_id>', methods=['GET'])
@@ -198,7 +207,13 @@ def create_icon():
 # Route for handling comment icon click, redirects to the comment page
 @app.route('/comment_icon')
 def comment_icon():
-    return redirect(url_for('comment_page'))
+    user_id = get_current_user_id()  # Function to get the current user ID
+    if user_id:
+        return redirect(url_for('comment_page', user_id=user_id))
+    else:
+        return 'User not found', 404
+
+    # return redirect(url_for('comment_page'))
 
 if __name__ == "__main__":
     host = os.getenv('FOOTBALL_SCOUT_API_HOST', '0.0.0.0')
