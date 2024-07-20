@@ -39,7 +39,8 @@
                 </main>
                 <nav>
                         <div class="nav-container">
-                                <a href="{{ url_for('homepage') }}" class="home">
+			<a href="{{ url_for('home_icon', user_id=content.id) }}" class="home">
+			<!--<a href="{{ url_for('homepage') }}" class="home">-->
                                         <i class="home-icon bi-house"></i>
                                         <strong>Home</strong>
                                 </a>
@@ -55,7 +56,7 @@
                                         <i class="reports-icon bi-journal-bookmark"></i>
                                         <strong>Reports</strong>
                                 </a>
-                                <a href="{{ url_for('add_post') }}">
+                                <a href="{{ url_for('add_post', user_id=content.id) }}">
                                         <button class="btn btn-create">Create</button>
                                 </a>
                         </div>

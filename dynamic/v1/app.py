@@ -137,32 +137,59 @@ def register():
     return redirect(url_for('homepage', username=user.first_name))
 
 # Route to render the static post.html template
-@app.route('/test_post')
-def test_post():
-    username = request.args.get('username')
-    content = {
-        "username": username,
-        "notifications": ["Notification 1", "Notification 2", "Notification 3"],
-        "lists": ["List 1", "List 2", "List 3"],
-        "reports": ["Report 1", "Report 2", "Report 3"]
-    }
-    return render_template('post.html', content=content)
+@app.route('/test_post/<user_id>')
+def test_post(user_id):
+
+    # Fetch user data based on user_id
+    user = storage.get(User, user_id)
+    if not user:
+        return "User not found", 404
+
+    return render_template('post.html', content=user.to_dict())
+
+    # username = request.args.get('username')
+    # content = {
+    #    "username": username,
+    #    "notifications": ["Notification 1", "Notification 2", "Notification 3"],
+    #    "lists": ["List 1", "List 2", "List 3"],
+    #    "reports": ["Report 1", "Report 2", "Report 3"]
+    # }
+    # return render_template('post.html', content=content)
 
 # Route for rendering the addpost.html template
-@app.route('/addpost', methods=['GET'])
-def add_post_page():
-    content = {
-        "username": "default_user",
-    }
-    return render_template('addpost.html', content=content)
+@app.route('/addpost/<user_id>', methods=['GET'])
+def add_post_page(user_id):
+
+    user = storage.get(User, user_id)
+    if not user:
+        return "User not found", 404
+    # content = {
+    #    "username": "default_user",
+    # }
+    return render_template('addpost.html', content=user.to_dict())
 
 # Route for handling the add post form submission
-@app.route('/addpost', methods=['POST'])
-def add_post():
+@app.route('/addpost/<user_id>', methods=['POST'])
+def add_post(user_id):
+
+    user = storage.get(User, user_id)
+    if not user:
+        return "User not found", 404
+    return redirect(url_for('test_post', content=user.to_dict()))  # Redirect to the posts page
+
+    # return render_template('addpost.html', content=user.to_dict())
+
+
+    # user_id = get_current_user_id()  # Function to get the current user ID
+    # if user_id:
+    #    return redirect(url_for('test_post', user_id=user_id))
+    # else:
+    #    return 'User not found', 404
+
     # Extract post data from form
-    title = request.form.get('title')
-    content = request.form.get('content')
-    return redirect(url_for('test_post'))  # Redirect to a test route or homepage
+    # title = request.form.get('title')
+    # content = request.form.get('content')
+    # return redirect(url_for('test_post'))  # Redirect to a test route or homepage
 
 # Route for rendering the comment.html template
 @app.route('/comment/<user_id>')
@@ -209,7 +236,22 @@ def home_icon(user_id):
 # Route for handling create icon click, redirects to the addpost page
 @app.route('/create_icon')
 def create_icon():
-    return redirect(url_for('add_post_page'))
+    user_id = get_current_user_id()  # Function to get the current user ID
+    
+    if user_id:
+        return redirect(url_for('add_post_page', user_id=user_id))
+    else:
+        return 'User not found', 404
+
+    # user = storage.get(User, user_id)
+    # if not user:
+    #    return "User not found", 404
+
+    # return redirect(url_for('add_post_page', content=user.to_dict()))
+    # else:
+    #    return 'User not found', 404
+
+    # return redirect(url_for('add_post_page'))
 
 # Route for handling comment icon click, redirects to the comment page
 @app.route('/comment_icon')
