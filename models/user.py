@@ -12,6 +12,8 @@ from models.user_role_enum import UserRoleEnum
 
 from models.scout import Scout
 from models.player import Player
+
+from werkzeug.security import generate_password_hash, check_password_hash
 # from .user import UserRoleEnum
 
 # class UserRoleEnum(Enum):
@@ -85,6 +87,12 @@ class User(BaseModel, Base):
         # if "_sa_instance_state" in user_dict:
         #    del user_dict["_sa_instance_state"]
         # return user_dict
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 #    def switch_role(self, new_role):
 #        """Switch user role and inherit attributes"""
