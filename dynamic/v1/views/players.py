@@ -3,9 +3,58 @@
 View module for handling Player objects
 """
 
-from flask import Flask, jsonify, request, abort, make_response
+from os import path, getenv
+from flask import Flask, jsonify, request, abort, render_template, redirect, url_for, g, session, send_from_directory
+from flask import make_response
+from sqlalchemy import create_engine
+from werkzeug.utils import secure_filename
 from dynamic.v1.views import app_views
-from models import storage, Player, Post
+from models import storage, User, UserRoleEnum, Club, Player, Scout, Post
+from console import FootballScoutCommand
+import logging
+from sqlalchemy.orm import sessionmaker
+from models.base_model import Base
+import uuid
+
+logging.basicConfig(level=logging.DEBUG)
+
+# Database setup
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
+
+# Database setup
+# engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
+
+# Database setup
+# Extract the PostgreSQL connection details from environment variables
+# user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+# password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+# host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+# database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+
+# Create the engine using the PostgreSQL connection string
+# DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+# engine = create_engine(DATABASE_URL)
+
+# Create a session
+Session = sessionmaker(bind=engine)
+session_db = Session()
+
+@app_views.before_request
+def load_user():
+    user_id = get_current_user_id()  # Function to get the current user ID
+    if user_id:
+        user = storage.get(User, user_id)
+        if user:
+            g.user_content = user.to_dict()
+        else:
+            g.user_content = {}
+    else:
+        g.user_content = {}
+
+def get_current_user_id():
+    """Get the current user ID from the session."""
+    return session.get('user_id')
 
 @app_views.route('/players', methods=['GET'])
 def get_players():

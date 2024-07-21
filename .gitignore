@@ -13,4 +13,4 @@ dynamic/__pycache__/
 models/association_tables.py
 dynamic/v1/uploads/*
 !dynamic/v1/uploads/.gitignore
-
+footDB.db

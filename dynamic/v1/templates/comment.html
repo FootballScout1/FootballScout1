@@ -94,7 +94,25 @@
                         textarea.addEventListener("keyup", e =>{
                                 let scHeight = e.target.scrollHeight;
                                 textarea.style.height = `${scHeight}px`
-                        })
+                        });
+
+			document.querySelector('.submit-comment').addEventListener('click', function() {
+            			const commentText = document.querySelector('.add-comment').value;
+            			fetch('/dynamic/v1/comments', {
+                			method: 'POST',
+                			headers: {
+                    				'Content-Type': 'application/json'
+                			},
+                			body: JSON.stringify({ text: commentText })
+            			})
+            			.then(response => response.json())
+            			.then(data => {
+                			console.log('Success:', data);
+            			})
+            			.catch((error) => {
+                			console.error('Error:', error);
+            			});
+        		});
                 </script>
         </body>
 </html>

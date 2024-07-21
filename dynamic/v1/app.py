@@ -127,7 +127,7 @@ def homepage():
         "lists": ["List 1", "List 2", "List 3"],
         "reports": ["Report 1", "Report 2", "Report 3"]
     }
-    return render_template('homepage.html', content=content, cache_id=uuid.uuid4())
+    return render_template('homepage.html', content=content) #cache_id=uuid.uuid4())
 
 # Route for rendering the registration page
 @app.route('/register', methods=['GET'])
@@ -163,15 +163,6 @@ def test_post(user_id):
 
     return render_template('post.html', user_id=user_id, content=user.to_dict())
 
-    # username = request.args.get('username')
-    # content = {
-    #    "username": username,
-    #    "notifications": ["Notification 1", "Notification 2", "Notification 3"],
-    #    "lists": ["List 1", "List 2", "List 3"],
-    #    "reports": ["Report 1", "Report 2", "Report 3"]
-    # }
-    # return render_template('post.html', content=content)
-
 # Route for rendering the addpost.html template
 @app.route('/addpost/<user_id>', methods=['GET'])
 def add_post_page(user_id):
@@ -179,9 +170,6 @@ def add_post_page(user_id):
     user = storage.get(User, user_id)
     if not user:
         return "User not found", 404
-    # content = {
-    #    "username": "default_user",
-    # }
     return render_template('addpost.html', user_id=user_id, content=user.to_dict())
 
 # Route for handling the add post form submission
@@ -192,20 +180,6 @@ def add_post(user_id):
     if not user:
         return "User not found", 404
     return redirect(url_for('test_post', user_id=user_id, content=user.to_dict()))  # Redirect to the posts page
-
-    # return render_template('addpost.html', content=user.to_dict())
-
-
-    # user_id = get_current_user_id()  # Function to get the current user ID
-    # if user_id:
-    #    return redirect(url_for('test_post', user_id=user_id))
-    # else:
-    #    return 'User not found', 404
-
-    # Extract post data from form
-    # title = request.form.get('title')
-    # content = request.form.get('content')
-    # return redirect(url_for('test_post'))  # Redirect to a test route or homepage
 
 # Route for rendering the comment.html template
 @app.route('/comment/<user_id>')
@@ -218,26 +192,11 @@ def comment_page(user_id):
 
     return render_template('comment.html', user_id=user_id, content=user.to_dict())
 
-    # Example data for testing purposes
-    # comments = [
-    #    {"username": "John Doe", "comment": "Great post!"},
-    #    {"username": "Jane Smith", "comment": "Nice job!"},
-    # ]
-    # return render_template('comment.html', comments=comments)
-
 # Route for handling home icon click, redirects to the homepage
 @app.route('/home_icon/<user_id>', methods=['GET'])
 def home_icon(user_id):
     # Fetch user data based on user_id
     user_data = session_db.query(User).filter_by(id=user_id).first()
-
-    # user = storage.get(User, user_id)
-    # if not user:
-    #    return "User not found", 404
-    # return render_template('homepage.html', content=user.to_dict())
-
-
-
     if user_data:
         content = {
             "username": user_data.first_name,
@@ -258,23 +217,6 @@ def create_icon(user_id):
         return "User not found", 404
     return redirect(url_for('add_post_page', user_id=user_id, content=user.to_dict()))  # Redirect to the addpost page
 
-    # user_id = get_current_user_id()  # Function to get the current user ID
-    
-    # if user_id:
-    #    return redirect(url_for('add_post_page', user_id=user_id))
-    # else:
-    #    return 'User not found', 404
-
-    # user = storage.get(User, user_id)
-    # if not user:
-    #    return "User not found", 404
-
-    # return redirect(url_for('add_post_page', content=user.to_dict()))
-    # else:
-    #    return 'User not found', 404
-
-    # return redirect(url_for('add_post_page'))
-
 # Route for handling comment icon click, redirects to the comment page
 @app.route('/comment_icon/<user_id>')
 def comment_icon(user_id):
@@ -282,14 +224,7 @@ def comment_icon(user_id):
     user = storage.get(User, user_id)
     if not user:
         return "User not found", 404
-
-    # user_id = get_current_user_id()  # Function to get the current user ID
-    # if user_id:
     return redirect(url_for('comment_page', user_id=user_id, content=user.to_dict()))
-   #  else:
-   #     return 'User not found', 404
-
-    # return redirect(url_for('comment_page'))
 
 if __name__ == "__main__":
     host = os.getenv('FOOTBALL_SCOUT_API_HOST', '0.0.0.0')

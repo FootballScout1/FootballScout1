@@ -1,5 +1,3 @@
-# dynamic/v1/views/users.py
-
 #!/usr/bin/python3
 """
 View module for handling User objects
@@ -144,21 +142,6 @@ def upload_profile_picture(user_id):
 
     logging.debug("File type not allowed or file is invalid")
     return jsonify({"error": "File type not allowed or file is invalid"}), 400
-
-    # if 'file' not in request.files:
-    #    abort(400, 'No file part')
-    # file = request.files['file']
-    # if file.filename == '':
-    #    abort(400, 'No selected file')
-
-    # if file and allowed_file(file.filename):
-    #    filename = secure_filename(file.filename)
-    #    file.save(path.join(app.config['UPLOAD_FOLDER'], filename))
-    #    user.profile_picture = filename
-    #    storage.save()
-    #    return jsonify(user.to_dict()), 200
-
-    # abort(400, 'File type not allowed')
 
 def allowed_file(filename):
     """Check if the file is an allowed type"""
