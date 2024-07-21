@@ -23,6 +23,7 @@ engine = create_engine(db, pool_pre_ping=True)
 # password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
 # host = getenv('FOOTBALL_SCOUT_DEV_MYSQL_HOST')
 # database = getenv('FOOTBALL_SCOUT_DEV_MYSQL_DB')
+<<<<<<< HEAD:create_Players.py
 
 # engine = create_engine(
 #    f"mysql+mysqldb://{user}:{password}@{host}/{database}",
@@ -39,6 +40,13 @@ engine = create_engine(db, pool_pre_ping=True)
 #    f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
 #    pool_pre_ping=True,
 #    echo=False
+=======
+#
+# engine = create_engine(
+#     f"mysql+mysqldb://{user}:{password}@{host}/{database}",
+#     pool_pre_ping=True,
+#     echo=False
+>>>>>>> 391da8b (Deleted sqlite db):POPULATE_DB/create_Players.py
 # )
 
 session = Session(engine)
