@@ -40,14 +40,6 @@ engine = create_engine(db, pool_pre_ping=True)
 Session = sessionmaker(bind=engine)
 session_db = Session()
 
-
-# from flask import Blueprint, jsonify, request, abort
-# from models import storage
-# from models.comment import Comment
-# from dynamic.v1.views import app_views
-
-# app_views = Blueprint('comments', __name__, url_prefix='/api/v1/comments')
-
 @app_views.before_request
 def load_user():
     user_id = get_current_user_id()  # Function to get the current user ID
@@ -85,6 +77,9 @@ def create_comment():
     if not request.json:
         abort(400, 'Not a JSON')
     data = request.get_json()
+    
+    logging.debug(f"Received data: {data}")
+
     comment = Comment(**data)
     comment.save()
     return jsonify(comment.to_dict()), 201
