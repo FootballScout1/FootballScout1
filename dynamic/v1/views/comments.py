@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-View module for handling User objects
+View module for handling Comment objects
 """
 
 from os import path, getenv
@@ -47,6 +47,23 @@ session_db = Session()
 # from dynamic.v1.views import app_views
 
 # app_views = Blueprint('comments', __name__, url_prefix='/api/v1/comments')
+
+@app_views.before_request
+def load_user():
+    user_id = get_current_user_id()  # Function to get the current user ID
+    if user_id:
+        user = storage.get(User, user_id)
+        if user:
+            g.user_content = user.to_dict()
+        else:
+            g.user_content = {}
+    else:
+        g.user_content = {}
+
+def get_current_user_id():
+    """Get the current user ID from the session."""
+    return session.get('user_id')
+
 
 @app_views.route('/comments', methods=['GET'], strict_slashes=False)
 def get_comments():
