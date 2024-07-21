@@ -5,7 +5,6 @@ Module renders dynamic content on homepage
 """
 
 from flask import Blueprint, render_template, abort
-from jinja2 import TemplateNotFound
 from dynamic_site.lazydict import update_obj_dict
 from models.post import Post
 from models import storage
@@ -33,5 +32,5 @@ def render_homepage():
 
         return render_template('homepage.html', posts=all_posts_info[95:105])
 
-    except TemplateNotFound:
+    except Exception as e:
         abort(404)
