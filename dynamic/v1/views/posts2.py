@@ -56,14 +56,16 @@ def get_current_user_id():
     """Get the current user ID from the session."""
     return session.get('user_id')
 
-@app_views.route('/post/<user_id>/<post_id>', strict_slashes=False)
-def fetch_post(user_id, post_id):
+# @app_views.route('/post/<user_id>/<post_id>', strict_slashes=False)
+# def fetch_post(user_id, post_id):
+@app_views.route('/post/<post_id>', strict_slashes=False)
+def fetch_post(post_id):
     """
     Renders Post object with its Comment's and Like's
     """
-    user = storage.get(User, user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
+    # user = storage.get(User, user_id)
+    # if not user:
+    #    return jsonify({"error": "User not found"}), 404
     post = storage.get(Post, post_id)
     if not post:
         return jsonify({"error": "Post not found"}), 404
@@ -97,13 +99,7 @@ def fetch_post(user_id, post_id):
         #    update_obj_dict(comment, comment_dict)
         #    all_comments_dicts.append(comment_dict)
 
-        return render_template('post.html',
-                               comments=all_comments_dicts[:20],
-                               likes=all_likes_dicts[:20],
-                               user=user,
-                               content=user_id,
-                               post=post_dict,
-                               cache_id=uuid.uuid4())
+        return render_template('post.html', comments=all_comments_dicts[:20], likes=all_likes_dicts[:20], post=post_dict, cache_id=uuid.uuid4())
 
     # except Exception as e:
     #    abort(404)
@@ -115,13 +111,13 @@ def get_posts():
     posts = storage.all(Post).values()
     return jsonify([post.to_dict() for post in posts])
 
-@app_views.route('/posts/<post_id>', methods=['GET'], strict_slashes=False)
-def get_post(post_id):
-    """Retrieve a post by ID"""
-    post = storage.get(Post, post_id)
-    if post is None:
-        abort(404)
-    return jsonify(post.to_dict())
+# @app_views.route('/posts/<post_id>', methods=['GET'], strict_slashes=False)
+# def get_post(post_id):
+#    """Retrieve a post by ID"""
+#    post = storage.get(Post, post_id)
+#    if post is None:
+#        abort(404)
+#    return jsonify(post.to_dict())
 
 @app_views.route('/posts', methods=['POST'], strict_slashes=False)
 def create_post():
@@ -181,6 +177,67 @@ def create_post_comment(post_id):
     comment = Comment(**data)
     comment.save()
     return jsonify(comment.to_dict()), 201
+
+# Route to render the static post.html template
+# @app.route('/test_post/<user_id>/<post_id>')
+# def test_post(user_id, post_id):
+
+    # Fetch user data based on user_id
+#    user = storage.get(User, user_id)
+#    post = storage.get(Post, post_id)
+#    if not user or not post:
+#        return "User or Post not found", 404
+
+#    return render_template('post.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
+
+# Route for rendering the addpost.html template
+# @app.route('/addpost/<user_id>', methods=['GET'])
+# def add_post_page(user_id):
+
+#    user = storage.get(User, user_id)
+#    if not user:
+#        return "User not found", 404
+#    return render_template('addpost.html', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4())
+
+# Route for handling create icon click, redirects to the addpost page
+# @app.route('/create_icon/<user_id>')
+# def create_icon(user_id):
+
+#    user = storage.get(User, user_id)
+#    if not user:
+#        return "User not found", 404
+#    return redirect(url_for('add_post_page', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the addpost page
+
+# Route for handling comment icon click, redirects to the comment page
+# @app.route('/comment_icon/<user_id>/<post_id>')
+# def comment_icon(user_id, post_id):
+
+#    user = storage.get(User, user_id)
+#    post = storage.get(Post, post_id)
+#    if not user or not post:
+#        return "User or Post not found", 404
+#    return render_template('comment.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
+
+# Route for handling the add post form submission
+# @app.route('/addpost/<user_id>', methods=['POST'])
+# def add_post(user_id):
+
+#    user = storage.get(User, user_id)
+#    if not user:
+#        return "User not found", 404
+#    return redirect(url_for('test_post', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the posts page
+
+# Route for rendering the comment.html template
+# @app.route('/comment/<user_id>/<post_id>')
+# def comment_page(user_id, post_id):
+
+    # Fetch user data based on user_id
+#    user = storage.get(User, user_id)
+#    post = storage.get(Post, post_id)
+#    if not user or not post:
+#        return "User or Post not found", 404
+
+#    return render_template('comment.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
 
 @app_views.route('/posts/<post_id>/likes', methods=['POST'], strict_slashes=False)
 def add_like_to_post(post_id):

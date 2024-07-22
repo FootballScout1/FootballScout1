@@ -228,7 +228,7 @@ def test_post(user_id, post_id):
     if not user or not post:
         return "User or Post not found", 404
 
-    return render_template('post.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
+    return render_template('post.html', user_id=user_id, post_id=post_id, cache_id=uuid.uuid4())
 
 # Route for rendering the addpost.html template
 @app.route('/addpost/<user_id>', methods=['GET'])

@@ -22,20 +22,6 @@ logging.basicConfig(level=logging.DEBUG)
 db = "sqlite:///footDB.db"
 engine = create_engine(db, pool_pre_ping=True)
 
-# Database setup
-# engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
-
-# Database setup
-# Extract the PostgreSQL connection details from environment variables
-# user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-# password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-# host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-# database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
-
-# Create the engine using the PostgreSQL connection string
-# DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-# engine = create_engine(DATABASE_URL)
-
 # Create a session
 Session = sessionmaker(bind=engine)
 session_db = Session()
@@ -56,19 +42,56 @@ def get_current_user_id():
     """Get the current user ID from the session."""
     return session.get('user_id')
 
-@app_views.route('/post/<user_id>/<post_id>', strict_slashes=False)
-def fetch_post(user_id, post_id):
+# Route to render the addpost.html template
+@app_views.route('/create_post', methods=['GET'], strict_slashes=False)
+def add_post_page():
+    """Render the addpost.html template for creating a new post"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return redirect(url_for('login'))  # Redirect to login if user is not logged in
+
+    user = storage.get(User, user_id)
+    if not user or user.role not in [UserRoleEnum.PLAYER, UserRoleEnum.SCOUT]:
+        abort(403)  # Forbidden if the user is not a player or scout
+
+    return render_template('addpost.html', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4())
+
+# Route for handling the add post form submission
+@app_views.route('/create_post', methods=['POST'], strict_slashes=False)
+def create_post():
+    """Handle form submission and create a new post"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return redirect(url_for('login'))  # Redirect to login if user is not logged in
+
+    user = storage.get(User, user_id)
+    if not user or user.role not in [UserRoleEnum.PLAYER, UserRoleEnum.SCOUT]:
+        abort(403)  # Forbidden if the user is not a player or scout
+
+    if not request.form:
+        abort(400, 'Not a valid form submission')
+
+    data = {
+        'title': request.form.get('title'),
+        'content': request.form.get('content'),
+        'user_id': user_id
+    }
+
+    post = Post(**data)
+    post.save()
+
+    return redirect(url_for('fetch_post', post_id=post.id))  # Redirect to the newly created post
+
+# Other existing routes...
+@app_views.route('/post/<post_id>', strict_slashes=False)
+def fetch_post(post_id):
     """
     Renders Post object with its Comment's and Like's
     """
-    user = storage.get(User, user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
     post = storage.get(Post, post_id)
     if not post:
         return jsonify({"error": "Post not found"}), 404
-    # try:
-        # post = storage.get(Post, post_id)
+
     post_dict = post.to_dict()
     update_obj_dict(post, post_dict)
     post_dict.update({
@@ -76,62 +99,17 @@ def fetch_post(user_id, post_id):
         'likes_count': len(post.likes)
     })
 
-    # Prepare comments list
-    all_comments_dicts = []
-    for comment in post.comments:
-        comment_dict = comment.to_dict()
-        update_obj_dict(comment, comment_dict)
-        all_comments_dicts.append(comment_dict)
+    all_comments_dicts = [comment.to_dict() for comment in post.comments]
+    all_likes_dicts = [like.to_dict() for like in post.likes]
 
-    # Prepare likes list
-    all_likes_dicts = []
-    for like in post.likes:
-        like_dict = like.to_dict()
-        update_obj_dict(like, like_dict)
-        all_likes_dicts.append(like_dict)
+    return render_template('post.html', comments=all_comments_dicts[:20], likes=all_likes_dicts[:20], post=post_dict, cache_id=uuid.uuid4())
 
-        # post_comments = post.comments
-        # all_comments_dicts = []
-        # for comment in post_comments:
-        #    comment_dict = comment.to_dict()
-        #    update_obj_dict(comment, comment_dict)
-        #    all_comments_dicts.append(comment_dict)
-
-        return render_template('post.html',
-                               comments=all_comments_dicts[:20],
-                               likes=all_likes_dicts[:20],
-                               user=user,
-                               content=user_id,
-                               post=post_dict,
-                               cache_id=uuid.uuid4())
-
-    # except Exception as e:
-    #    abort(404)
-
-
+# Additional routes for handling posts, comments, and likes...
 @app_views.route('/posts', methods=['GET'], strict_slashes=False)
 def get_posts():
     """Retrieve all posts"""
     posts = storage.all(Post).values()
     return jsonify([post.to_dict() for post in posts])
-
-@app_views.route('/posts/<post_id>', methods=['GET'], strict_slashes=False)
-def get_post(post_id):
-    """Retrieve a post by ID"""
-    post = storage.get(Post, post_id)
-    if post is None:
-        abort(404)
-    return jsonify(post.to_dict())
-
-@app_views.route('/posts', methods=['POST'], strict_slashes=False)
-def create_post():
-    """Create a new post"""
-    if not request.json:
-        abort(400, 'Not a JSON')
-    data = request.get_json()
-    post = Post(**data)
-    post.save()
-    return jsonify(post.to_dict()), 201
 
 @app_views.route('/posts/<post_id>', methods=['PUT'], strict_slashes=False)
 def update_post(post_id):
@@ -208,3 +186,7 @@ def remove_like_from_post(post_id, like_id):
     like.delete()
     storage.save()
     return jsonify({}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
