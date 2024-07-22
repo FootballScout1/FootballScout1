@@ -62,6 +62,10 @@ engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 session_db = Session()
 
+
+PRIMARY_USER_ID = 'db392ac7-72e1-4e14-9eef-60c50e086310'
+SECONDARY_USER_ID = 'f17ae849-dc33-416e-8fd9-8e5bc554a664'
+
 @app.before_request
 def load_user():
     user_id = get_current_user_id()  # Function to get the current user ID
@@ -77,6 +81,10 @@ def load_user():
 def get_current_user_id():
     """Get the current user ID from the session."""
     return session.get('user_id')
+
+def get_available_user_id():
+    # Check the availability of PRIMARY_USER_ID and fallback to SECONDARY_USER_ID if necessary
+    return PRIMARY_USER_ID if PRIMARY_USER_ID else SECONDARY_USER_ID
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -97,7 +105,7 @@ def sample_route():
 # Route for redirecting the root URL to the login page
 @app.route('/')
 def index():
-    user_id = 'f17ae849-dc33-416e-8fd9-8e5bc554a664'
+    user_id = user_id = get_available_user_id()
     return redirect(url_for('home_icon', user_id=user_id, cache_id=uuid.uuid4()))
 
 # Route for rendering the login page
@@ -122,15 +130,16 @@ def login():
 # Route for rendering the default homepage without login (root)
 @app.route('/homepage_default')
 def homepage_default():
+    user_id = get_available_user_id()
     content = {
-                "id": 'f17ae849-dc33-416e-8fd9-8e5bc554a664',
+                "id": user_id,
                 "username": "Guest",
                 "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
                 "notifications": [],
                 "lists": [],
                 "reports": []
             }
-    return render_template('homepage.html', user_id=content.id, cache_id=uuid.uuid4())
+    return render_template('homepage.html', user_id=content['id'], cache_id=uuid.uuid4())
 
 # Route for rendering the homepage after login
 @app.route('/homepage')
@@ -155,8 +164,9 @@ def homepage():
             }
         else:
             logger.error(f"User with username '{username}' not found, using default content")
+            user_id = get_available_user_id()
             content = {
-                "id": 'f17ae849-dc33-416e-8fd9-8e5bc554a664',
+                "id": user_id,
                 "username": "Guest",
                 "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
                 "notifications": [],
@@ -166,8 +176,9 @@ def homepage():
             return redirect(url_for('home_icon', user_id=content['id'], cache_id=uuid.uuid4()))
     else:
         logger.debug("No username provided, using default content")
+        user_id = get_available_user_id()
         content = {
-            "id": 'f17ae849-dc33-416e-8fd9-8e5bc554a664',
+            "id": user_id,
             "username": "Guest",
             "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
             "notifications": [],

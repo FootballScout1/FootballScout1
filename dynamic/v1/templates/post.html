@@ -463,7 +463,7 @@
                 </main>
                 <nav>
                         <div {{cache_id}} class="nav-container">
-                                <a href="{{ url_for('home_icon', user_id=content.id if content.id else 'f17ae849-dc33-416e-8fd9-8e5bc554a664') }}" class="home">
+                                <a href="{{ url_for('home_icon', user_id=content.id if content.id else 'f17ae849-dc33-416e-8fd9-8e5bc554a664' if content.id is None else 'db392ac7-72e1-4e14-9eef-60c50e086310') }}" class="home">
                                         <i class="home-icon bi-house"></i>
                                         <strong>Home</strong>
                                 </a>
