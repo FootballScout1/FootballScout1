@@ -8,11 +8,11 @@ from flask import Flask, jsonify, request, abort, render_template, redirect, url
 from sqlalchemy import create_engine
 from werkzeug.utils import secure_filename
 from dynamic.v1.views import app_views
-from models import storage, User, UserRoleEnum, Club, Player, Scout
+from models import storage, User, UserRoleEnum, Club, Player, Scout, Post
 from models.comment import Comment
 from console import FootballScoutCommand
 import logging
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, joinedload
 from models.base_model import Base
 import uuid
 
@@ -63,15 +63,45 @@ def get_comments():
     comments = storage.all(Comment).values()
     return jsonify([comment.to_dict() for comment in comments])
 
-@app_views.route('/comments/<comment_id>', methods=['GET'], strict_slashes=False)
-def get_comment(comment_id):
+@app_views.route('/comments/<comment_id>/<post_id>', methods=['GET'], strict_slashes=False)
+def get_comment(comment_id, post_id):
     """Retrieve a comment by ID"""
     comment = storage.get(Comment, comment_id)
-    if comment is None:
-        abort(404)
-    return jsonify(comment.to_dict())
+    # post = storage.get(Post, post_id)
+    # comment = session_db.query(Comment).options(
+    #    joinedload(Comment.user),
+    #    joinedload(Comment.post),
+    #    joinedload(Comment.player),
+    #    joinedload(Comment.scout)
+    # ).filter_by(id=comment_id).first()
 
-@app_views.route('/comments', methods=['POST'], strict_slashes=False)
+    # if comment is None or post is None:
+    #    abort(404)
+
+    # comment_dict = comment.to_dict()
+    
+    # Add related information to the comment dictionary
+    # if comment.user:
+    #    comment_dict['user'] = comment.user.to_dict()
+    # if comment.post:
+    #    comment_dict['post'] = comment.post.to_dict()
+    # if comment.player:
+    #    comment_dict['player'] = comment.player.to_dict()
+    # if comment.scout:
+    #    comment_dict['scout'] = comment.scout.to_dict()
+
+
+
+    # return jsonify(comment.to_dict(), post_id=post_id)
+    # return jsonify(comment_dict)
+
+    if not comment:
+        abort(404)
+    data = comment.to_dict()
+    data['post_id'] = post_id
+    return jsonify(data)
+
+@app_views.route('/comments/<post_id>', methods=['POST'], strict_slashes=False)
 def create_comment():
     """Create a new comment"""
     if not request.json:
@@ -79,8 +109,16 @@ def create_comment():
     data = request.get_json()
     
     logging.debug(f"Received data: {data}")
+    text = data.get('text')
+    post_id = data.get('post_id')
+    user_id = data.get('user_id')
+    player_id = data.get('player_id')
+    scout_id = data.get('scout_id')
 
-    comment = Comment(**data)
+    if not post_id:
+        return jsonify({"error": "post_id is missing"}), 400
+
+    comment = Comment(text=text, post_id=post_id, user_id=user_id, player_id=player_id, scout_id=scout_id)
     comment.save()
     return jsonify(comment.to_dict()), 201
 
