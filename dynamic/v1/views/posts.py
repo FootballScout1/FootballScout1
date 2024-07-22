@@ -14,6 +14,7 @@ import logging
 from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
 import uuid
+from dynamic.lazydict import update_obj_dict
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -54,6 +55,58 @@ def load_user():
 def get_current_user_id():
     """Get the current user ID from the session."""
     return session.get('user_id')
+
+@app_views.route('/post/<user_id>/<post_id>', strict_slashes=False)
+def fetch_post(user_id, post_id):
+    """
+    Renders Post object with its Comment's and Like's
+    """
+    user = storage.get(User, user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    post = storage.get(Post, post_id)
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+    # try:
+        # post = storage.get(Post, post_id)
+    post_dict = post.to_dict()
+    update_obj_dict(post, post_dict)
+    post_dict.update({
+        'comments_count': len(post.comments),
+        'likes_count': len(post.likes)
+    })
+
+    # Prepare comments list
+    all_comments_dicts = []
+    for comment in post.comments:
+        comment_dict = comment.to_dict()
+        update_obj_dict(comment, comment_dict)
+        all_comments_dicts.append(comment_dict)
+
+    # Prepare likes list
+    all_likes_dicts = []
+    for like in post.likes:
+        like_dict = like.to_dict()
+        update_obj_dict(like, like_dict)
+        all_likes_dicts.append(like_dict)
+
+        # post_comments = post.comments
+        # all_comments_dicts = []
+        # for comment in post_comments:
+        #    comment_dict = comment.to_dict()
+        #    update_obj_dict(comment, comment_dict)
+        #    all_comments_dicts.append(comment_dict)
+
+        return render_template('post.html',
+                               comments=all_comments_dicts[:20],
+                               likes=all_likes_dicts[:20],
+                               user_id=user_id,
+                               post=post_dict,
+                               cache_id=uuid.uuid4())
+
+    # except Exception as e:
+    #    abort(404)
+
 
 @app_views.route('/posts', methods=['GET'], strict_slashes=False)
 def get_posts():

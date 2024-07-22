@@ -27,6 +27,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -96,12 +97,12 @@ def sample_route():
 # Route for redirecting the root URL to the login page
 @app.route('/')
 def index():
-   return redirect(url_for('login_page'))
+   return redirect(url_for('login_page'), cache_id=uuid.uuid4())
 
 # Route for rendering the login page
 @app.route('/login', methods=['GET'])
 def login_page():
-    return render_template('login.html')
+    return render_template('login.html', cache_id=uuid.uuid4())
 
 # Route for handling the login form submission
 @app.route('/login', methods=['POST'])
@@ -113,9 +114,22 @@ def login():
     user = session_db.query(User).filter_by(email=username).first()
     if user and user.password == password:  # Placeholder logic, add google auth api and password hashing comparison later
         session['user_id'] = user.id  # Store user ID in session
-        return redirect(url_for('homepage', username=user.first_name))
+        return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
     else:
         return 'Login Failed', 401
+
+# Route for rendering the default homepage without login (root)
+@app.route('/homepage_default')
+def homepage_default():
+    content = {
+                "id": 'f17ae849-dc33-416e-8fd9-8e5bc554a664',
+                "username": "Guest",
+                "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
+                "notifications": [],
+                "lists": [],
+                "reports": []
+            }
+    return render_template('homepage.html', user_id=content.id, cache_id=uuid.uuid4())
 
 # Route for rendering the homepage after login
 @app.route('/homepage')
@@ -141,40 +155,25 @@ def homepage():
         else:
             logger.error(f"User with username '{username}' not found, using default content")
             content = {
-                "id": None,
+                "id": 'f17ae849-dc33-416e-8fd9-8e5bc554a664',
                 "username": "Guest",
                 "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
                 "notifications": [],
                 "lists": [],
                 "reports": []
             }
+            return redirect(url_for('home_icon', user_id=content['id'], cache_id=uuid.uuid4()))
     else:
         logger.debug("No username provided, using default content")
         content = {
-            "id": None,
+            "id": 'f17ae849-dc33-416e-8fd9-8e5bc554a664',
             "username": "Guest",
-            "profile_picture": "default_profile_picture.jpg",
+            "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
             "notifications": [],
             "lists": [],
             "reports": []
         }
-
-    # user = session_db.query(User).filter_by(first_name=username).first()
-
-
-    # if not user:
-        # handle the case where user is not found
-    #    return 'User not found', 404
-
-        # content = {
-        # "id": user.id,
-        # "username": username,
-        # "profile_picture": user.profile_picture,
-        # "notifications": ["Notification 1", "Notification 2", "Notification 3"],
-        # "lists": ["List 1", "List 2", "List 3"],
-        # "reports": ["Report 1", "Report 2", "Report 3"],
-        # "post_id": posts.id
-    # }
+        return redirect(url_for('home_icon', user_id=content['id'], cache_id=uuid.uuid4()))
     try:
         logger.debug("Fetching all posts")
         all_posts = list(storage.all(Post).values())
@@ -194,43 +193,11 @@ def homepage():
     except Exception as e:
         logger.exception("An error occurred while rendering the homepage")
         return 'An internal error occurred', 500
-        # abort(404)
-
-# def homepage():
-#    username = request.args.get('username')
-#    user = session_db.query(User).filter_by(first_name=username).first()
-
-
-#    if not user:
-        # handle the case where user is not found
-#        return 'User not found', 404
-
-    # post_id = '981ff598-15c9-4539-b679-b9743b0b4207'
-#    post_id = request.args.get('post_id')  # Get post_id from query parameters or set a default value
-
-    # posts = session_db.query(Post).filter_by(id=post_id).all()
-#    if post_id:
-#        posts = session_db.query(Post).filter_by(id=post_id).all()
-#    else:
-#        return "User or Post not found", 404
-        # posts = []
-
-#    content = {
-#        "id": user.id,
-#        "username": username,
-#        "profile_picture": user.profile_picture,
-#        "notifications": ["Notification 1", "Notification 2", "Notification 3"],
-#        "lists": ["List 1", "List 2", "List 3"],
-#        "reports": ["Report 1", "Report 2", "Report 3"],
-#        "post_id": posts.id
-#    }
-    # return render_template('homepage.html', content=content, cache_id=uuid.uuid4())
-#    return render_template('homepage.html', content=content, posts=posts, cache_id=uuid.uuid4())
 
 # Route for rendering the registration page
 @app.route('/register', methods=['GET'])
 def register_page():
-    return render_template('register.html')
+    return render_template('register.html', cache_id=uuid.uuid4())
 
 # Route for handling the registration form submission
 @app.route('/register', methods=['POST'])
@@ -248,7 +215,7 @@ def register():
     # Fetch the newly created user to get their details
     user = session_db.query(User).filter_by(email=email).first()
 
-    return redirect(url_for('homepage', username=user.first_name))
+    return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
 
 # Route to render the static post.html template
 @app.route('/test_post/<user_id>/<post_id>')
@@ -260,7 +227,7 @@ def test_post(user_id, post_id):
     if not user or not post:
         return "User or Post not found", 404
 
-    return render_template('post.html', user_id=user_id, post_id=post_id, content=user.to_dict())
+    return render_template('post.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
 
 # Route for rendering the addpost.html template
 @app.route('/addpost/<user_id>', methods=['GET'])
@@ -269,7 +236,7 @@ def add_post_page(user_id):
     user = storage.get(User, user_id)
     if not user:
         return "User not found", 404
-    return render_template('addpost.html', user_id=user_id, content=user.to_dict())
+    return render_template('addpost.html', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4())
 
 # Route for handling the add post form submission
 @app.route('/addpost/<user_id>', methods=['POST'])
@@ -278,7 +245,7 @@ def add_post(user_id):
     user = storage.get(User, user_id)
     if not user:
         return "User not found", 404
-    return redirect(url_for('test_post', user_id=user_id, content=user.to_dict(), post_id='981ff598-15c9-4539-b679-b9743b0b4207'))  # Redirect to the posts page
+    return redirect(url_for('test_post', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the posts page
 
 # Route for rendering the comment.html template
 @app.route('/comment/<user_id>/<post_id>')
@@ -290,13 +257,14 @@ def comment_page(user_id, post_id):
     if not user or not post:
         return "User or Post not found", 404
 
-    return render_template('comment.html', user_id=user_id, post_id=post_id, content=user.to_dict())
+    return render_template('comment.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
 
 # Route for handling home icon click, redirects to the homepage
 @app.route('/home_icon/<user_id>', methods=['GET'])
 def home_icon(user_id):
     # Fetch user data based on user_id
     user_data = session_db.query(User).filter_by(id=user_id).first()
+    # cache_id = uuid.uuid4()
     if user_data:
         content = {
             "username": user_data.first_name,
@@ -306,7 +274,7 @@ def home_icon(user_id):
             "email": user_data.email,
             "id": user_data.id
         }
-    return redirect(url_for('homepage', username=user_data.first_name))
+    return redirect(url_for('homepage', username=user_data.first_name, cache_id=uuid.uuid4()))
 
 # Route for handling create icon click, redirects to the addpost page
 @app.route('/create_icon/<user_id>')
@@ -315,7 +283,7 @@ def create_icon(user_id):
     user = storage.get(User, user_id)
     if not user:
         return "User not found", 404
-    return redirect(url_for('add_post_page', user_id=user_id, content=user.to_dict()))  # Redirect to the addpost page
+    return redirect(url_for('add_post_page', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the addpost page
 
 # Route for handling comment icon click, redirects to the comment page
 @app.route('/comment_icon/<user_id>/<post_id>')
@@ -326,8 +294,6 @@ def comment_icon(user_id, post_id):
     if not user or not post:
         return "User or Post not found", 404
     return render_template('comment.html', user_id=user_id, post_id=post_id, content=user.to_dict(), cache_id=uuid.uuid4())
-    # return redirect(url_for('get_comment', user_id=user_id, post_id=post_id, content=user.to_dict()))
-    # return redirect(url_for('comment_page', user_id=user_id, post_id=post_id, content=user.to_dict()))
 
 if __name__ == "__main__":
     host = os.getenv('FOOTBALL_SCOUT_API_HOST', '0.0.0.0')

@@ -138,7 +138,7 @@ def upload_profile_picture(user_id):
 
         logging.debug(f"Updating user {user.first_name} profile picture to {filename}")
         # return jsonify(user.to_dict())
-        return redirect(url_for('app_views.profile', user_id=user.id))
+        return redirect(url_for('app_views.profile', user_id=user.id, cache_id=uuid.uuid4()))
 
     logging.debug("File type not allowed or file is invalid")
     return jsonify({"error": "File type not allowed or file is invalid"}), 400
@@ -154,7 +154,7 @@ def profile(user_id):
     user = storage.get(User, user_id)
     if not user:
         return "User not found", 404
-    return render_template('profile.html', content=user.to_dict())
+    return render_template('profile.html', content=user.to_dict(), cache_id=uuid.uuid4())
 
 # Route for serving uploaded profile pictures
 @app_views.route('/uploads/<filename>')
