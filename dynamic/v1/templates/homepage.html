@@ -342,8 +342,6 @@
                                 <div class="pfp-container">
 
 					<a class="pfp" href="#" style="background-image: url('{{ url_for('app_views.uploaded_file', filename=content.profile_picture) if content.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
-
-						<!--<a class="pfp" href="#" style="background-image: url('images/soccer-stadium-full-people.jpg'); background-position: center; background-size: cover; display: flex;">-->
                                         </a>
                                 </div>
                                 <div class="post-body">
@@ -363,12 +361,12 @@
                                                 frameborder="0"
                                                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 10px; align-self: center;"></iframe>
-                                        <a class="post-content" href="post.html" style="color: white; text-decoration: none;">
+                                        <a class="post-content" href="{{ url_for('test_post', user_id=content.id, post_id=post_id) }}" style="color: white; text-decoration: none;">
                                                 {{ post.content }}
                                         </a>
                                         <div class="reactions">
                                                 <div class="comment">
-                                                        <a href="comment.html" style="color: white; display: flex;">
+                                                        <a href="{{ url_for('comment_icon', user_id=content.id, post_id=post.id) }}" style="color: white; display: flex;">
                                                                 <i class="bi-chat-left fs-5"></i>
                                                         </a>
                                                         <p class="comment-count">{{ post.comments_count }}</p>
@@ -406,7 +404,7 @@
                 </main>
                 <nav>
                         <div class="nav-container">
-                                <a href="homepage.html" class="home">
+                                <a href="{{ url_for('home_icon', user_id=content.id) }}" class="home">
                                         <i class="home-icon bi-house"></i>
                                         <strong>Home</strong>
                                 </a>
@@ -422,11 +420,11 @@
                                         <i class="reports-icon bi-journal-bookmark"></i>
                                         <strong>Reports</strong>
                                 </a>
-                                <a href="addpost.html">
+                                <a href="{{ url_for('create_icon', user_id=content.id) }}">
                                         <button class="btn btn-create">Create</button>
                                 </a>
                         </div>
-                        <a href="profile.html" class="account">
+			<a href="{{ url_for('app_views.profile', user_id=content.id) }}" class="account">
                                 <i class="profile-icon bi-person"></i>
                                 <strong>Profile</strong>
                         </a>
