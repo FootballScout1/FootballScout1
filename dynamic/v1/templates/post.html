@@ -479,11 +479,11 @@
                                         <i class="reports-icon bi-journal-bookmark"></i>
                                         <strong>Reports</strong>
                                 </a>
-                                <a href="{{ url_for('create_icon', user_id=content.id) }}">
+                                <a href="{{ url_for('create_icon', user_id=user.id) }}">
                                         <button class="btn btn-create">Create</button>
                                 </a>
                         </div>
-                        <a href="{{ url_for('login_page') }}" class="account">
+                        <a href="{{ url_for('app_views.profile', user_id=content.id) }}" class="account">
                                 <i class="profile-icon bi-person"></i>
                         <strong>Profile</strong>
                         </a>

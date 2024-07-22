@@ -101,7 +101,7 @@ def fetch_post(user_id, post_id):
                                comments=all_comments_dicts[:20],
                                likes=all_likes_dicts[:20],
                                user=user,
-                               content=user_id,
+                               content=user.to_dict(),
                                post=post_dict,
                                cache_id=uuid.uuid4())
 
