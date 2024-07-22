@@ -97,7 +97,8 @@ def sample_route():
 # Route for redirecting the root URL to the login page
 @app.route('/')
 def index():
-   return redirect(url_for('login_page', cache_id=uuid.uuid4()))
+    user_id = 'f17ae849-dc33-416e-8fd9-8e5bc554a664'
+    return redirect(url_for('home_icon', user_id=user_id, cache_id=uuid.uuid4()))
 
 # Route for rendering the login page
 @app.route('/login', methods=['GET'])
