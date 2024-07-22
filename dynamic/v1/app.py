@@ -3,6 +3,8 @@ import os
 from flask import Flask, request, render_template, abort, redirect, url_for, jsonify, g, session
 from models.user import User
 from models.post import Post
+from models.scout import Scout
+from models.player import Player
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from models import storage
@@ -42,22 +44,22 @@ if not app.blueprints.get('app_views'):
     app.register_blueprint(app_views)
 
 # Database setup
-# db = "sqlite:///footDB.db"
-# engine = create_engine(db, pool_pre_ping=True)
+db = "sqlite:///footDB.db"
+engine = create_engine(db, pool_pre_ping=True)
 
 # Database setup
 # engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+# user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+# password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+# host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+# database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
 
 # Create the engine using the PostgreSQL connection string
-DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-engine = create_engine(DATABASE_URL)
+# DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+# engine = create_engine(DATABASE_URL)
 
 Session = sessionmaker(bind=engine)
 session_db = Session()
@@ -123,9 +125,39 @@ def login():
     user = session_db.query(User).filter_by(email=username).first()
     if user and user.password == password:  # Placeholder logic, add google auth api and password hashing comparison later
         session['user_id'] = user.id  # Store user ID in session
-        return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
-    else:
-        return 'Login Failed', 401
+
+        # Debugging output
+        logging.debug(f'User: {user}, Type: {type(user)}')
+        
+        # Check the type of the user and redirect accordingly
+        if isinstance(user, Scout):
+            return redirect(url_for('app_views.fetch_scout', scout_id=user.id, cache_id=uuid.uuid4()))
+        elif isinstance(user, Player):
+            return redirect(url_for('app_views.fetch_player', player_id=user.id, cache_id=uuid.uuid4()))
+        else:
+            return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
+
+    # Check if the user is in the Player table
+    player = session_db.query(Player).filter_by(email=username).first()
+    if player and player.password == password:
+        session['user_id'] = player.id
+        return redirect(url_for('app_views.fetch_player', player_id=player.id, cache_id=uuid.uuid4()))
+
+    # Check if the user is in the Scout table
+    scout = session_db.query(Scout).filter_by(email=username).first()
+    if scout and scout.password == password:
+        session['user_id'] = scout.id
+        return redirect(url_for('app_views.fetch_scout', scout_id=scout.id, cache_id=uuid.uuid4()))
+
+    # If not found or password does not match
+    return 'Login Failed', 401
+
+    # else:
+    #    return 'Login Failed', 401
+
+    #    return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
+    # else:
+    #    return 'Login Failed', 401
 
 # Route for rendering the default homepage without login (root)
 @app.route('/homepage_default')

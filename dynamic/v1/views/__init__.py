@@ -12,3 +12,4 @@ from dynamic.v1.views.players_search import *
 from dynamic.v1.views.posts import *
 from dynamic.v1.views.likes import *
 from dynamic.v1.views.comments import *
+from dynamic.v1.views.player_scout import *
