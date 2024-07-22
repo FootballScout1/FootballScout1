@@ -61,7 +61,13 @@ def fetch_player(player_id):
     """
     Renders a Player info and their Post objects
     """
+    
     try:
+        player = storage.get(Player, player_id)
+        if not player:
+            raise ValueError(f"Player with ID {player_id} not found")
+
+    # try:
         player = storage.get(Player, player_id)
         name = player.first_name + " " + player.last_name
         club = storage.get(Club, player.club_id)
@@ -98,7 +104,13 @@ def fetch_scout(scout_id):
     """
     Renders a Scout info and their Post objects
     """
+
     try:
+        scout = storage.get(Scout, scout_id)
+        if not player:
+            raise ValueError(f"Scout with ID {scout_id} not found")
+
+    # try:    
         scout = storage.get(Scout, scout_id)
         name = scout.first_name + " " + scout.last_name
         club = storage.get(Club, scout.club_id)
