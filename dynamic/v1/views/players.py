@@ -9,9 +9,10 @@ from flask import make_response
 from sqlalchemy import create_engine
 from werkzeug.utils import secure_filename
 from dynamic.v1.views import app_views
-from models import storage, User, UserRoleEnum, Club, Player, Scout, Post
+from models import storage, User, UserRoleEnum, Club, Player, Scout, Post, Country
 from console import FootballScoutCommand
 import logging
+from dynamic.lazydict import update_obj_dict
 from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
 import uuid
@@ -64,11 +65,37 @@ def get_players():
 
 @app_views.route('/players/<player_id>', methods=['GET'])
 def get_player(player_id):
-    """Retrieves a Player object"""
+    """Renders a Player info and their Post objects"""
     player = storage.get(Player, player_id)
     if not player:
         abort(404)
-    return jsonify(player.to_dict())
+    name = player.first_name + " " + player.last_name
+    club = storage.get(Club, player.club_id)
+    country = storage.get(Country, club.country_id).name
+    positions = [pos.name for pos in player.positions]
+    player_dict = player.to_dict()
+    player_dict.update({
+        'player_club': club.name,
+        'country': country,
+        'player_positions': positions,
+        'type': 'player',
+        'name': name,
+        'profile_picture': player.profile_picture
+    })
+
+    all_post_dicts = []
+    for post in player.posts:
+        post_dict = post.to_dict()
+        update_obj_dict(post, post_dict)
+        post_dict.update({
+            'comments_count': len(post.comments),
+            'likes_count': len(post.likes)
+        })
+        all_post_dicts.append(post_dict)
+
+    return render_template('player_scout.html', user=player_dict,
+                               posts=all_post_dicts)
+
 
 @app_views.route('/players/<player_id>', methods=['DELETE'])
 def delete_player(player_id):
@@ -80,7 +107,7 @@ def delete_player(player_id):
     storage.save()
     return jsonify({}), 200
 
-@app_views.route('/players', methods=['POST'])
+# @app_views.route('/players', methods=['POST'])
 # def create_player():
 #    """Creates a Player object"""
 #    if not request.get_json():

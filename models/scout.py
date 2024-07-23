@@ -29,6 +29,7 @@ class Scout(BaseModel, Base):
         password = Column(String(255), nullable=False)
         first_name = Column(String(255), nullable=False)
         last_name = Column(String(255), nullable=False)
+        profile_picture = Column(String(128), nullable=True)
         club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False)
         
         from models.player import scouts_players

@@ -47,6 +47,7 @@ class Player(BaseModel, Base):
         height = Column(Integer, nullable=False, default=0)
         weight = Column(Integer, nullable=False, default=0)
         date_of_birth = Column(DateTime, nullable=True)
+        profile_picture = Column(String(128), nullable=True)
         # date_of_birth = Column(String(60), nullable=True)
         club_id = Column(String(60), ForeignKey('clubs.id'), nullable=False) # Integer
 

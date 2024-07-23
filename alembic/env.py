@@ -21,14 +21,14 @@ config = context.config
 
 
 # Update the config file's sqlalchemy.url
-database_url = (
-    f"postgresql+psycopg2://"
-    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')}:"
-    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')}@"
-    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')}/"
-    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')}"
-)
-config.set_main_option('sqlalchemy.url', database_url)
+# database_url = (
+#    f"postgresql+psycopg2://"
+#    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')}:"
+#    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')}@"
+#    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')}/"
+#    f"{os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')}"
+# )
+# config.set_main_option('sqlalchemy.url', database_url)
 
 target_metadata = Base.metadata
 
