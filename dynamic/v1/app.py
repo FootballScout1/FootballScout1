@@ -274,7 +274,7 @@ def register():
 def test_post(user_id, post_id):
 
     # Fetch user data based on user_id
-    user = storage.get(User, user_id)
+    user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     post = storage.get(Post, post_id)
     if not user or not post:
         return "User or Post not found", 404
@@ -285,7 +285,7 @@ def test_post(user_id, post_id):
 @app.route('/addpost/<user_id>', methods=['GET'])
 def add_post_page(user_id):
 
-    user = storage.get(User, user_id)
+    user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     if not user:
         return "User not found", 404
     return render_template('addpost.html', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4())
@@ -294,7 +294,7 @@ def add_post_page(user_id):
 @app.route('/addpost/<user_id>', methods=['POST'])
 def add_post(user_id):
 
-    user = storage.get(User, user_id)
+    user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     if not user:
         return "User not found", 404
     return redirect(url_for('test_post', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the posts page
@@ -304,7 +304,7 @@ def add_post(user_id):
 def comment_page(user_id, post_id):
 
     # Fetch user data based on user_id
-    user = storage.get(User, user_id)
+    user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     post = storage.get(Post, post_id)
     if not user or not post:
         return "User or Post not found", 404
@@ -345,7 +345,7 @@ def home_icon(user_id):
 @app.route('/create_icon/<user_id>')
 def create_icon(user_id):
     
-    user = storage.get(User, user_id)
+    user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     if not user:
         return "User not found", 404
     return redirect(url_for('add_post_page', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the addpost page
@@ -354,7 +354,7 @@ def create_icon(user_id):
 @app.route('/comment_icon/<user_id>/<post_id>')
 def comment_icon(user_id, post_id):
 
-    user = storage.get(User, user_id)
+    user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     post = storage.get(Post, post_id)
     if not user or not post:
         return "User or Post not found", 404
