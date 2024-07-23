@@ -180,19 +180,27 @@ def homepage():
     Renders the homepage
     """
     username = request.args.get('username')
+    
+    user_type = request.args.get('user_type')
 
     logger.debug(f"Fetching user with username: {username}")
 
-    if username:
-        user = session_db.query(User).filter_by(first_name=username).first()
+    if username and user_type:
+        # user = session_db.query(User).filter_by(first_name=username).first()
+        if user_type == 'user':
+            user = session_db.query(User).filter_by(first_name=username).first()
+        elif user_type == 'player':
+            user = session_db.query(Player).filter_by(first_name=username).first()
+        elif user_type == 'scout':
+            user = session_db.query(Scout).filter_by(first_name=username).first()
         if user:
             content = {
-                "id": user.id,
-                "username": username,
-                "profile_picture": user.profile_picture,
-                "notifications": ["Notification 1", "Notification 2", "Notification 3"],
-                "lists": ["List 1", "List 2", "List 3"],
-                "reports": ["Report 1", "Report 2", "Report 3"],
+                    "id": user.id,
+                    "username": username,
+                    "profile_picture": user.profile_picture,
+                    "notifications": ["Notification 1", "Notification 2", "Notification 3"],
+                    "lists": ["List 1", "List 2", "List 3"],
+                    "reports": ["Report 1", "Report 2", "Report 3"],
             }
         else:
             logger.error(f"User with username '{username}' not found, using default content")
@@ -318,7 +326,20 @@ def home_icon(user_id):
             "email": user_data.email,
             "id": user_data.id
         }
-    return redirect(url_for('homepage', username=user_data.first_name, cache_id=uuid.uuid4()))
+        return redirect(url_for('homepage', username=user_data.first_name, user_type='user', cache_id=uuid.uuid4()))
+    
+    # Fetch player data based on user_id
+    player_data = session_db.query(Player).filter_by(id=user_id).first()
+    if player_data:
+        return redirect(url_for('homepage', username=player_data.first_name, user_type='player', cache_id=uuid.uuid4()))
+
+    # Fetch scout data based on user_id
+    scout_data = session_db.query(Scout).filter_by(id=user_id).first()
+    if scout_data:
+        return redirect(url_for('homepage', username=scout_data.first_name, user_type='scout', cache_id=uuid.uuid4()))
+
+    # If none of the data is found, return an error or redirect to a default page
+    return redirect(url_for('homepage_default'))
 
 # Route for handling create icon click, redirects to the addpost page
 @app.route('/create_icon/<user_id>')

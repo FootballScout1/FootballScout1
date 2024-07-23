@@ -95,6 +95,7 @@ class Scout(BaseModel, Base):
             'last_name': self.last_name,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat(),
-            'players': [player.to_dict() for player in self.players]  # Convert related Player objects to dictionaries
+            'players': [player.to_dict() for player in self.players],  # Convert related Player objects to dictionaries
+            'profile_picture': self.profile_picture
         }
         return scout_dict

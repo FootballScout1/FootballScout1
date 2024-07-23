@@ -116,6 +116,7 @@ class Player(BaseModel, Base):
             'date_of_birth': self.date_of_birth,
             'club_id': self.club_id,
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'updated_at': self.updated_at.isoformat(),
+            'profile_picture': self.profile_picture
         }
         return player_dict

@@ -114,8 +114,20 @@ def upload_profile_picture(user_id):
     """Upload a profile picture for a user"""
     from dynamic.v1.app import app
     user = storage.get(User, user_id)
-    if not user:
-        abort(404)
+    if user:
+        user_type = 'user'
+    else:
+        player = storage.get(Player, user_id)
+        if player:
+            user = player
+            user_type = 'player'
+        else:
+            scout = storage.get(Scout, user_id)
+            if scout:
+                user = scout
+                user_type = 'scout'
+            else:
+                abort(404)
 
     if 'profile_picture' not in request.files:
         logging.debug("No profile picture in request files")
@@ -152,9 +164,21 @@ def allowed_file(filename):
 def profile(user_id):
     # Fetch user data based on user_id
     user = storage.get(User, user_id)
-    if not user:
-        return "User not found", 404
-    return render_template('profile.html', content=user.to_dict(), cache_id=uuid.uuid4())
+    if user:
+        # return "User not found", 404
+        return render_template('profile.html', content=user.to_dict(), user_type='user', cache_id=uuid.uuid4())
+    # Fetch player data based on user_id
+    player = storage.get(Player, user_id)
+    if player:
+        return render_template('profile.html', content=player.to_dict(), user_type='player', cache_id=uuid.uuid4())
+
+    # Fetch scout data based on user_id
+    scout = storage.get(Scout, user_id)
+    if scout:
+        return render_template('profile.html', content=scout.to_dict(), user_type='scout', cache_id=uuid.uuid4())
+
+    # If none of the data is found, return an error
+    return "User not found", 404
 
 # Route for serving uploaded profile pictures
 @app_views.route('/uploads/<filename>')
