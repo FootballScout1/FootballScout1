@@ -10,6 +10,8 @@ from werkzeug.utils import secure_filename
 from dynamic.v1.views import app_views
 from models import storage, User, UserRoleEnum, Club, Player, Scout
 from console import FootballScoutCommand
+from models.country import Country
+from dynamic.lazydict import update_obj_dict
 import logging
 from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
@@ -65,12 +67,36 @@ def get_scouts():
     return jsonify([scout.to_dict() for scout in scouts])
 
 @app_views.route('/scouts/<scout_id>', methods=['GET'])
-def get_scout(scout_id):
-    """Retrieves a Scout object"""
+def get_scout_info(scout_id):
+    """Renders a Scout info and their Post objects"""
     scout = storage.get(Scout, scout_id)
     if not scout:
         abort(404)
-    return jsonify(scout.to_dict())
+
+    name = scout.first_name + " " + scout.last_name
+    club = storage.get(Club, scout.club_id)
+    country = storage.get(Country, club.country_id).name
+    scout_dict = scout.to_dict()
+    scout_dict.update({
+        'scout_club': club.name,
+        'country': country,
+        'type': 'scout',
+        'name': name,
+        'profile_picture': scout.profile_picture
+    })
+
+    all_post_dicts = []
+    for post in scout.posts:
+        post_dict = post.to_dict()
+        update_obj_dict(post, post_dict)
+        post_dict.update({
+            'comments_count': len(post.comments),
+            'likes_count': len(post.likes)
+        })
+        all_post_dicts.append(post_dict)
+
+    return render_template('player_scout.html', user=scout_dict,
+                               posts=all_post_dicts)
 
 @app_views.route('/scouts/<scout_id>', methods=['DELETE'])
 def delete_scout(scout_id):

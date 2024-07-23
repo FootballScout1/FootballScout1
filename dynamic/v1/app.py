@@ -131,9 +131,9 @@ def login():
         
         # Check the type of the user and redirect accordingly
         if isinstance(user, Scout):
-            return redirect(url_for('app_views.fetch_scout', scout_id=user.id, cache_id=uuid.uuid4()))
+            return redirect(url_for('app_views.get_scout_info', scout_id=user.id, cache_id=uuid.uuid4()))
         elif isinstance(user, Player):
-            return redirect(url_for('app_views.fetch_player', player_id=user.id, cache_id=uuid.uuid4()))
+            return redirect(url_for('app_views.get_player', player_id=user.id, cache_id=uuid.uuid4()))
         else:
             return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
 
@@ -141,13 +141,13 @@ def login():
     player = session_db.query(Player).filter_by(email=username).first()
     if player and player.password == password:
         session['user_id'] = player.id
-        return redirect(url_for('app_views.fetch_player', player_id=player.id, cache_id=uuid.uuid4()))
+        return redirect(url_for('app_views.get_player', player_id=player.id, cache_id=uuid.uuid4()))
 
     # Check if the user is in the Scout table
     scout = session_db.query(Scout).filter_by(email=username).first()
     if scout and scout.password == password:
         session['user_id'] = scout.id
-        return redirect(url_for('app_views.fetch_scout', scout_id=scout.id, cache_id=uuid.uuid4()))
+        return redirect(url_for('app_views.get_scout_info', scout_id=scout.id, cache_id=uuid.uuid4()))
 
     # If not found or password does not match
     return 'Login Failed', 401
