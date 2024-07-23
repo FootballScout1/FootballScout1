@@ -15,6 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
 import uuid
 from dynamic.lazydict import update_obj_dict
+# from dynamic.v1.app import app
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -130,11 +131,15 @@ def get_post(post_id):
 @app_views.route('/posts', methods=['POST'], strict_slashes=False)
 def create_post():
     """Create a new post"""
+    from dynamic.v1.app import app
+    app.logger.debug('POST /posts route hit')
     if not request.json:
+        app.logger.error('Request body is not JSON')
         abort(400, 'Not a JSON')
     data = request.get_json()
     post = Post(**data)
     post.save()
+    app.logger.debug('Post created: %s', post.to_dict())
     return jsonify(post.to_dict()), 201
 
 @app_views.route('/posts/<post_id>', methods=['PUT'], strict_slashes=False)
