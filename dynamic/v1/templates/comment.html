@@ -35,6 +35,15 @@
                                 </label>
                                 <textarea placeholder="Add comment" id="" class="add-comment"></textarea>
                                 <button class="submit-comment">Reply</button>
+				<div id="success-message" style="display: none;">Comment posted successfully!</div>
+				<div id="comments">
+					{% for comment in comments %}
+					<div class="comment">
+						<p>{{ comment.text }}</p>
+						<p><small>{{ comment.user_id }}</small></p>
+					</div>
+					{% endfor %}
+				</div>
                         </div>
                 </main>
                 <nav>
@@ -98,16 +107,26 @@
 
 			document.querySelector('.submit-comment').addEventListener('click', function() {
             			const commentText = document.querySelector('.add-comment').value;
-            			fetch('/dynamic/v1/comments', {
+				const userId = "{{ user_id }}";
+			        const postId = "{{ post_id }}";
+
+            			fetch('/dynamic/v1/comments/' + postId, {
                 			method: 'POST',
                 			headers: {
                     				'Content-Type': 'application/json'
                 			},
-                			body: JSON.stringify({ text: commentText })
+                			body: JSON.stringify({ text: commentText, user_id: userId, post_id: postId })
             			})
             			.then(response => response.json())
             			.then(data => {
                 			console.log('Success:', data);
+					if (data.message) {
+                        			document.getElementById('success-message').style.display = 'block';
+                        			const newComment = document.createElement('div');
+                        			newComment.className = 'comment';
+                        			newComment.innerHTML = `<p>${data.comment.text}</p><p><small>${data.comment.user_id}</small></p>`;
+                        			document.getElementById('comments').appendChild(newComment);
+                    			}
             			})
             			.catch((error) => {
                 			console.error('Error:', error);

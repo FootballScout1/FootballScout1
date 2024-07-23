@@ -102,7 +102,7 @@ def get_comment(comment_id, post_id):
     return jsonify(data)
 
 @app_views.route('/comments/<post_id>', methods=['POST'], strict_slashes=False)
-def create_comment():
+def create_comment(post_id):
     """Create a new comment"""
     if not request.json:
         abort(400, 'Not a JSON')
@@ -115,12 +115,12 @@ def create_comment():
     player_id = data.get('player_id')
     scout_id = data.get('scout_id')
 
-    if not post_id:
-        return jsonify({"error": "post_id is missing"}), 400
+    if not text or not user_id:
+        return jsonify({"error": "text or user_id is missing"}), 400
 
     comment = Comment(text=text, post_id=post_id, user_id=user_id, player_id=player_id, scout_id=scout_id)
     comment.save()
-    return jsonify(comment.to_dict()), 201
+    return jsonify({"message": "Comment posted successfully", "comment": comment.to_dict()}), 201
 
 @app_views.route('/comments/<comment_id>', methods=['PUT'], strict_slashes=False)
 def update_comment(comment_id):
