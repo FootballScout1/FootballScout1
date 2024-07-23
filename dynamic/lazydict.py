@@ -27,7 +27,15 @@ def update_obj_dict(obj, obj_dict):
     }
 
     _id = next((key for key in id_to_cls if key in obj_dict and obj_dict[key] is not None), None)
+
+    if not _id:
+        return
+
     user = storage.get(id_to_cls[_id][1], obj_dict[_id])
+    if not user:
+        return
+
+
     user_name = user.first_name + " " + user.last_name
     obj_dict.update({f'{id_to_cls[_id][0]}_name': user_name})
 

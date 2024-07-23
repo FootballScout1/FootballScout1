@@ -63,12 +63,16 @@ def fetch_post(user_id, post_id):
     """
     user = storage.get(User, user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        user = storage.get(Player, user_id)
+        if not user:
+            user = storage.get(Scout, user_id)
+            if not user:
+                return jsonify({"error": "User not found"}), 404
+    
     post = storage.get(Post, post_id)
     if not post:
         return jsonify({"error": "Post not found"}), 404
-    # try:
-        # post = storage.get(Post, post_id)
+    
     post_dict = post.to_dict()
     update_obj_dict(post, post_dict)
     post_dict.update({
