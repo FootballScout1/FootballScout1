@@ -25,8 +25,8 @@ class DBStorage:
         #     pool_pre_ping=True, echo=False
         # )
 
-        db = "sqlite:///footDB.db"
-        self.__engine = create_engine(db, pool_pre_ping=True)
+        # db = "sqlite:///footDB.db"
+        # self.__engine = create_engine(db, pool_pre_ping=True)
 
         # user = getenv('FOOTBALL_SCOUT_DEV_MYSQL_USER')
         # password = getenv('FOOTBALL_SCOUT_DEV_MYSQL_PWD')
@@ -39,16 +39,16 @@ class DBStorage:
         #    echo=False
         # )
 
-        # user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
-        # password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
-        # host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
-        # database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
+        user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER')
+        password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD')
+        host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST')
+        database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB')
         
-        # self.__engine = create_engine(
-        #        f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
-        #        pool_pre_ping=True,
-        #        echo=False
-        # )
+        self.__engine = create_engine(
+                f"postgresql+psycopg2://{user}:{password}@{host}/{database}",
+                pool_pre_ping=True,
+                echo=False
+        )
 
         if _env == 'test':
             Base.metadata.drop_all(bind=self.__engine)
@@ -233,3 +233,38 @@ class DBStorage:
     def rollback(self):
         """Rollback the current session."""
         self.__session.rollback()
+
+    def retrieve(self, cls, id):
+        """
+        Returns the object based on the class name and its ID, or
+        None if not found.
+        """
+
+        from models import storage
+        from models.country import Country
+        from models.club import Club
+        from models.user import User
+        from models.player import Player
+        from models.scout import Scout
+        from models.post import Post
+        from models.comment import Comment
+        from models.like import Like
+        from models.position import Position
+
+        # Dictionary of all classes
+        _classes = {
+            'Country': Country, 'Club': Club, 'User': User,
+            'Player': Player, 'Scout': Scout, 'Post': Post,
+            'Comment': Comment, 'Like': Like, 'Position': Position
+        }
+
+        # Check if cls is a string and get the class type
+        if isinstance(cls, str):
+            cls = _classes.get(cls)
+
+        # If class type is None, return None
+        if cls is None:
+            return None
+
+        # Query the database for the object with the given id
+        return self.__session.query(cls).get(id)

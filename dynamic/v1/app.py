@@ -5,6 +5,7 @@ from models.user import User
 from models.post import Post
 from models.scout import Scout
 from models.player import Player
+from models import Country
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from models import storage
@@ -44,29 +45,29 @@ if not app.blueprints.get('app_views'):
     app.register_blueprint(app_views)
 
 # Database setup
-db = "sqlite:///footDB.db"
-engine = create_engine(db, pool_pre_ping=True)
+# db = "sqlite:///footDB.db"
+# engine = create_engine(db, pool_pre_ping=True)
 
 # Database setup
 # engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-# user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-# password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-# host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-# database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
 
 # Create the engine using the PostgreSQL connection string
-# DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-# engine = create_engine(DATABASE_URL)
+DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+engine = create_engine(DATABASE_URL)
 
 Session = sessionmaker(bind=engine)
 session_db = Session()
 
 
-PRIMARY_USER_ID = 'db392ac7-72e1-4e14-9eef-60c50e086310'
-SECONDARY_USER_ID = 'f17ae849-dc33-416e-8fd9-8e5bc554a664'
+# PRIMARY_USER_ID = 'db392ac7-72e1-4e14-9eef-60c50e086310'
+# SECONDARY_USER_ID = 'f17ae849-dc33-416e-8fd9-8e5bc554a664'
 
 @app.before_request
 def load_user():
@@ -85,8 +86,24 @@ def get_current_user_id():
     return session.get('user_id')
 
 def get_available_user_id():
-    # Check the availability of PRIMARY_USER_ID and fallback to SECONDARY_USER_ID if necessary
-    return PRIMARY_USER_ID if PRIMARY_USER_ID else SECONDARY_USER_ID
+    # Check the availability of id if not provided
+    
+    first_id = 'db392ac7-72e1-4e14-9eef-60c50e086310'
+    second_id = 'f17ae849-dc33-416e-8fd9-8e5bc554a664'
+    
+    user1 = storage.retrieve('User', first_id)
+    print(f"Checking first_id: {first_id}, found: {user1}")  # Debugging print statement
+    if user1:
+        return first_id
+
+    user2 = storage.retrieve('User', second_id)
+    print(f"Checking second_id: {second_id}, found: {user2}")  # Debugging print statement
+    if user2:
+        return second_id
+
+    return None
+
+    # return PRIMARY_USER_ID if PRIMARY_USER_ID else SECONDARY_USER_ID
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -107,7 +124,11 @@ def sample_route():
 # Route for redirecting the root URL to the login page
 @app.route('/')
 def index():
-    user_id = user_id = get_available_user_id()
+    user_id = get_available_user_id()
+    print(f"Using user_id: {user_id}")  # Debugging print statement
+    if not user_id:
+        abort(404, description="User not found")
+    # print(f"Using user_id: {user_id}")  # Debugging print statement
     return redirect(url_for('home_icon', user_id=user_id, cache_id=uuid.uuid4()))
 
 # Route for rendering the login page
