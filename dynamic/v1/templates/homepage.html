@@ -363,7 +363,7 @@
                                         <a class="post-content" href="{{ url_for('app_views.fetch_post', user_id=content.id, post_id=post.id) }}" style="color: white; text-decoration: none;">
                                                 {{ post.content }}
                                         </a>
-					 <p>Post ID: {{ post.id }}</p>
+					<!-- <p>Post ID: {{ post.id }}</p>-->
                                         <div class="reactions">
                                                 <div class="comment">
                                                         <a href="{{ url_for('comment_icon', user_id=content.id, post_id=post.id) }}" style="color: white; display: flex;">

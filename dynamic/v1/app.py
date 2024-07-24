@@ -156,7 +156,7 @@ def login():
         elif isinstance(user, Player):
             return redirect(url_for('app_views.get_player', player_id=user.id, cache_id=uuid.uuid4()))
         else:
-            return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
+            return redirect(url_for('homepage', username=user.first_name, user_type='user', cache_id=uuid.uuid4()))
 
     # Check if the user is in the Player table
     player = session_db.query(Player).filter_by(email=username).first()
@@ -288,7 +288,7 @@ def register():
     # Fetch the newly created user to get their details
     user = session_db.query(User).filter_by(email=email).first()
 
-    return redirect(url_for('homepage', username=user.first_name, cache_id=uuid.uuid4()))
+    return redirect(url_for('homepage', username=user.first_name, user_type='user', cache_id=uuid.uuid4()))
 
 # Route to render the static post.html template
 @app.route('/test_post/<user_id>/<post_id>')
