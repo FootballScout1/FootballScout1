@@ -13,3 +13,7 @@ from dynamic.v1.views.posts import *
 from dynamic.v1.views.likes import *
 from dynamic.v1.views.comments import *
 # from dynamic.v1.views.player_scout import *
+
+
+def init_app(app):
+    app.register_blueprint(app_views)

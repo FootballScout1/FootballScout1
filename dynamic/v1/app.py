@@ -16,6 +16,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import uuid
 from dynamic.lazydict import update_obj_dict
+from dynamic.v1 import engine, Session
+from dynamic.v1.views import init_app
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -40,9 +42,12 @@ app.secret_key = os.getenv('SECRET_KEY', 'later')
 # Allow CORS for all domains
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+# Initialize views
+init_app(app)
+
 # Register blueprint once
-if not app.blueprints.get('app_views'):
-    app.register_blueprint(app_views)
+# if not app.blueprints.get('app_views'):
+#    app.register_blueprint(app_views)
 
 # Database setup
 # db = "sqlite:///footDB.db"
@@ -53,16 +58,16 @@ if not app.blueprints.get('app_views'):
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+# user = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+# password = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+# host = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+# database = os.getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
 
 # Create the engine using the PostgreSQL connection string
-DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-engine = create_engine(DATABASE_URL)
+# DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+# engine = create_engine(DATABASE_URL)
 
-Session = sessionmaker(bind=engine)
+# Session = sessionmaker(bind=engine)
 session_db = Session()
 
 
@@ -72,18 +77,44 @@ session_db = Session()
 @app.before_request
 def load_user():
     user_id = get_current_user_id()  # Function to get the current user ID
-    if user_id:
-        user = storage.get(User, user_id)
+    user_type = get_current_user_type()
+    user_class = get_current_user_class()
+    if user_id and user_class:
+        if user_class == 'User':
+            user = session_db.query(User).get(user_id)
+        elif user_class == 'Player':
+            user = session_db.query(Player).get(user_id)
+        elif user_class == 'Scout':
+            user = session_db.query(Scout).get(user_id)
         if user:
             g.user_content = user.to_dict()
+            g.user_type = user_type
+            g.user_class = user_class
         else:
             g.user_content = {}
+            g.user_type = None
+            g.user_class = None
     else:
         g.user_content = {}
+        g.user_type = None
+        g.user_class = None
+            # user = storage.get(User, user_id)
+        # if user:
+        #    g.user_content = user.to_dict()
+        # else:
+        #    g.user_content = {}
+    # else:
+    #    g.user_content = {}
 
 def get_current_user_id():
     """Get the current user ID from the session."""
     return session.get('user_id')
+
+def get_current_user_type():
+    return session.get('user_type')
+
+def get_current_user_class():
+    return session.get('user_class')
 
 def get_available_user_id():
     # Check the availability of id if not provided
@@ -146,28 +177,35 @@ def login():
     user = session_db.query(User).filter_by(email=username).first()
     if user and user.password == password:  # Placeholder logic, add google auth api and password hashing comparison later
         session['user_id'] = user.id  # Store user ID in session
+        session['user_type'] = 'user'
+        session['user_class'] = 'User'
 
         # Debugging output
         logging.debug(f'User: {user}, Type: {type(user)}')
+        return redirect(url_for('homepage', username=user.first_name, user_type='user', cache_id=uuid.uuid4()))
         
         # Check the type of the user and redirect accordingly
-        if isinstance(user, Scout):
-            return redirect(url_for('app_views.get_scout_info', scout_id=user.id, cache_id=uuid.uuid4()))
-        elif isinstance(user, Player):
-            return redirect(url_for('app_views.get_player', player_id=user.id, cache_id=uuid.uuid4()))
-        else:
-            return redirect(url_for('homepage', username=user.first_name, user_type='user', cache_id=uuid.uuid4()))
+        # if isinstance(user, Scout):
+        #    return redirect(url_for('app_views.get_scout_info', scout_id=user.id, cache_id=uuid.uuid4()))
+        # elif isinstance(user, Player):
+        #    return redirect(url_for('app_views.get_player', player_id=user.id, cache_id=uuid.uuid4()))
+        # else:
+        #    return redirect(url_for('homepage', username=user.first_name, user_type='user', cache_id=uuid.uuid4()))
 
     # Check if the user is in the Player table
     player = session_db.query(Player).filter_by(email=username).first()
     if player and player.password == password:
         session['user_id'] = player.id
+        session['user_type'] = 'player'
+        session['user_class'] = 'Player'
         return redirect(url_for('app_views.get_player', player_id=player.id, cache_id=uuid.uuid4()))
 
     # Check if the user is in the Scout table
     scout = session_db.query(Scout).filter_by(email=username).first()
     if scout and scout.password == password:
         session['user_id'] = scout.id
+        session['user_type'] = 'scout'
+        session['user_class'] = 'Scout'
         return redirect(url_for('app_views.get_scout_info', scout_id=scout.id, cache_id=uuid.uuid4()))
 
     # If not found or password does not match
@@ -181,18 +219,18 @@ def login():
     #    return 'Login Failed', 401
 
 # Route for rendering the default homepage without login (root)
-@app.route('/homepage_default')
-def homepage_default():
-    user_id = get_available_user_id()
-    content = {
-                "id": user_id,
-                "username": "Guest",
-                "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
-                "notifications": [],
-                "lists": [],
-                "reports": []
-            }
-    return render_template('homepage.html', user_id=content['id'], cache_id=uuid.uuid4())
+# @app.route('/homepage_default')
+# def homepage_default():
+#    user_id = get_available_user_id()
+#    content = {
+#                "id": user_id,
+#                "username": "Guest",
+#                "profile_picture": url_for('static', filename='images/soccer-stadium-full-people.jpg'),
+#                "notifications": [],
+#                "lists": [],
+#                "reports": []
+#            }
+#    return render_template('homepage.html', user_id=content['id'], cache_id=uuid.uuid4())
 
 # Route for rendering the homepage after login
 @app.route('/homepage')
@@ -261,7 +299,7 @@ def homepage():
             all_posts_info.append(post_dict)
 
         logger.debug(f"Rendering homepage with {len(all_posts_info)} posts")
-        return render_template('homepage.html', posts=all_posts_info[95:105], content=content, cache_id=uuid.uuid4())
+        return render_template('homepage.html', posts=all_posts_info[95:105], content=content, cache_id=uuid.uuid4(), session_id=session.get('user_id'))
 
     except Exception as e:
         logger.exception("An error occurred while rendering the homepage")
@@ -363,7 +401,7 @@ def home_icon(user_id):
         return redirect(url_for('homepage', username=scout_data.first_name, user_type='scout', cache_id=uuid.uuid4()))
 
     # If none of the data is found, return an error or redirect to a default page
-    return redirect(url_for('homepage_default'))
+    print("Record of User, Player or Scout Not Found")
 
 # Route for handling create icon click, redirects to the addpost page
 @app.route('/create_icon/<user_id>')

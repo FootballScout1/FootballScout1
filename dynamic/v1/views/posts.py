@@ -15,6 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
 import uuid
 from dynamic.lazydict import update_obj_dict
+from dynamic.v1 import Session
 # from dynamic.v1.app import app
 
 logging.basicConfig(level=logging.DEBUG)
@@ -28,34 +29,34 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
-
-# Create the engine using the PostgreSQL connection string
-DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-engine = create_engine(DATABASE_URL)
-
-# Create a session
-Session = sessionmaker(bind=engine)
+#user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+#password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+#host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+#database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+#
+## Create the engine using the PostgreSQL connection string
+#DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+#engine = create_engine(DATABASE_URL)
+#
+## Create a session
+#Session = sessionmaker(bind=engine)
 session_db = Session()
 
-@app_views.before_request
-def load_user():
-    user_id = get_current_user_id()  # Function to get the current user ID
-    if user_id:
-        user = storage.get(User, user_id)
-        if user:
-            g.user_content = user.to_dict()
-        else:
-            g.user_content = {}
-    else:
-        g.user_content = {}
-
-def get_current_user_id():
-    """Get the current user ID from the session."""
-    return session.get('user_id')
+#@app_views.before_request
+#def load_user():
+#    user_id = get_current_user_id()  # Function to get the current user ID
+#    if user_id:
+#        user = storage.get(User, user_id)
+#        if user:
+#            g.user_content = user.to_dict()
+#        else:
+#            g.user_content = {}
+#    else:
+#        g.user_content = {}
+#
+#def get_current_user_id():
+#    """Get the current user ID from the session."""
+#    return session.get('user_id')
 
 @app_views.route('/post/<user_id>/<post_id>', strict_slashes=False)
 def fetch_post(user_id, post_id):
@@ -140,7 +141,7 @@ def create_post():
     post = Post(**data)
     post.save()
     app.logger.debug('Post created: %s', post.to_dict())
-    return jsonify(post.to_dict()), 201
+    return jsonify(post.to_dict(), cache_id=uuid.uuid4()), 201
 
 @app_views.route('/posts/<post_id>', methods=['PUT'], strict_slashes=False)
 def update_post(post_id):
@@ -189,7 +190,7 @@ def create_post_comment(post_id):
     data['post_id'] = post_id
     comment = Comment(**data)
     comment.save()
-    return jsonify(comment.to_dict()), 201
+    return jsonify(comment.to_dict(), cache_id=uuid.uuid4()), 201
 
 @app_views.route('/posts/<post_id>/likes', methods=['POST'], strict_slashes=False)
 def add_like_to_post(post_id):
@@ -203,7 +204,7 @@ def add_like_to_post(post_id):
     data['post_id'] = post_id
     like = Like(**data)
     like.save()
-    return jsonify(like.to_dict()), 201
+    return jsonify(like.to_dict(), cache_id=uuid.uuid4()), 201
 
 @app_views.route('/posts/<post_id>/likes/<like_id>', methods=['DELETE'], strict_slashes=False)
 def remove_like_from_post(post_id, like_id):
@@ -216,4 +217,4 @@ def remove_like_from_post(post_id, like_id):
         abort(404)
     like.delete()
     storage.save()
-    return jsonify({}), 200
+    return jsonify({}, cache_id=uuid.uuid4()), 200

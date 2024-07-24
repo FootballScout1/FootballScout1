@@ -19,6 +19,7 @@ import uuid
 
 from datetime import datetime  # Import datetime module
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
+from dynamic.v1 import Session
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -31,34 +32,34 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Database setup
 # Extract the PostgreSQL connection details from environment variables
-user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
-password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
-host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
-database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
-
-# Create the engine using the PostgreSQL connection string
-DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
-engine = create_engine(DATABASE_URL)
-
-# Create a session
-Session = sessionmaker(bind=engine)
+#user = getenv('FOOTBALL_SCOUT_DEV_PGSQL_USER', 'football_scout_dev')
+#password = getenv('FOOTBALL_SCOUT_DEV_PGSQL_PWD', '8i0QuEi2hDvNDyUgmQpBY0tA2ztryywF')
+#host = getenv('FOOTBALL_SCOUT_DEV_PGSQL_HOST', 'dpg-cqarnd08fa8c73asb9h0-a.oregon-postgres.render.com')
+#database = getenv('FOOTBALL_SCOUT_DEV_PGSQL_DB', 'football_scout_dev_db')
+#
+## Create the engine using the PostgreSQL connection string
+#DATABASE_URL = f'postgresql://{user}:{password}@{host}/{database}'
+#engine = create_engine(DATABASE_URL)
+#
+## Create a session
+#Session = sessionmaker(bind=engine)
 session_db = Session()
 
-@app_views.before_request
-def load_user():
-    user_id = get_current_user_id()  # Function to get the current user ID
-    if user_id:
-        user = storage.get(User, user_id)
-        if user:
-            g.user_content = user.to_dict()
-        else:
-            g.user_content = {}
-    else:
-        g.user_content = {}
-
-def get_current_user_id():
-    """Get the current user ID from the session."""
-    return session.get('user_id')
+#@app_views.before_request
+#def load_user():
+#    user_id = get_current_user_id()  # Function to get the current user ID
+#    if user_id:
+#        user = storage.get(User, user_id)
+#        if user:
+#            g.user_content = user.to_dict()
+#        else:
+#            g.user_content = {}
+#    else:
+#        g.user_content = {}
+#
+#def get_current_user_id():
+#    """Get the current user ID from the session."""
+#    return session.get('user_id')
 
 @app_views.route('/scouts', methods=['GET'])
 def get_scouts():
@@ -96,7 +97,7 @@ def get_scout_info(scout_id):
         all_post_dicts.append(post_dict)
 
     return render_template('player_scout.html', user=scout_dict,
-                               posts=all_post_dicts)
+                               posts=all_post_dicts, cache_id=uuid.uuid4())
 
 @app_views.route('/scouts/<scout_id>', methods=['DELETE'])
 def delete_scout(scout_id):

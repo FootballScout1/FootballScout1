@@ -14,12 +14,13 @@ import logging
 from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
 import uuid
+from dynamic.v1 import Session
 
 logging.basicConfig(level=logging.DEBUG)
 
 # Database setup
-db = "sqlite:///footDB.db"
-engine = create_engine(db, pool_pre_ping=True)
+# db = "sqlite:///footDB.db"
+# engine = create_engine(db, pool_pre_ping=True)
 
 # Database setup
 # engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
@@ -36,24 +37,24 @@ engine = create_engine(db, pool_pre_ping=True)
 # engine = create_engine(DATABASE_URL)
 
 # Create a session
-Session = sessionmaker(bind=engine)
+# Session = sessionmaker(bind=engine)
 session_db = Session()
 
-@app_views.before_request
-def load_user():
-    user_id = get_current_user_id()  # Function to get the current user ID
-    if user_id:
-        user = storage.get(User, user_id)
-        if user:
-            g.user_content = user.to_dict()
-        else:
-            g.user_content = {}
-    else:
-        g.user_content = {}
-
-def get_current_user_id():
-    """Get the current user ID from the session."""
-    return session.get('user_id')
+#@app_views.before_request
+#def load_user():
+#    user_id = get_current_user_id()  # Function to get the current user ID
+#    if user_id:
+#        user = storage.get(User, user_id)
+#        if user:
+#            g.user_content = user.to_dict()
+#        else:
+#            g.user_content = {}
+#    else:
+#        g.user_content = {}
+#
+#def get_current_user_id():
+#    """Get the current user ID from the session."""
+#    return session.get('user_id')
 
 @app_views.route('/likes', methods=['GET'], strict_slashes=False)
 def get_likes():

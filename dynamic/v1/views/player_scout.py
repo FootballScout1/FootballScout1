@@ -15,12 +15,13 @@ import logging
 from sqlalchemy.orm import sessionmaker
 from models.base_model import Base
 import uuid
+from dynamic.v1 import Session
 
 logging.basicConfig(level=logging.DEBUG)
 
 # Database setup
-db = "sqlite:///footDB.db"
-engine = create_engine(db, pool_pre_ping=True)
+# db = "sqlite:///footDB.db"
+# engine = create_engine(db, pool_pre_ping=True)
 
 # Database setup
 # engine = create_engine('mysql+mysqlconnector://football_scout_dev:football_scout_dev_pwd@localhost/football_scout_dev_db')
@@ -37,24 +38,24 @@ engine = create_engine(db, pool_pre_ping=True)
 # engine = create_engine(DATABASE_URL)
 
 # Create a session
-Session = sessionmaker(bind=engine)
+# Session = sessionmaker(bind=engine)
 session_db = Session()
 
-@app_views.before_request
-def load_user():
-    user_id = get_current_user_id()  # Function to get the current user ID
-    if user_id:
-        user = storage.get(User, user_id)
-        if user:
-            g.user_content = user.to_dict()
-        else:
-            g.user_content = {}
-    else:
-        g.user_content = {}
-
-def get_current_user_id():
-    """Get the current user ID from the session."""
-    return session.get('user_id')
+#@app_views.before_request
+#def load_user():
+#    user_id = get_current_user_id()  # Function to get the current user ID
+#    if user_id:
+#        user = storage.get(User, user_id)
+#        if user:
+#            g.user_content = user.to_dict()
+#        else:
+#            g.user_content = {}
+#    else:
+#        g.user_content = {}
+#
+#def get_current_user_id():
+#    """Get the current user ID from the session."""
+#    return session.get('user_id')
 
 @app_views.route('/player/<player_id>', strict_slashes=False)
 def fetch_player(player_id):
@@ -93,7 +94,7 @@ def fetch_player(player_id):
             all_post_dicts.append(post_dict)
 
         return render_template('player_scout.html', user=player_dict,
-                               posts=all_post_dicts)
+                               posts=all_post_dicts, cache_id=uuid.uuid4())
 
     except Exception as e:
         abort(404)
@@ -134,7 +135,7 @@ def fetch_scout(scout_id):
             all_post_dicts.append(post_dict)
 
         return render_template('player_scout.html', user=scout_dict,
-                               posts=all_post_dicts)
+                               posts=all_post_dicts, cache_id=uuid.uuid4())
 
     except Exception as e:
         abort(404)
