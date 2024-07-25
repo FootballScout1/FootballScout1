@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title></title>
+                <!-- <link href="css/style.css" rel="stylesheet"> -->
+        </head>
+        <body>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+                </script>
+                YouTube ID: <span id="myId" style="color: orange;"></span>
+                <br />
+                <br />
+                Embed code:
+                <iframe class="iframe-a" src="" width="560" height="315" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" allowfullscreen></iframe>
+                <iframe class="iframe-b" src="" width="560" height="315" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" allowfullscreen></iframe>
+        </body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+        $(document).ready(function(){
+                let getURL = 'https://www.youtube.com/watch?v=BeSUAEZIf9A'
+                let getURL2 = 'https://www.youtube.com/watch?v=WskQ2mEVvp4'
+                let newURL = getURL.replace("watch?v=", "embed/");
+                let newURL2 = getURL2.replace("watch?v=", "embed/");
+                $('.iframe-a').attr('src', newURL);
+                $('.iframe-b').attr('src', newURL2);
+        })
+        </script>
+</html>
