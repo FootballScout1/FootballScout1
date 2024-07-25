@@ -299,7 +299,7 @@ def homepage():
             all_posts_info.append(post_dict)
 
         logger.debug(f"Rendering homepage with {len(all_posts_info)} posts")
-        return render_template('homepage.html', posts=all_posts_info[95:105], content=content, cache_id=uuid.uuid4(), session_id=session.get('user_id'))
+        return render_template('homepage.html', posts=all_posts_info[95:105], content=content, cache_id=uuid.uuid4(), session_id=session.get('user_id'), session_type=session.get('user_type'), session_class=session.get('user_class'))
 
     except Exception as e:
         logger.exception("An error occurred while rendering the homepage")

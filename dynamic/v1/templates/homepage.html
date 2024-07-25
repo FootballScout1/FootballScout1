@@ -17,6 +17,8 @@
         <body>
 		<h1>Welcome, {{ content.username }}</h1>
     		<p>Session ID: {{ session_id }}</p>
+		<p>Session TYPE: {{ session_type }}</p>
+		<p>Session CLASS: {{ session_class }}</p>
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
                 </script>
@@ -366,8 +368,11 @@
                                                 {{ post.content }}
                                         </a>
 					<!--<h1>Welcome, {{ content.username }}</h1>
-						<p>Session ID: {{ session_id }}</p>-->
-					<!-- <p>Post ID: {{ post.id }}</p>-->
+					<p>Session ID: {{ session_id }}</p>
+					<p>Post ID: {{ post.id }}</p>
+					<p>Session ID: {{ session_id }}</p>
+                			<p>Session TYPE: {{ session_type }}</p>
+					<p>Session CLASS: {{ session_class }}</p>-->
                                         <div class="reactions">
                                                 <div class="comment">
                                                         <a href="{{ url_for('comment_icon', user_id=content.id, post_id=post.id) }}" style="color: white; display: flex;">
