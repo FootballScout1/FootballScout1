@@ -355,7 +355,7 @@
                         </div>
                 </header>
                 <main>
-                        <div class="player_info">
+                        <div {{cache_id}} class="player_info">
                                 <div class="pfp" style="background-image: url('{{ url_for('app_views.uploaded_file', filename=user.profile_picture) if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; border: 1px solid rgba(255, 255, 255, 0.2);"></div>
                                 <div class="card">
                                         {% if user.type == "player" %}
@@ -386,7 +386,7 @@
                         </div>
                         <hr>
                         {% for post in posts %}
-                        <div class="lead-post">
+                        <div {{cache_id}} class="lead-post">
                                 <div class="pfp-container">
                                         <a class="pfp" href="#" style="background-image: url('{{ url_for('app_views.uploaded_file', filename=user.profile_picture) if user.profile_picture else url_for('static', filename='images/soccer-stadium-full-people.jpg') }}'); background-position: center; background-size: cover; display: flex;">
                                         </a>
@@ -450,7 +450,7 @@
                         {% endfor %}
                 </main>
                 <nav>
-                        <div class="nav-container">
+                        <div {{cache_id}} class="nav-container">
                                 <a href="{{ url_for('home_icon', user_id=user.id if user.id else 'f17ae849-dc33-416e-8fd9-8e5bc554a664' if user.id is None else 'db392ac7-72e1-4e14-9eef-60c50e086310') }}" class="home">
                                         <i class="home-icon bi-house"></i>
                                         <strong>Home</strong>

@@ -121,7 +121,13 @@ def create_comment(post_id):
 
     comment = Comment(text=text, post_id=post_id, user_id=user_id, player_id=player_id, scout_id=scout_id)
     comment.save()
-    return jsonify({"message": "Comment posted successfully", "comment": comment.to_dict()}, cache_id=uuid.uuid4()), 201
+
+    response = {
+        "message": "Comment posted successfully",
+        "comment": comment.to_dict(),
+        "cache_id": str(uuid.uuid4())
+    }
+    return jsonify(response), 201
 
 @app_views.route('/comments/<comment_id>', methods=['PUT'], strict_slashes=False)
 def update_comment(comment_id):
