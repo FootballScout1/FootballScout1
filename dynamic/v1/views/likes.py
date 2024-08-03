@@ -70,15 +70,15 @@ def get_like(like_id):
         abort(404)
     return jsonify(like.to_dict())
 
-@app_views.route('/likes', methods=['POST'], strict_slashes=False)
-def create_like():
-    """Create a new like"""
-    if not request.json:
-        abort(400, 'Not a JSON')
-    data = request.get_json()
-    like = Like(**data)
-    like.save()
-    return jsonify(like.to_dict()), 201
+# @app_views.route('/likes', methods=['POST'], strict_slashes=False)
+# def create_like():
+#    """Create a new like"""
+#    if not request.json:
+#        abort(400, 'Not a JSON')
+#    data = request.get_json()
+#    like = Like(**data)
+#    like.save()
+#    return jsonify(like.to_dict()), 201
 
 @app_views.route('/likes/<like_id>', methods=['PUT'], strict_slashes=False)
 def update_like(like_id):
@@ -103,4 +103,36 @@ def delete_like(like_id):
     like.delete()
     storage.save()
     return jsonify({}), 200
+
+@app_views.route('/likes', methods=['POST'], strict_slashes=False)
+def toggle_like():
+    """Toggle like status for a post"""
+    if not request.json:
+        abort(400, 'Not a JSON')
+    data = request.get_json()
+    user_id = data.get('user_id')
+    post_id = data.get('post_id')
+
+    if not user_id or not post_id:
+        abort(400, 'Missing user_id or post_id')
+
+    # Check if like already exists
+    existing_like = None
+    for like in storage.all(Like).values():
+        if (like.user_id == user_id and like.post_id == post_id) or \
+           (like.player_id == user_id and like.post_id == post_id) or \
+           (like.scout_id == user_id and like.post_id == post_id):
+            existing_like = like
+            break
+
+    if existing_like:
+        # Unlike
+        existing_like.delete()
+        storage.save()
+        return jsonify({'status': 'unliked'}), 200
+    else:
+        # Like
+        like = Like(user_id=user_id, post_id=post_id)
+        like.save()
+        return jsonify({'status': 'liked'}), 201
 

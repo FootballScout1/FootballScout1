@@ -381,7 +381,7 @@
                                                         <p class="comment-count">{{ post.comments_count }}</p>
                                                 </div>
                                                 <div class="like">
-                                                        <a href="#" style="color: white; display: flex;">
+                                                        <a href="#" class="like-button" data-user-id="{{ content.id }}" data-post-id="{{ post.id }}" style="color: white; display: flex;">
                                                                 <i class="bi-hand-thumbs-up fs-5"></i>
                                                         </a>
                                                         <p class="like-count">{{ post.likes_count }}</p>
@@ -462,12 +462,39 @@
                         <!-- </div> -->
                 </aside>
                 <footer>Footer</footer>
-                <script>
-                $(document).ready(function() {
-                        $.ajax({
-                                url:
-                        })
-                })
-                </script>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.like a').click(function(event) {
+                event.preventDefault();
+                var likeButton = $(this);
+                var userId = likeButton.data('user-id');
+                var postId = likeButton.data('post-id');
+
+                $.ajax({
+                    url: '{{ url_for("app_views.toggle_like") }}',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({user_id: userId, post_id: postId}),
+                    success: function(response) {
+                        if (response.status == 'liked') {
+                            likeButton.find('i').css('color', 'red');
+                            var likesCount = parseInt(likeButton.siblings('.like-count').text());
+                            likeButton.siblings('.like-count').text(likesCount + 1);
+                        } else {
+                            likeButton.find('i').css('color', 'white');
+                            var likesCount = parseInt(likeButton.siblings('.like-count').text());
+                            likeButton.siblings('.like-count').text(likesCount - 1);
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+
         </body>
 </html>
