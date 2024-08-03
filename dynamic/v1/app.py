@@ -347,7 +347,13 @@ def add_post_page(user_id):
     user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     if not user:
         return "User not found", 404
-    return render_template('addpost.html', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4())
+    user_type = get_current_user_type()
+    # user_type = request.args.get('user_type')
+    # Debugging print statements
+    print(f'user_type: {user_type}')
+    print(f'user_id: {user_id}')
+
+    return render_template('addpost.html', user_id=user_id, user_type=user_type, content=user.to_dict(), cache_id=uuid.uuid4())
 
 # Route for handling the add post form submission
 @app.route('/addpost/<user_id>', methods=['POST'])
@@ -410,7 +416,9 @@ def create_icon(user_id):
     user = storage.get(User, user_id) or storage.get(Player, user_id) or storage.get(Scout, user_id)
     if not user:
         return "User not found", 404
-    return redirect(url_for('add_post_page', user_id=user_id, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the addpost page
+    user_type = get_current_user_type()
+    # user_type = request.args.get('user_type')
+    return redirect(url_for('add_post_page', user_id=user_id, user_type=user_type, content=user.to_dict(), cache_id=uuid.uuid4()))  # Redirect to the addpost page
 
 # Route for handling comment icon click, redirects to the comment page
 @app.route('/comment_icon/<user_id>/<post_id>')

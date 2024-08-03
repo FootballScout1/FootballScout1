@@ -138,10 +138,24 @@ def create_post():
         app.logger.error('Request body is not JSON')
         abort(400, 'Not a JSON')
     data = request.get_json()
+    
+    # Validation: Ensure either player_id or scout_id is provided
+    if not data.get('player_id') and not data.get('scout_id'):
+        app.logger.error('Neither player_id nor scout_id provided')
+        abort(400, 'Neither player_id nor scout_id provided')
+
+    # Validation: Ensure at least one content field is provided
+    if not data.get('content') and not data.get('video_link'):
+        app.logger.error('Neither content nor video_link provided')
+        abort(400, 'Neither content nor video_link provided')
+
+
     post = Post(**data)
     post.save()
-    app.logger.debug('Post created: %s', post.to_dict())
-    return jsonify(post.to_dict(), cache_id=uuid.uuid4()), 201
+    response = post.to_dict()
+    response['cache_id'] = str(uuid.uuid4())
+    app.logger.debug('Post created: %s', response)
+    return jsonify(response), 201
 
 @app_views.route('/posts/<post_id>', methods=['PUT'], strict_slashes=False)
 def update_post(post_id):
