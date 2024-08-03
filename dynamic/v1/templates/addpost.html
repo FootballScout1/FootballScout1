@@ -103,74 +103,53 @@
                         })
 
 			function submitPost() {
-    const postText = document.getElementById('post-text').value;
-    const postUrl = document.getElementById('post-url').value;
-    const userId = document.getElementById('user-id').value; // Get the user_id from the hidden input
-    const userType = document.getElementById('user-type').value;
-    // const userType = 'scout'; // or 'player' depending on your context, you need to determine this dynamically
-
-    // if (postText === '') {
-    //    alert('Post content cannot be empty');
-    //    return;
-    // }
+    				const postText = document.getElementById('post-text').value;
+    				const postUrl = document.getElementById('post-url').value;
+    				const userId = document.getElementById('user-id').value; // Get the user_id from the hidden input
+    				const userType = document.getElementById('user-type').value;
     
-    if (postText === '' && postUrl === '') {
-            alert('Either post content or video URL must be provided');
-            return;
-        }
+    				if (postText === '' && postUrl === '') {
+            				alert('Either post content or video URL must be provided');
+            				return;
+        			}
 
-    const requestBody = {};
+    				const requestBody = {};
 
-        if (postText !== '') {
-            requestBody.content = postText;
-        }
+        			if (postText !== '') {
+            				requestBody.content = postText;
+        			}
 
-        if (postUrl !== '') {
-            requestBody.video_link = postUrl;
-        }
+        			if (postUrl !== '') {
+            				requestBody.video_link = postUrl;
+        			}
 
-        if (userType === 'scout') {
-            requestBody.scout_id = userId;
-        } else if (userType === 'player') {
-            requestBody.player_id = userId;
-        }
+        			if (userType === 'scout') {
+            				requestBody.scout_id = userId;
+        			} else if (userType === 'player') {
+            				requestBody.player_id = userId;
+        			}
 
-     // const requestBody = {
-           // text: postText,
-           // url: postUrl
-       // };
 
-      //  if (userType === 'scout') {
-      //      requestBody.scout_id = userId;
-      //  } else if (userType === 'player') {
-      //      requestBody.player_id = userId;
-      //  }
-
-    fetch('/dynamic/v1/posts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody) //{
-
-           //  text: postText,
-           //  url: postUrl,
-	   //  user_id: userId // Include the user_id in the request body
-        // }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data) {
-            document.getElementById('success-message').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('success-message').style.display = 'none';
-                document.getElementById('post-text').value = '';
-                document.getElementById('post-url').value = '';
-            }, 3000);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
+    				fetch('/dynamic/v1/posts', {
+        				method: 'POST',
+        				headers: {
+            					'Content-Type': 'application/json',
+        				},
+        				body: JSON.stringify(requestBody)
+    				})
+    				.then(response => response.json())
+    				.then(data => {
+        				if (data) {
+            					document.getElementById('success-message').style.display = 'block';
+            					setTimeout(() => {
+                					document.getElementById('success-message').style.display = 'none';
+                					document.getElementById('post-text').value = '';
+                					document.getElementById('post-url').value = '';
+            					}, 3000);
+        				}
+    				})
+    				.catch(error => console.error('Error:', error));
+			}
                 </script>
         </body>
 </html>
